@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Classify detection crops using Qwen 3.5 VLM via vLLM OpenAI-compatible API.
+Classify detection crops using Qwen 3.5 VLM via ollama or vLLM API.
 Takes GDino detections, extracts crops, classifies each as:
   pole / streetlight / fence / tree / building_edge / other
 """
@@ -8,17 +8,19 @@ import os, json, time, base64, asyncio, argparse
 from io import BytesIO
 from PIL import Image
 
+OLLAMA_URL = "http://localhost:11434/api/chat"
 VLLM_URL = "http://localhost:8000/v1/chat/completions"
 CATEGORIES = ["pole", "streetlight", "fence", "tree", "building_edge", "other"]
 
-CLASSIFICATION_PROMPT = """You are analyzing a crop from an oblique aerial photograph taken at approximately 45 degrees.
-Classify the main object in the center of this image into exactly one category:
-- "pole": wooden or metal utility/power pole (typically vertical, brown/dark, with crossarms or wires attached)
-- "streetlight": decorative street lamp or light fixture (typically has a light head, shorter, may be curved)
-- "fence": fence post or fence section (typically part of a horizontal run, short)
-- "tree": tree trunk or branch (organic shape, bark texture)
-- "building_edge": building corner, roof edge, or architectural feature
-- "other": none of the above
+CLASSIFICATION_PROMPT = """Classify the central object in this oblique aerial photograph (taken at ~45° angle from above).
+
+Look carefully at the object's shape, material, and context:
+- POLE: A tall, narrow, vertical wooden or metal structure. Usually brown/grey, with crossarms, insulators, or wires attached near the top. Often stands alone near roads. Utility poles are typically 8-15m tall with a consistent cylindrical shape.
+- STREETLIGHT: A pole with a distinct light fixture/lamp head at the top. Often curved or has a horizontal arm with a light. The light head is the key distinguishing feature — utility poles do NOT have light fixtures.
+- FENCE: A horizontal structure with vertical posts. Usually forms a line/boundary. Posts are short (1-2m). Often has horizontal rails or mesh between posts.
+- TREE: Organic shape with branches, leaves, or bark texture. Irregular outline, often wider at top.
+- BUILDING_EDGE: Part of a building — roof edge, corner, wall, chimney. Geometric, flat surfaces, often with uniform color/texture.
+- OTHER: None of the above.
 
 Respond with ONLY a JSON object: {"class": "<category>", "confidence": <0.0-1.0>}"""
 
@@ -39,17 +41,20 @@ def extract_crop(image_path, bbox, padding=0.3):
 
 
 def image_to_base64(img):
-    """Convert PIL Image to base64 data URI."""
+    """Convert PIL Image to base64 string (no data URI prefix)."""
     buf = BytesIO()
     img.save(buf, format='JPEG', quality=90)
-    b64 = base64.b64encode(buf.getvalue()).decode()
-    return f"data:image/jpeg;base64,{b64}"
+    return base64.b64encode(buf.getvalue()).decode()
+
+
+def image_to_data_uri(img):
+    """Convert PIL Image to base64 data URI for vLLM."""
+    return f"data:image/jpeg;base64,{image_to_base64(img)}"
 
 
 def parse_vlm_response(text):
     """Parse JSON response from VLM, handling common formatting issues."""
     text = text.strip()
-    # Strip markdown code fences if present
     if text.startswith('```'):
         text = text.split('\n', 1)[-1].rsplit('```', 1)[0].strip()
     try:
@@ -63,19 +68,50 @@ def parse_vlm_response(text):
         return 'other', 0.0
 
 
-async def classify_single(session, crop_b64, model, semaphore):
-    """Classify a single crop via the vLLM API."""
+# ---- Ollama backend ----
+
+async def classify_single_ollama(session, crop_b64, model, semaphore):
+    """Classify a single crop via ollama API."""
     import aiohttp
     payload = {
         "model": model,
         "messages": [
-            {"role": "system", "content": "You are a classifier. Reply with ONLY a single JSON object, no explanation."},
+            {"role": "system", "content": "You are an aerial imagery classifier. Reply ONLY with a JSON object."},
+            {"role": "user", "content": CLASSIFICATION_PROMPT, "images": [crop_b64]},
+        ],
+        "stream": False,
+        "think": False,
+        "options": {"num_predict": 60, "temperature": 0.0},
+    }
+    async with semaphore:
+        try:
+            async with session.post(OLLAMA_URL, json=payload, timeout=aiohttp.ClientTimeout(total=120)) as resp:
+                if resp.status != 200:
+                    err = await resp.text()
+                    return 'other', 0.0, f"HTTP {resp.status}: {err[:200]}"
+                data = await resp.json()
+                text = data['message']['content']
+                cls, conf = parse_vlm_response(text)
+                return cls, conf, text
+        except Exception as e:
+            return 'other', 0.0, str(e)
+
+
+# ---- vLLM backend ----
+
+async def classify_single_vllm(session, crop_b64, model, semaphore):
+    """Classify a single crop via vLLM OpenAI-compatible API."""
+    import aiohttp
+    payload = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": "You are an aerial imagery classifier. Reply ONLY with a JSON object."},
             {"role": "user", "content": [
-                {"type": "image_url", "image_url": {"url": crop_b64}},
+                {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{crop_b64}"}},
                 {"type": "text", "text": CLASSIFICATION_PROMPT}
             ]}
         ],
-        "max_tokens": 50,
+        "max_tokens": 60,
         "temperature": 0.0,
         "chat_template_kwargs": {"enable_thinking": False},
     }
@@ -93,20 +129,23 @@ async def classify_single(session, crop_b64, model, semaphore):
             return 'other', 0.0, str(e)
 
 
-async def classify_batch(detections, model, concurrency=16):
+# ---- Batch processing ----
+
+async def classify_batch(detections, model, backend='ollama', concurrency=4):
     """Classify a batch of detections concurrently."""
     import aiohttp
     semaphore = asyncio.Semaphore(concurrency)
-    results = []
+    classify_fn = classify_single_ollama if backend == 'ollama' else classify_single_vllm
 
     async with aiohttp.ClientSession() as session:
         tasks = []
         for det in detections:
             crop = extract_crop(det['image_path'], det['bbox'])
             crop_b64 = image_to_base64(crop)
-            tasks.append(classify_single(session, crop_b64, model, semaphore))
+            tasks.append(classify_fn(session, crop_b64, model, semaphore))
 
         responses = await asyncio.gather(*tasks)
+        results = []
         for det, (cls, conf, raw) in zip(detections, responses):
             results.append({
                 **det,
@@ -118,17 +157,17 @@ async def classify_batch(detections, model, concurrency=16):
     return results
 
 
-def classify_detections_sync(detections, model, concurrency=16):
+def classify_detections_sync(detections, model, backend='ollama', concurrency=4):
     """Synchronous wrapper for classify_batch."""
-    return asyncio.run(classify_batch(detections, model, concurrency))
+    return asyncio.run(classify_batch(detections, model, backend, concurrency))
 
 
-def classify_from_eval_results(eval_results_path, model, output_path=None, concurrency=16):
+def classify_from_eval_results(eval_results_path, model, backend='ollama',
+                                output_path=None, concurrency=4):
     """Load eval results, extract crops, classify, and save."""
     with open(eval_results_path) as f:
         data = json.load(f)
 
-    # Build detection list with image paths
     grid_dir = os.path.join(os.path.dirname(eval_results_path), '..', 'testarea_grid')
     with open(os.path.join(grid_dir, 'index.json')) as f:
         grid = json.load(f)
@@ -155,12 +194,11 @@ def classify_from_eval_results(eval_results_path, model, output_path=None, concu
             'num_views': det.get('num_views'),
         })
 
-    print(f"Classifying {len(detections)} detections with {model}...")
+    print(f"Classifying {len(detections)} detections with {model} via {backend}...")
     t0 = time.time()
-    results = classify_detections_sync(detections, model, concurrency)
+    results = classify_detections_sync(detections, model, backend, concurrency)
     elapsed = time.time() - t0
 
-    # Summary
     from collections import Counter
     counts = Counter(r['vlm_class'] for r in results)
     print(f"\nClassification complete in {elapsed:.1f}s")
@@ -169,9 +207,11 @@ def classify_from_eval_results(eval_results_path, model, output_path=None, concu
     print(f"Poles (conf >= 0.7): {len(poles)} / {len(results)}")
 
     if output_path is None:
-        output_path = os.path.join(os.path.dirname(eval_results_path), 'classifications.json')
+        output_path = os.path.join(os.path.dirname(eval_results_path),
+                                    f'classifications_{model.replace("/", "_")}.json')
     with open(output_path, 'w') as f:
-        json.dump({'classifications': results, 'summary': dict(counts), 'time': round(elapsed, 1)}, f, indent=2)
+        json.dump({'classifications': results, 'summary': dict(counts),
+                    'model': model, 'backend': backend, 'time': round(elapsed, 1)}, f, indent=2)
     print(f"Saved to {output_path}")
 
     return results
@@ -180,8 +220,11 @@ def classify_from_eval_results(eval_results_path, model, output_path=None, concu
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--eval-results', default='data/eval_testarea/eval_results.json')
-    parser.add_argument('--model', default='Qwen/Qwen3.5-9B')
-    parser.add_argument('--concurrency', type=int, default=16)
+    parser.add_argument('--model', default='qwen3.5:27b')
+    parser.add_argument('--backend', choices=['ollama', 'vllm'], default='ollama')
+    parser.add_argument('--concurrency', type=int, default=4,
+                        help='Concurrent requests (ollama: keep low, vllm: can go higher)')
     parser.add_argument('--output', default=None)
     args = parser.parse_args()
-    classify_from_eval_results(args.eval_results, args.model, args.output, args.concurrency)
+    classify_from_eval_results(args.eval_results, args.model, args.backend,
+                                args.output, args.concurrency)
