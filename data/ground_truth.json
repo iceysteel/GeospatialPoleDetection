@@ -1,0 +1,1330 @@
+{
+  "labels": [
+    {
+      "location": "original_test",
+      "lat": 41.248644,
+      "lon": -95.998878,
+      "source_view": "north",
+      "bbox": [
+        757,
+        1600,
+        789,
+        1812
+      ],
+      "est_height": 11.8,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "conf": 0.214,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "original_test",
+      "lat": 41.248644,
+      "lon": -95.998878,
+      "source_view": "north",
+      "bbox": [
+        2328,
+        1659,
+        2395,
+        2095
+      ],
+      "est_height": 24.4,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "conf": 0.195,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "original_test",
+      "lat": 41.248644,
+      "lon": -95.998878,
+      "source_view": "west",
+      "bbox": [
+        1655,
+        1279,
+        1736,
+        1531
+      ],
+      "est_height": 14.6,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "conf": 0.387,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "original_test",
+      "lat": 41.248644,
+      "lon": -95.998878,
+      "source_view": "west",
+      "bbox": [
+        379,
+        1415,
+        418,
+        1636
+      ],
+      "est_height": 12.8,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "conf": 0.354,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "original_test",
+      "lat": 41.248644,
+      "lon": -95.998878,
+      "source_view": "west",
+      "bbox": [
+        1768,
+        2039,
+        1844,
+        2121
+      ],
+      "est_height": 4.8,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "conf": 0.156,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_1",
+      "lat": 41.246,
+      "lon": -95.987,
+      "source_view": "north",
+      "bbox": [
+        1771,
+        965,
+        1814,
+        1202
+      ],
+      "est_height": 13.4,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "conf": 0.347,
+      "label": "streetlight",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_1",
+      "lat": 41.246,
+      "lon": -95.987,
+      "source_view": "north",
+      "bbox": [
+        186,
+        1122,
+        217,
+        1363
+      ],
+      "est_height": 17.1,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "conf": 0.224,
+      "label": "streetlight",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_1",
+      "lat": 41.246,
+      "lon": -95.987,
+      "source_view": "north",
+      "bbox": [
+        145,
+        1416,
+        207,
+        1645
+      ],
+      "est_height": 12.9,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "conf": 0.187,
+      "label": "fence",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_1",
+      "lat": 41.246,
+      "lon": -95.987,
+      "source_view": "east",
+      "bbox": [
+        1230,
+        1456,
+        1358,
+        1719
+      ],
+      "est_height": 15,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "conf": 0.418,
+      "label": "streetlight",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_1",
+      "lat": 41.246,
+      "lon": -95.987,
+      "source_view": "east",
+      "bbox": [
+        352,
+        19,
+        429,
+        100
+      ],
+      "est_height": 4.6,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "conf": 0.17,
+      "label": "fence",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_2",
+      "lat": 41.251,
+      "lon": -95.993,
+      "source_view": "north",
+      "bbox": [
+        1296,
+        1585,
+        1377,
+        1778
+      ],
+      "est_height": 10.8,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "conf": 0.185,
+      "label": "streetlight",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_2",
+      "lat": 41.251,
+      "lon": -95.993,
+      "source_view": "east",
+      "bbox": [
+        2066,
+        117,
+        2113,
+        373
+      ],
+      "est_height": 14.6,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "conf": 0.216,
+      "label": "other",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_2",
+      "lat": 41.251,
+      "lon": -95.993,
+      "source_view": "south",
+      "bbox": [
+        349,
+        429,
+        404,
+        703
+      ],
+      "est_height": 15.7,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "conf": 0.237,
+      "label": "tree",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_2",
+      "lat": 41.251,
+      "lon": -95.993,
+      "source_view": "east",
+      "bbox": [
+        894,
+        835,
+        1012,
+        1209
+      ],
+      "est_height": 21.3,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "conf": 0.174,
+      "label": "fence",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_2",
+      "lat": 41.251,
+      "lon": -95.993,
+      "source_view": "south",
+      "bbox": [
+        1067,
+        226,
+        1112,
+        406
+      ],
+      "est_height": 10.1,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "conf": 0.289,
+      "label": "streetlight",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_2",
+      "lat": 41.251,
+      "lon": -95.993,
+      "source_view": "south",
+      "bbox": [
+        273,
+        328,
+        342,
+        478
+      ],
+      "est_height": 8.4,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "conf": 0.185,
+      "label": "other",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_2",
+      "lat": 41.251,
+      "lon": -95.993,
+      "source_view": "south",
+      "bbox": [
+        494,
+        81,
+        567,
+        351
+      ],
+      "est_height": 15.1,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "conf": 0.171,
+      "label": "fence",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_2",
+      "lat": 41.251,
+      "lon": -95.993,
+      "source_view": "west",
+      "bbox": [
+        1616,
+        9,
+        1703,
+        450
+      ],
+      "est_height": 23.7,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "conf": 0.251,
+      "label": "fence",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_2",
+      "lat": 41.251,
+      "lon": -95.993,
+      "source_view": "west",
+      "bbox": [
+        132,
+        866,
+        228,
+        1065
+      ],
+      "est_height": 10.7,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "south",
+        "west"
+      ],
+      "conf": 0.222,
+      "label": "streetlight",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_2",
+      "lat": 41.251,
+      "lon": -95.993,
+      "source_view": "west",
+      "bbox": [
+        749,
+        2,
+        801,
+        432
+      ],
+      "est_height": 23.1,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "conf": 0.206,
+      "label": "fence",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_3",
+      "lat": 41.251,
+      "lon": -95.99,
+      "source_view": "east",
+      "bbox": [
+        1192,
+        1146,
+        1234,
+        1331
+      ],
+      "est_height": 10.6,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "conf": 0.353,
+      "label": "streetlight",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_3",
+      "lat": 41.251,
+      "lon": -95.99,
+      "source_view": "south",
+      "bbox": [
+        1500,
+        991,
+        1614,
+        1176
+      ],
+      "est_height": 17.6,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "conf": 0.26,
+      "label": "streetlight",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_3",
+      "lat": 41.251,
+      "lon": -95.99,
+      "source_view": "south",
+      "bbox": [
+        1894,
+        827,
+        1928,
+        1119
+      ],
+      "est_height": 16.6,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "conf": 0.224,
+      "label": "other",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_3",
+      "lat": 41.251,
+      "lon": -95.99,
+      "source_view": "south",
+      "bbox": [
+        1849,
+        1459,
+        1907,
+        1805
+      ],
+      "est_height": 19.7,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "conf": 0.208,
+      "label": "other",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_4",
+      "lat": 41.251,
+      "lon": -96.001,
+      "source_view": "north",
+      "bbox": [
+        894,
+        1637,
+        958,
+        1875
+      ],
+      "est_height": 13.3,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "conf": 0.187,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_4",
+      "lat": 41.251,
+      "lon": -96.001,
+      "source_view": "north",
+      "bbox": [
+        412,
+        1665,
+        460,
+        1876
+      ],
+      "est_height": 11.8,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "conf": 0.169,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_4",
+      "lat": 41.251,
+      "lon": -96.001,
+      "source_view": "north",
+      "bbox": [
+        891,
+        1190,
+        954,
+        1460
+      ],
+      "est_height": 15.1,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "conf": 0.155,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_4",
+      "lat": 41.251,
+      "lon": -96.001,
+      "source_view": "east",
+      "bbox": [
+        1597,
+        1079,
+        1658,
+        1364
+      ],
+      "est_height": 15.6,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "conf": 0.426,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_4",
+      "lat": 41.251,
+      "lon": -96.001,
+      "source_view": "east",
+      "bbox": [
+        1382,
+        555,
+        1422,
+        808
+      ],
+      "est_height": 13.9,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "conf": 0.269,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_4",
+      "lat": 41.251,
+      "lon": -96.001,
+      "source_view": "east",
+      "bbox": [
+        502,
+        1607,
+        548,
+        1889
+      ],
+      "est_height": 15.5,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "conf": 0.211,
+      "label": "fence",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_4",
+      "lat": 41.251,
+      "lon": -96.001,
+      "source_view": "south",
+      "bbox": [
+        1706,
+        634,
+        1777,
+        918
+      ],
+      "est_height": 16.1,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "conf": 0.185,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_4",
+      "lat": 41.251,
+      "lon": -96.001,
+      "source_view": "west",
+      "bbox": [
+        1323,
+        454,
+        1397,
+        684
+      ],
+      "est_height": 13.4,
+      "num_views": 3,
+      "agreeing_views": [
+        "north",
+        "south",
+        "west"
+      ],
+      "conf": 0.176,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_5",
+      "lat": 41.251,
+      "lon": -95.984,
+      "source_view": "north",
+      "bbox": [
+        2142,
+        352,
+        2213,
+        587
+      ],
+      "est_height": 13.3,
+      "num_views": 4,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south",
+        "west"
+      ],
+      "conf": 0.381,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_5",
+      "lat": 41.251,
+      "lon": -95.984,
+      "source_view": "north",
+      "bbox": [
+        578,
+        556,
+        639,
+        785
+      ],
+      "est_height": 12.9,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "conf": 0.28,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_5",
+      "lat": 41.251,
+      "lon": -95.984,
+      "source_view": "north",
+      "bbox": [
+        1274,
+        469,
+        1345,
+        700
+      ],
+      "est_height": 12.4,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "conf": 0.254,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_5",
+      "lat": 41.251,
+      "lon": -95.984,
+      "source_view": "east",
+      "bbox": [
+        956,
+        1349,
+        1070,
+        1748
+      ],
+      "est_height": 17.1,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "conf": 0.198,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_5",
+      "lat": 41.251,
+      "lon": -95.984,
+      "source_view": "west",
+      "bbox": [
+        1793,
+        1122,
+        1826,
+        1323
+      ],
+      "est_height": 11.7,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "conf": 0.354,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_5",
+      "lat": 41.251,
+      "lon": -95.984,
+      "source_view": "west",
+      "bbox": [
+        1348,
+        601,
+        1398,
+        839
+      ],
+      "est_height": 13.8,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "south",
+        "west"
+      ],
+      "conf": 0.188,
+      "label": "fence",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_6",
+      "lat": 41.246,
+      "lon": -96.004,
+      "source_view": "east",
+      "bbox": [
+        2217,
+        1123,
+        2292,
+        1323
+      ],
+      "est_height": 11,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "conf": 0.373,
+      "label": "streetlight",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_6",
+      "lat": 41.246,
+      "lon": -96.004,
+      "source_view": "east",
+      "bbox": [
+        516,
+        394,
+        591,
+        650
+      ],
+      "est_height": 14,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "conf": 0.333,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_6",
+      "lat": 41.246,
+      "lon": -96.004,
+      "source_view": "east",
+      "bbox": [
+        874,
+        1170,
+        946,
+        1376
+      ],
+      "est_height": 11.3,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "conf": 0.287,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_6",
+      "lat": 41.246,
+      "lon": -96.004,
+      "source_view": "south",
+      "bbox": [
+        1837,
+        461,
+        1877,
+        636
+      ],
+      "est_height": 9.9,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "conf": 0.182,
+      "label": "streetlight",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_6",
+      "lat": 41.246,
+      "lon": -96.004,
+      "source_view": "west",
+      "bbox": [
+        1895,
+        976,
+        1952,
+        1174
+      ],
+      "est_height": 11.7,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "conf": 0.223,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_7",
+      "lat": 41.251,
+      "lon": -95.994,
+      "source_view": "east",
+      "bbox": [
+        1788,
+        218,
+        2015,
+        393
+      ],
+      "est_height": 10,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "conf": 0.211,
+      "label": "streetlight",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_7",
+      "lat": 41.251,
+      "lon": -95.994,
+      "source_view": "south",
+      "bbox": [
+        349,
+        346,
+        395,
+        564
+      ],
+      "est_height": 12.2,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "conf": 0.342,
+      "label": "streetlight",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_7",
+      "lat": 41.251,
+      "lon": -95.994,
+      "source_view": "south",
+      "bbox": [
+        598,
+        139,
+        690,
+        309
+      ],
+      "est_height": 9.5,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "conf": 0.325,
+      "label": "tree",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_7",
+      "lat": 41.251,
+      "lon": -95.994,
+      "source_view": "south",
+      "bbox": [
+        1543,
+        844,
+        1582,
+        1004
+      ],
+      "est_height": 9,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "conf": 0.182,
+      "label": "tree",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_7",
+      "lat": 41.251,
+      "lon": -95.994,
+      "source_view": "west",
+      "bbox": [
+        1064,
+        829,
+        1110,
+        1232
+      ],
+      "est_height": 21.7,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "conf": 0.198,
+      "label": "fence",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_8",
+      "lat": 41.243,
+      "lon": -96.004,
+      "source_view": "north",
+      "bbox": [
+        856,
+        745,
+        921,
+        887
+      ],
+      "est_height": 8.1,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "conf": 0.295,
+      "label": "streetlight",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_8",
+      "lat": 41.243,
+      "lon": -96.004,
+      "source_view": "south",
+      "bbox": [
+        925,
+        491,
+        980,
+        832
+      ],
+      "est_height": 19.5,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "conf": 0.34,
+      "label": "other",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_8",
+      "lat": 41.243,
+      "lon": -96.004,
+      "source_view": "north",
+      "bbox": [
+        1305,
+        1117,
+        1382,
+        1440
+      ],
+      "est_height": 18.4,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "conf": 0.198,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_8",
+      "lat": 41.243,
+      "lon": -96.004,
+      "source_view": "east",
+      "bbox": [
+        1177,
+        1450,
+        1216,
+        1648
+      ],
+      "est_height": 13.3,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "south",
+        "west"
+      ],
+      "conf": 0.232,
+      "label": "streetlight",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_8",
+      "lat": 41.243,
+      "lon": -96.004,
+      "source_view": "east",
+      "bbox": [
+        2302,
+        729,
+        2392,
+        1168
+      ],
+      "est_height": 24.9,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "conf": 0.17,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_8",
+      "lat": 41.243,
+      "lon": -96.004,
+      "source_view": "west",
+      "bbox": [
+        750,
+        1233,
+        880,
+        1617
+      ],
+      "est_height": 22.7,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "conf": 0.354,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_8",
+      "lat": 41.243,
+      "lon": -96.004,
+      "source_view": "west",
+      "bbox": [
+        499,
+        1193,
+        578,
+        1418
+      ],
+      "est_height": 13.3,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "conf": 0.23,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_8",
+      "lat": 41.243,
+      "lon": -96.004,
+      "source_view": "west",
+      "bbox": [
+        572,
+        615,
+        664,
+        808
+      ],
+      "est_height": 11.4,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "conf": 0.175,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_9",
+      "lat": 41.245,
+      "lon": -95.982,
+      "source_view": "north",
+      "bbox": [
+        876,
+        255,
+        910,
+        421
+      ],
+      "est_height": 9.5,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "conf": 0.284,
+      "label": "streetlight",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_9",
+      "lat": 41.245,
+      "lon": -95.982,
+      "source_view": "north",
+      "bbox": [
+        597,
+        1002,
+        630,
+        1092
+      ],
+      "est_height": 5.1,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "conf": 0.162,
+      "label": "other",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_9",
+      "lat": 41.245,
+      "lon": -95.982,
+      "source_view": "east",
+      "bbox": [
+        2131,
+        1563,
+        2194,
+        1771
+      ],
+      "est_height": 11.6,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "conf": 0.176,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_9",
+      "lat": 41.245,
+      "lon": -95.982,
+      "source_view": "east",
+      "bbox": [
+        982,
+        183,
+        1063,
+        379
+      ],
+      "est_height": 10.9,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "conf": 0.163,
+      "label": "other",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_9",
+      "lat": 41.245,
+      "lon": -95.982,
+      "source_view": "south",
+      "bbox": [
+        2114,
+        183,
+        2155,
+        385
+      ],
+      "est_height": 11.1,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "conf": 0.321,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    },
+    {
+      "location": "loc_9",
+      "lat": 41.245,
+      "lon": -95.982,
+      "source_view": "west",
+      "bbox": [
+        484,
+        1702,
+        562,
+        1973
+      ],
+      "est_height": 15.8,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "conf": 0.193,
+      "label": "pole",
+      "labeled_at": "2026-04-04T03:51:18.261Z"
+    }
+  ],
+  "stats": {
+    "total": 62,
+    "labeled": 62,
+    "pole": 28,
+    "streetlight": 15,
+    "fence": 9,
+    "other": 7,
+    "tree": 3
+  },
+  "exported_at": "2026-04-04T03:51:18.261Z"
+}
