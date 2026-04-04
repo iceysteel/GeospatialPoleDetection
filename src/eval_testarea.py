@@ -13,6 +13,7 @@ import numpy as np
 from PIL import Image
 import torch
 from oblique_utils import pixel_to_gps
+from georef_3d import fit_3d_to_ground
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data')
 GRID_DIR = os.path.join(DATA_DIR, 'testarea_grid')
@@ -105,15 +106,23 @@ def run_grid_cell(cell, gdino_proc, gdino_model, mast3r_model, device):
     poses = scene.get_im_poses()
     focals = scene.get_focals()
 
+    # Fit 3D→GPS transform using MASt3R point cloud + known GCPs
+    cell_meta = {}
+    for d in dir_list:
+        dm = cell.get(f'{d}_meta', {})
+        cell_meta[d] = {
+            'azimuth': dm.get('azimuth', 0),
+            'gsd': dm.get('gsd', 0.04),
+            'elevation': dm.get('elevation', 45),
+            'crop_radius': dm.get('crop_radius', 50),
+        }
+    georef = fit_3d_to_ground(pts3d, orig_sizes, dir_list, cell_meta, lat, lon)
+    use_3d_georef = georef is not None
+
     # Consensus + height + georeference
     all_results = []
     for i, d in enumerate(dir_list):
-        meta_key = f'{d}_meta'
-        dm = cell.get(meta_key, {})
-        azimuth = dm.get('azimuth', 0)
-        gsd = dm.get('gsd', 0.04)
-        elevation = dm.get('elevation', 45)
-        crop_radius = dm.get('crop_radius', 50)
+        vm = cell_meta[d]
 
         for det in gdino_dets.get(d, []):
             cx, cy = det['center']
@@ -147,15 +156,25 @@ def run_grid_cell(cell, gdino_proc, gdino_model, mast3r_model, device):
                         break
 
             if len(views) >= 2:
-                sine = math.sin(math.radians(elevation))
+                sine = math.sin(math.radians(vm['elevation']))
                 hpx = det['bbox'][3] - det['bbox'][1]
-                eh = hpx * gsd / sine if sine > 0.1 else 0
+                eh = hpx * vm['gsd'] / sine if sine > 0.1 else 0
 
                 if MIN_POLE_HEIGHT <= eh <= MAX_POLE_HEIGHT:
+                    # Hybrid georeferencing: average 3D + homography
                     img_w, img_h = orig_sizes[d][1], orig_sizes[d][0]
-                    det_lat, det_lon = pixel_to_gps(
-                        cx, cy, img_w, img_h, lat, lon, azimuth, crop_radius
+                    homo_lat, homo_lon = pixel_to_gps(
+                        cx, cy, img_w, img_h, lat, lon,
+                        vm['azimuth'], vm['crop_radius']
                     )
+                    if use_3d_georef:
+                        geo3d_lat, geo3d_lon = georef['transform'](p3d)
+                        # Weighted average: trust 3D more when fit is good
+                        w3d = 0.6
+                        det_lat = geo3d_lat * w3d + homo_lat * (1 - w3d)
+                        det_lon = geo3d_lon * w3d + homo_lon * (1 - w3d)
+                    else:
+                        det_lat, det_lon = homo_lat, homo_lon
                     all_results.append({
                         'source_view': d, 'bbox': det['bbox'], 'conf': det['conf'],
                         'num_views': len(views), 'agreeing_views': views,
