@@ -287,12 +287,17 @@ def main():
         deduped.append(best)
     print(f"After dedup: {len(deduped)} unique detections")
 
+    # Filter to focus area (only evaluate detections inside the GT coverage region)
+    in_area = [d for d in deduped
+               if area[0] <= d['approx_lat'] <= area[2] and area[1] <= d['approx_lon'] <= area[3]]
+    print(f"In focus area: {len(in_area)} / {len(deduped)} (dropped {len(deduped)-len(in_area)} outside GT coverage)")
+
     # Evaluate
     print(f"\n{'='*60}")
     print("EVALUATION RESULTS")
     print(f"{'='*60}")
     for radius in [5, 10, 15, 20, 30]:
-        result = evaluate(deduped, gt_labels, match_radius_m=radius)
+        result = evaluate(in_area, gt_labels, match_radius_m=radius)
         print(f"\n  {radius}m: TP={result['tp']} FP={result['fp']} (lights={result['fp_streetlight']}) FN={result['fn']} | P={result['precision']:.1%} R={result['recall']:.1%} F1={result['f1']:.3f}")
 
     total_time = time.time() - t_start
@@ -300,8 +305,8 @@ def main():
 
     # Save
     save_data = {
-        'detections': [{k: v for k, v in d.items() if k != 'point_3d'} for d in deduped],
-        'evaluation': {str(r): evaluate(deduped, gt_labels, match_radius_m=r) for r in [5, 10, 15, 20, 30]},
+        'detections': [{k: v for k, v in d.items() if k != 'point_3d'} for d in in_area],
+        'evaluation': {str(r): evaluate(in_area, gt_labels, match_radius_m=r) for r in [5, 10, 15, 20, 30]},
         'gt_summary': {'poles': n_poles, 'streetlights': n_lights},
         'grid_cells': len(grid),
         'total_time': round(total_time, 1),
