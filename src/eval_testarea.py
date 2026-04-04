@@ -161,6 +161,33 @@ def run_grid_cell(cell, gdino_proc, gdino_model, mast3r_model, device):
                 eh = hpx * vm['gsd'] / sine if sine > 0.1 else 0
 
                 if MIN_POLE_HEIGHT <= eh <= MAX_POLE_HEIGHT:
+                    # 3D shape analysis from MASt3R point cloud within bbox
+                    x1, y1, x2, y2 = det['bbox']
+                    bx1 = min(max(int(x1 * sx), 0), wm - 1)
+                    by1 = min(max(int(y1 * sy), 0), hm - 1)
+                    bx2 = min(max(int(x2 * sx), 0), wm - 1)
+                    by2 = min(max(int(y2 * sy), 0), hm - 1)
+                    if bx2 > bx1 and by2 > by1:
+                        box_pts = pv[by1:by2+1, bx1:bx2+1].reshape(-1, 3)
+                        valid = ~torch.isnan(box_pts).any(dim=1)
+                        box_pts = box_pts[valid]
+                        if len(box_pts) >= 4:
+                            # Vertical extent (use axis with max range as "height")
+                            ranges = box_pts.max(dim=0).values - box_pts.min(dim=0).values
+                            vert_range = ranges.max().item()
+                            # Horizontal spread (min of the other two axes)
+                            sorted_ranges = ranges.sort().values
+                            horiz_spread = sorted_ranges[1].item()  # middle axis
+                            thin_spread = sorted_ranges[0].item()   # thinnest axis
+                            aspect_3d = vert_range / max(horiz_spread, 0.001)
+                            thinness = vert_range / max(thin_spread, 0.001)
+                        else:
+                            aspect_3d = 1.0
+                            thinness = 1.0
+                    else:
+                        aspect_3d = 1.0
+                        thinness = 1.0
+
                     # Hybrid georeferencing: average 3D + homography
                     img_w, img_h = orig_sizes[d][1], orig_sizes[d][0]
                     homo_lat, homo_lon = pixel_to_gps(
@@ -169,7 +196,6 @@ def run_grid_cell(cell, gdino_proc, gdino_model, mast3r_model, device):
                     )
                     if use_3d_georef:
                         geo3d_lat, geo3d_lon = georef['transform'](p3d)
-                        # Weighted average: trust 3D more when fit is good
                         w3d = 0.6
                         det_lat = geo3d_lat * w3d + homo_lat * (1 - w3d)
                         det_lon = geo3d_lon * w3d + homo_lon * (1 - w3d)
@@ -179,6 +205,8 @@ def run_grid_cell(cell, gdino_proc, gdino_model, mast3r_model, device):
                         'source_view': d, 'bbox': det['bbox'], 'conf': det['conf'],
                         'num_views': len(views), 'agreeing_views': views,
                         'est_height': round(eh, 1),
+                        'aspect_3d': round(aspect_3d, 2),
+                        'thinness_3d': round(thinness, 2),
                         'approx_lat': float(det_lat), 'approx_lon': float(det_lon),
                         'point_3d': p3d.detach().cpu().tolist(),
                         'cell': cell['name'],
