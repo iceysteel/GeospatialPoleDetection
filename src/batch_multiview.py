@@ -3,11 +3,11 @@
 Run multi-view consensus pipeline on multiple test locations.
 Downloads target-centered crops, runs GDino + MASt3R + height check.
 """
-import sys, os, time, json, math
+import sys, os, time, json, math, argparse
 sys.path.insert(0, os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'models', 'mast3r'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'models', 'mast3r', 'dust3r'))
-os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = '1'
+os.environ.setdefault('PYTORCH_ENABLE_MPS_FALLBACK', '1')
 
 import numpy as np
 from PIL import Image, ImageDraw
@@ -330,17 +330,21 @@ def draw_results(images, result, loc_dir):
 
 
 def main():
-    device = 'mps' if torch.backends.mps.is_available() else 'cpu'
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--device', default='cuda:0' if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu')
+    parser.add_argument('--gdino-model', default='IDEA-Research/grounding-dino-base', help='GDino model ID')
+    args = parser.parse_args()
+    device = args.device
     print(f"Device: {device}")
 
     with open(os.path.join(DATA_DIR, 'metadata.json')) as f:
         meta = json.load(f)
 
     # Load models once
-    print("Loading GDino...")
+    print(f"Loading GDino ({args.gdino_model})...")
     from transformers import AutoProcessor, AutoModelForZeroShotObjectDetection
-    gdino_proc = AutoProcessor.from_pretrained('IDEA-Research/grounding-dino-tiny')
-    gdino_model = AutoModelForZeroShotObjectDetection.from_pretrained('IDEA-Research/grounding-dino-tiny').to(device)
+    gdino_proc = AutoProcessor.from_pretrained(args.gdino_model)
+    gdino_model = AutoModelForZeroShotObjectDetection.from_pretrained(args.gdino_model).to(device)
 
     print("Loading MASt3R...")
     from mast3r.model import AsymmetricMASt3R
