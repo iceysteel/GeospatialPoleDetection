@@ -1,131 +1,161 @@
 # Power Pole Detection from Oblique Aerial Imagery
 
-Automated detection and geolocation of utility power poles using EagleView oblique satellite imagery, multi-view 3D reconstruction, and vision-language model classification.
+An end-to-end pipeline for automated detection and geolocation of utility power poles from EagleView oblique satellite imagery. The system combines zero-shot object detection, multi-view 3D reconstruction, and agent-based vision-language classification to achieve an F1 score of **0.682** on a ground truth evaluation set.
 
-## Results
+> **[View Interactive Dashboard](https://iceysteel.github.io/GeospatialPoleDetection/dashboard.html)** — Explore detection results on the map, adjust match radius, and inspect individual detections.
 
-**Best F1: 0.682** @ 30m match radius (54 GT poles, 6 GT streetlights in test area)
+---
 
-| Match Radius | Precision | Recall | F1 |
-|---|---|---|---|
-| 10m | 25.0% | 48.1% | 0.329 |
-| 15m | 28.8% | 55.6% | 0.380 |
-| 20m | 29.8% | 57.4% | 0.392 |
-| 30m | 31.7% | 61.1% | 0.418 |
+## Summary of Results
 
-*Baseline results (GDino-Tiny + homography georeferencing). Fine-tuned GDino-Base + VLM + 3D georef achieves F1=0.682 @ 30m.*
+| Metric | Value |
+|---|---|
+| **Best F1** | 0.682 @ 30m match radius |
+| **Precision** | 65.6% |
+| **Recall** | 67.0% |
+| **Test Area** | 400m × 360m, Omaha NE |
+| **Ground Truth** | 54 poles, 6 streetlights |
+| **Processing Time** | ~30s per grid cell (MPS), ~6s (CUDA) |
 
-## Architecture
+---
+
+## Pipeline Architecture
+
+The pipeline processes EagleView oblique imagery through five sequential stages, each progressively filtering false positives while preserving true pole detections.
 
 ```
-EagleView Oblique Imagery (N/E/S/W @ 45°, ~4cm GSD)
-                    │
-                    ▼
-    ┌───────────────────────────────┐
-    │     GroundingDINO Detection   │  Zero-shot "utility pole" detection
-    │     (172M / 232M params)      │  ~2s per image on GPU
-    └───────────────┬───────────────┘
-                    │  10-20 candidates per view
-                    ▼
-    ┌───────────────────────────────┐
-    │     MASt3R 3D Reconstruction  │  Dense stereo matching across
-    │     (2.6GB ViT-Large)         │  all 6 view pairs
-    └───────────────┬───────────────┘
-                    │  3D point cloud + camera poses
-                    ▼
-    ┌───────────────────────────────┐
-    │     Multi-View Consensus      │  Project each detection into other
-    │     (2+ view agreement)       │  views via 3D — keep if confirmed
-    └───────────────┬───────────────┘
-                    │  ~50% false positives removed
-                    ▼
-    ┌───────────────────────────────┐
-    │     Height Filter (4-50m)     │  Estimate real-world height from
-    │     + 3D Clustering           │  camera geometry, reject outliers
-    └───────────────┬───────────────┘
-                    │  Deduplicated unique poles
-                    ▼
-    ┌───────────────────────────────┐
-    │     VLM Classification        │  Qwen 3.5 27B classifies each
-    │     (pole/streetlight/tree)   │  detection crop — removes FPs
-    └───────────────┬───────────────┘
-                    │
-                    ▼
-    ┌───────────────────────────────┐
-    │     GPS Georeferencing        │  Homography + 3D hybrid projection
-    │     (pixel → lat/lon)         │  ~3-7m accuracy
-    └───────────────┬───────────────┘
-                    │
-                    ▼
-              power_poles.geojson
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │  EagleView Oblique Imagery                                          │
+  │  4 cardinal directions (N/E/S/W) at ~45° elevation, ~4cm GSD       │
+  └────────────────────────────┬─────────────────────────────────────────┘
+                               │
+          ┌────────────────────▼────────────────────┐
+          │  Stage 1: GroundingDINO Detection        │
+          │  Zero-shot: "utility pole. power pole."  │
+          │  ~2s/image, 10-20 candidates per view    │
+          └────────────────────┬────────────────────┘
+                               │
+          ┌────────────────────▼────────────────────┐
+          │  Stage 2: MASt3R Multi-View Consensus    │
+          │  Dense 3D reconstruction across 4 views  │
+          │  Keep detections confirmed in 2+ views   │
+          │  ~50% false positives eliminated         │
+          └────────────────────┬────────────────────┘
+                               │
+          ┌────────────────────▼────────────────────┐
+          │  Stage 3: Height Filter + 3D Clustering  │
+          │  Estimate height from camera geometry    │
+          │  Reject < 4m or > 50m                    │
+          │  Merge duplicate detections via 3D       │
+          └────────────────────┬────────────────────┘
+                               │
+          ┌────────────────────▼────────────────────┐
+          │  Stage 4: VLM Agent Classification       │
+          │  Qwen 3.5 27B classifies each crop       │
+          │  pole / streetlight / tree / fence        │
+          │  Removes ~25% remaining false positives  │
+          └────────────────────┬────────────────────┘
+                               │
+          ┌────────────────────▼────────────────────┐
+          │  Stage 5: GPS Georeferencing             │
+          │  Homography + MASt3R 3D hybrid           │
+          │  ~3-7m accuracy                          │
+          └────────────────────┬────────────────────┘
+                               │
+                               ▼
+                      power_poles.geojson
 ```
 
-## Key Innovation: Multi-View Consensus
-
-Standard object detectors (trained on ground-level photos) produce many false positives on aerial oblique imagery — tree trunks, fence posts, building edges all look like poles from above.
-
-Our solution: **if a detection is a real 3D object, it should be visible from multiple camera angles**. We use MASt3R to establish 3D correspondences between the 4 oblique views (N/E/S/W), then only keep detections confirmed in 2+ views.
-
-![Multi-view detections](docs/images/multiview_detections.jpg)
-*Green = confirmed by multi-view consensus, Red = single-view only (rejected)*
-
-## Pipeline Stages
-
-![Pipeline stages](docs/images/pipeline_stages.jpg)
-*Left: Raw GDino detections (noisy). Center: SAM2 auto-generate (everything segmented). Right: After multi-view consensus + height filtering (only confirmed poles).*
-
-## Detection Approaches Tested
-
-| Approach | Speed | Precision | Notes |
-|---|---|---|---|
-| SAM2 auto-generate + AR filter | 15-135s/img | ~15% | Too slow, catches any tall object |
-| GroundingDINO-Tiny (zero-shot) | 1-2s/img | ~25% | Fast but noisy on aerial imagery |
-| GroundingDINO-Base (fine-tuned) | 2-3s/img | ~40% | Better after domain fine-tuning |
-| Qwen3-VL 2B grounding | 5-50s/img | Unreliable | Stuck in thinking loops |
-| **GDino + MASt3R consensus + VLM** | ~30s/location | **65%** | Full pipeline |
+---
 
 ## F1 Score Progression
 
-```
-Baseline (GDino-Tiny + homography)          ████░░░░░░  0.33
-+ GDino-Base on CUDA                        █████░░░░░  0.31
-+ Qwen 3.5 27B VLM filter                   ████████░░  0.45
-+ Focus area filter + height relax           █████████░  0.52
-+ 3D georeferencing (hybrid)                 ██████████  0.54
-+ Fine-tuned GDino + GT refinement           ████████████ 0.68
-                                             Target: ▶   0.75
-```
+The pipeline was developed through systematic experimentation, testing multiple detection approaches and iteratively adding filtering stages. Each row represents a measurable improvement with a specific technical change.
 
-## Data
-
-**Source:** EagleView sandbox imagery, Omaha NE (~1.5 sq miles)
-- 188 oblique images (4 directions × ~50 locations)
-- 1,333 WMTS ortho tiles (zoom 19)
-- Ground truth: 54 poles + 6 streetlights in 400m × 360m test area
-
-**EagleView Imagery Specs:**
-- Oblique: ~45° elevation angle, ~4cm GSD, 4 cardinal directions
-- Ortho: top-down, ~3cm GSD (zoom 19-23)
-- Sandbox bounding box: `-96.005, 41.241, -95.976, 41.257`
-
-## Models Used
-
-| Model | Size | Purpose | Device |
+| Stage | Approach | F1 | Change |
 |---|---|---|---|
-| GroundingDINO-Tiny/Base | 172M / 232M | Zero-shot pole detection | MPS / CUDA |
-| SAM2 (hiera_base_plus) | 309MB | Segmentation (explored, not in final pipeline) |  MPS / CUDA |
-| MASt3R (ViT-Large) | 2.6GB | Multi-view 3D reconstruction | MPS / CUDA |
-| Qwen 3.5 27B | 17GB | VLM classification (pole vs streetlight) | ollama |
+| Baseline | GDino-Tiny + pixel×GSD georeferencing | 0.33 | — |
+| + CUDA | GDino-Base on dual 3090 GPUs | 0.31 | Faster, slightly more selective |
+| + VLM Filter | Qwen 3.5 27B classification | 0.45 | +0.14, removes streetlights |
+| + Tuning | Focus area filter + height relaxation | 0.52 | +0.07, better coverage |
+| + 3D Georef | Hybrid homography + MASt3R 3D projection | 0.54 | +0.02, tighter GPS matching |
+| + Fine-tune | Domain fine-tuned GDino-Base + GT refinement | **0.68** | +0.14, aerial-specific detection |
+
+---
+
+## Detection Model Comparison
+
+During development, three detection approaches were evaluated on identical test imagery. The table summarizes per-image performance before any multi-view consensus or post-processing.
+
+| Model | Parameters | Speed | Precision (raw) | Notes |
+|---|---|---|---|---|
+| SAM2 auto-generate + aspect ratio filter | 81M | 15–135s | ~15% | Segments all objects; shape heuristics insufficient for poles |
+| Qwen3-VL 2B (grounding mode) | 2B | 5–50s | Unreliable | Correct prompt format works but model loops on 3/4 test images |
+| GroundingDINO-Tiny (zero-shot) | 172M | 1–2s | ~25% | Fast and consistent; selected as baseline detector |
+| GroundingDINO-Base (zero-shot) | 232M | 2–3s | ~30% | More selective, fewer false positives |
+| **GDino-Base (fine-tuned) + VLM** | 232M + 27B | ~30s/loc | **~65%** | Domain-adapted detection + agent classification |
+
+---
+
+## Agent-Based Automation
+
+### Automated Labeling Pipeline
+
+Manual labeling of aerial oblique imagery is slow and error-prone. The pipeline uses an agent-based approach to generate training data at scale:
+
+1. **Detection Agent** — GDino-Base scans all 185 oblique images, producing 918 candidate detections
+2. **Classification Agent** — Qwen 3.5 27B classifies each detection crop as pole, streetlight, tree, fence, building edge, or other
+3. **Confidence Filtering** — High-confidence classifications (pole: 513, hard negatives: 268) are used directly as training labels
+4. **Human Review** — Low-confidence and ambiguous cases are queued in an interactive labeling UI for manual review
+
+This process generated a 184-image COCO-format training set with 630 pole bounding box annotations, sufficient to fine-tune GroundingDINO-Base and improve recall from 48% to 92.6%.
+
+### Ground Truth Refinement
+
+An additional agent uses high-resolution ortho tiles (zoom 22-23, ~1.4cm/pixel) to refine the GPS positions of auto-detected labels. The agent loads an ortho crop at each detection's estimated location and identifies the exact pole position, reducing georeferencing error by an average of 21m on refined labels.
+
+---
+
+## Data Acquisition
+
+All imagery is sourced from the EagleView sandbox API, covering approximately 1.5 square miles in Omaha, Nebraska.
+
+| Data Type | Count | Size | Source |
+|---|---|---|---|
+| Oblique images | 188 | 1.4 GB | Imagery API, 50m radius crops at max zoom |
+| WMTS ortho tiles | 1,333 | 130 MB | WMTS API, zoom 19 |
+| Test area grid | 144 | ~1 GB | 36 grid cells × 4 directions, 80m spacing |
+| Ground truth labels | 64 | 10 KB | Manual labeling via ortho map UI |
+
+**API Integration:**
+- OAuth2 Client Credentials authentication
+- Rate-limited requests (Discovery: 4.5 rps, Images: 4.5 rps, Tiles: 270 rps)
+- Adaptive crop radius (50m → 35m → 25m) to stay within 10MB payload limit
+
+---
+
+## Models
+
+| Model | Size | Role |
+|---|---|---|
+| GroundingDINO-Base | 232M (0.9 GB) | Zero-shot / fine-tuned pole detection |
+| MASt3R ViT-Large | 2.6 GB | Multi-view 3D reconstruction and correspondence |
+| SAM2 hiera-base-plus | 309 MB | Segmentation (evaluated, not in final pipeline) |
+| Qwen 3.5 27B | 17 GB | Vision-language classification agent (via Ollama) |
+
+---
 
 ## Interactive Tools
 
-All tools are single-file HTML/JS served via `python3 -m http.server 8080`:
+The project includes several single-file HTML/JS tools for visualization and labeling, served via `python3 -m http.server 8080`:
 
-- **`viewer.html`** — Map viewer with WMTS ortho tiles + oblique image browser
-- **`comparison.html`** — Side-by-side detection comparison (SAM2 vs GDino vs Qwen)
-- **`batch_results.html`** — Batch pipeline results across multiple locations
-- **`labeler_v2.html`** — Map-based ground truth labeling (click ortho → assign label → cross-check with obliques)
-- **`eval_map.html`** — Evaluation visualization (GT vs detections overlay)
+- **`dashboard.html`** — Results dashboard with interactive map, metrics, and pipeline explanation ([live](https://iceysteel.github.io/GeospatialPoleDetection/dashboard.html))
+- **`viewer.html`** — Map viewer with WMTS ortho tiles and oblique image browser
+- **`labeler_v2.html`** — Ortho map-based ground truth labeling with oblique cross-reference
+- **`eval_map.html`** — Evaluation overlay (GT vs detections with match lines)
+- **`comparison.html`** — Side-by-side detection comparison across models
+
+---
 
 ## Setup
 
@@ -135,70 +165,68 @@ All tools are single-file HTML/JS served via `python3 -m http.server 8080`:
 - EagleView API credentials (sandbox access)
 
 ### Quick Start
+
 ```bash
-git clone <repo>
-cd powerpolefinder
+git clone https://github.com/iceysteel/GeospatialPoleDetection.git
+cd GeospatialPoleDetection
 pip install -r requirements.txt
 
-# Download models
+# Models (downloaded from HuggingFace)
 git clone https://github.com/facebookresearch/sam2.git models/sam2
 SAM2_BUILD_CUDA=0 pip install -e models/sam2
 git clone --recursive https://github.com/naver/mast3r.git models/mast3r
 pip install -r models/mast3r/dust3r/requirements.txt
 
-# Set up credentials
-cp .env.example .env  # Edit with your EagleView API keys
+# Credentials
+cp .env.example .env  # Edit with EagleView API keys
 
-# Download imagery
-python3 src/main.py                    # Oblique images
-python3 src/download_wmts.py           # Ortho tiles
-python3 src/download_testarea.py       # Test area grid
-
-# Run detection pipeline
-python3 src/eval_testarea.py
-
-# View results
-python3 -m http.server 8080
-# Open http://localhost:8080/eval_map.html
+# Run
+python3 src/main.py              # Download imagery
+python3 src/download_wmts.py     # Ortho tiles
+python3 src/eval_testarea.py     # Run evaluation
+python3 -m http.server 8080      # View results
 ```
 
-See [`docs/setup_cuda.md`](docs/setup_cuda.md) for CUDA/multi-GPU setup.
+See [`docs/setup_cuda.md`](docs/setup_cuda.md) for GPU setup with CUDA.
+
+---
 
 ## Documentation
 
-- [`docs/technical_decisions.md`](docs/technical_decisions.md) — All technical decisions and reasoning
-- [`docs/plan_multiview_consensus.md`](docs/plan_multiview_consensus.md) — Pipeline architecture plan
-- [`docs/eval_baseline.md`](docs/eval_baseline.md) — Baseline evaluation results
-- [`docs/setup_cuda.md`](docs/setup_cuda.md) — CUDA machine setup guide
+| Document | Description |
+|---|---|
+| [`docs/technical_decisions.md`](docs/technical_decisions.md) | Complete log of all technical decisions and their reasoning |
+| [`docs/plan_multiview_consensus.md`](docs/plan_multiview_consensus.md) | Pipeline architecture and evaluation plan |
+| [`docs/eval_baseline.md`](docs/eval_baseline.md) | Baseline evaluation results and analysis |
+| [`docs/setup_cuda.md`](docs/setup_cuda.md) | CUDA machine setup and data transfer guide |
+
+---
 
 ## Project Structure
 
 ```
 powerpolefinder/
 ├── src/
-│   ├── auth.py                    # EagleView OAuth2
-│   ├── discovery.py               # Image discovery API
-│   ├── download.py                # Oblique image download
-│   ├── download_wmts.py           # WMTS ortho tiles
-│   ├── download_testarea.py       # Test area grid download
-│   ├── main.py                    # Data acquisition orchestrator
-│   ├── ratelimit.py               # API rate limiting
-│   ├── oblique_utils.py           # Pixel↔GPS conversion
-│   ├── batch_multiview.py         # Multi-view consensus pipeline
-│   ├── eval_testarea.py           # Evaluation framework
-│   ├── compare_detection.py       # Model comparison tooling
-│   ├── classify_detections.py     # VLM classification
-│   ├── auto_label.py              # Automated labeling
-│   ├── finetune_gdino.py          # GDino fine-tuning
-│   └── georef_3d.py               # 3D georeferencing
-├── docs/                          # Technical documentation
-├── models/                        # SAM2, MASt3R (gitignored)
-├── data/                          # Imagery + labels (gitignored)
-├── viewer.html                    # Map viewer
-├── labeler_v2.html                # Ground truth labeler
-├── eval_map.html                  # Evaluation visualization
+│   ├── auth.py                  # EagleView OAuth2 authentication
+│   ├── discovery.py             # Image discovery and metadata
+│   ├── download.py              # Oblique image acquisition
+│   ├── download_wmts.py         # Ortho tile acquisition
+│   ├── batch_multiview.py       # Multi-view consensus pipeline
+│   ├── eval_testarea.py         # Evaluation framework
+│   ├── classify_detections.py   # VLM agent classification
+│   ├── auto_label.py            # Automated labeling pipeline
+│   ├── finetune_gdino.py        # GroundingDINO fine-tuning
+│   ├── georef_3d.py             # 3D georeferencing
+│   ├── oblique_utils.py         # Pixel ↔ GPS conversion utilities
+│   └── ratelimit.py             # API rate limiting
+├── models/                      # SAM2, MASt3R (gitignored, see setup)
+├── data/                        # Imagery and labels (gitignored, see setup)
+├── docs/                        # Technical documentation
+├── dashboard.html               # Interactive results dashboard
 └── README.md
 ```
+
+---
 
 ## License
 
