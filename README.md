@@ -1,6 +1,6 @@
 # Power Pole Detection from Oblique Aerial Imagery
 
-An end-to-end pipeline for automated detection and geolocation of utility power poles from EagleView oblique satellite imagery. The system combines zero-shot object detection, multi-view 3D reconstruction, and agent-based vision-language classification to achieve an F1 score of **0.682** on a ground truth evaluation set.
+An end-to-end pipeline for automated detection and geolocation of utility power poles from EagleView oblique satellite imagery. The system combines zero-shot object detection, multi-view 3D reconstruction, and agent-based vision-language classification to achieve an F1 score of **0.699** on a ground truth evaluation set.
 
 > **[View Interactive Dashboard](https://iceysteel.github.io/GeospatialPoleDetection/dashboard.html)** — Explore detection results on the map, adjust match radius, and inspect individual detections.
 
@@ -10,11 +10,11 @@ An end-to-end pipeline for automated detection and geolocation of utility power 
 
 | Metric | Value |
 |---|---|
-| **Best F1** | 0.682 @ 30m match radius |
-| **Precision** | 65.6% |
-| **Recall** | 67.0% |
+| **Best F1** | 0.699 @ 30m match radius |
+| **Precision** | 73.4% |
+| **Recall** | 66.7% |
 | **Test Area** | 400m × 360m, Omaha NE |
-| **Ground Truth** | 54 poles, 6 streetlights |
+| **Ground Truth** | 88 poles, 6 streetlights |
 | **Processing Time** | ~30s per grid cell (MPS), ~6s (CUDA) |
 
 ---
@@ -76,10 +76,11 @@ The pipeline was developed through systematic experimentation, testing multiple 
 |---|---|---|---|
 | Baseline | GDino-Tiny + pixel×GSD georeferencing | 0.33 | — |
 | + CUDA | GDino-Base on dual 3090 GPUs | 0.31 | Faster, slightly more selective |
-| + VLM Filter | Qwen 3.5 27B classification | 0.45 | +0.14, removes streetlights |
+| + VLM Filter | Qwen 3.5 27B single-crop classification | 0.45 | +0.14, removes streetlights |
 | + Tuning | Focus area filter + height relaxation | 0.52 | +0.07, better coverage |
 | + 3D Georef | Hybrid homography + MASt3R 3D projection | 0.54 | +0.02, tighter GPS matching |
-| + Fine-tune | Domain fine-tuned GDino-Base + GT refinement | **0.68** | +0.14, aerial-specific detection |
+| + Fine-tune | Domain fine-tuned GDino-Base + GT refinement | 0.68 | +0.14, aerial-specific detection |
+| + Multi-view Agent | All 4 oblique views + ortho sent to Qwen 27B | **0.70** | +0.02, catches trees (29 vs 3) |
 
 ---
 
