@@ -21,7 +21,7 @@ DIRECTIONS = ['north', 'east', 'south', 'west']
 GDINO_TEXT = "utility pole. power pole. telephone pole."
 GDINO_THRESHOLD = 0.15
 MIN_POLE_HEIGHT = 4.0
-MAX_POLE_HEIGHT = 25.0
+MAX_POLE_HEIGHT = 50.0
 
 FOCUS_LAT, FOCUS_LON = 41.248644, -95.998878
 RADIUS_LAT, RADIUS_LON = 0.0018, 0.0024
