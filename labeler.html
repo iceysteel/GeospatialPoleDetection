@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Power Pole Labeler</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #e0e0e0; display: flex; height: 100vh; overflow: hidden; }
+
+/* Left panel - detection list */
+#left { width: 280px; display: flex; flex-direction: column; background: #16213e; border-right: 1px solid #0f3460; }
+#left-header { padding: 12px; border-bottom: 1px solid #0f3460; }
+#left-header h1 { font-size: 15px; color: #e94560; }
+#progress { padding: 8px 12px; border-bottom: 1px solid #0f3460; font-size: 12px; }
+#progress-bar { height: 4px; background: #0f3460; border-radius: 2px; margin-top: 4px; }
+#progress-fill { height: 100%; background: #e94560; border-radius: 2px; transition: width 0.3s; }
+#filter-bar { padding: 6px 12px; border-bottom: 1px solid #0f3460; display: flex; gap: 4px; flex-wrap: wrap; }
+.filter-btn { padding: 2px 8px; border: 1px solid #0f3460; background: transparent; color: #888; border-radius: 3px; cursor: pointer; font-size: 11px; }
+.filter-btn.active { background: #e94560; border-color: #e94560; color: white; }
+#det-list { flex: 1; overflow-y: auto; }
+.det-item { padding: 8px 12px; border-bottom: 1px solid #0a0a1a; cursor: pointer; font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
+.det-item:hover { background: #1a1a2e; }
+.det-item.active { background: #0f3460; border-left: 3px solid #e94560; }
+.det-item .loc { color: #888; }
+.det-item .label-badge { padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; }
+.badge-pole { background: #1b4332; color: #95d5b2; }
+.badge-streetlight { background: #3a3000; color: #ffd60a; }
+.badge-tree { background: #1b4332; color: #52b788; }
+.badge-fence { background: #3c1642; color: #c77dff; }
+.badge-other { background: #2d2d2d; color: #aaa; }
+.badge-unsure { background: #1a1a2e; color: #666; }
+
+/* Center - main image */
+#center { flex: 1; display: flex; flex-direction: column; }
+#main-img-container { flex: 1; position: relative; overflow: hidden; background: #0a0a1a; cursor: crosshair; }
+#main-img-container img { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+#bbox-overlay { position: absolute; border: 3px solid #e94560; pointer-events: none; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100% { border-color: #e94560; } 50% { border-color: #ff8fa3; } }
+#views-row { display: flex; height: 180px; border-top: 1px solid #0f3460; }
+.view-thumb { flex: 1; position: relative; overflow: hidden; border-right: 1px solid #0f3460; cursor: pointer; }
+.view-thumb:last-child { border-right: none; }
+.view-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.view-thumb .dir-label { position: absolute; top: 4px; left: 4px; background: rgba(0,0,0,0.7); color: #aaa; padding: 2px 6px; font-size: 10px; border-radius: 2px; }
+
+/* Right panel - controls */
+#right { width: 260px; display: flex; flex-direction: column; background: #16213e; border-left: 1px solid #0f3460; }
+#meta { padding: 12px; border-bottom: 1px solid #0f3460; font-size: 12px; }
+#meta .meta-row { display: flex; justify-content: space-between; padding: 3px 0; }
+#meta .meta-label { color: #888; }
+#meta .meta-value { color: #e0e0e0; font-family: monospace; }
+#label-controls { padding: 12px; flex: 1; }
+#label-controls h3 { font-size: 13px; color: #888; margin-bottom: 10px; }
+.label-btn { display: block; width: 100%; padding: 10px 14px; margin-bottom: 6px; border: 2px solid #0f3460; background: #1a1a2e; color: #e0e0e0; border-radius: 6px; cursor: pointer; font-size: 13px; text-align: left; transition: all 0.15s; }
+.label-btn:hover { border-color: #e94560; }
+.label-btn.selected { border-color: #e94560; background: #e94560; color: white; }
+.label-btn .key { display: inline-block; width: 22px; height: 22px; line-height: 22px; text-align: center; background: rgba(255,255,255,0.1); border-radius: 3px; font-size: 11px; margin-right: 8px; font-family: monospace; }
+#actions { padding: 12px; border-top: 1px solid #0f3460; }
+.action-btn { width: 100%; padding: 8px; margin-bottom: 6px; border: 1px solid #0f3460; background: #1a1a2e; color: #aaa; border-radius: 4px; cursor: pointer; font-size: 12px; }
+.action-btn:hover { border-color: #e94560; color: #e0e0e0; }
+#nav-btns { display: flex; gap: 6px; padding: 12px; border-top: 1px solid #0f3460; }
+#nav-btns button { flex: 1; padding: 10px; border: 1px solid #0f3460; background: #1a1a2e; color: #e0e0e0; border-radius: 4px; cursor: pointer; font-size: 13px; }
+#nav-btns button:hover { border-color: #e94560; }
+</style>
+</head>
+<body>
+
+<div id="left">
+  <div id="left-header"><h1>Power Pole Labeler</h1></div>
+  <div id="progress">
+    <span id="progress-text">Loading...</span>
+    <div id="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+  </div>
+  <div id="filter-bar">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="unlabeled">Todo</button>
+    <button class="filter-btn" data-filter="pole">Pole</button>
+    <button class="filter-btn" data-filter="streetlight">Light</button>
+    <button class="filter-btn" data-filter="tree">Tree</button>
+    <button class="filter-btn" data-filter="fence">Fence</button>
+    <button class="filter-btn" data-filter="other">Other</button>
+  </div>
+  <div id="det-list"></div>
+</div>
+
+<div id="center">
+  <div id="main-img-container">
+    <img id="main-img">
+    <div id="bbox-overlay" style="display:none;"></div>
+  </div>
+  <div id="views-row"></div>
+</div>
+
+<div id="right">
+  <div id="meta">
+    <div class="meta-row"><span class="meta-label">Location</span><span class="meta-value" id="m-loc">-</span></div>
+    <div class="meta-row"><span class="meta-label">View</span><span class="meta-value" id="m-view">-</span></div>
+    <div class="meta-row"><span class="meta-label">Height</span><span class="meta-value" id="m-height">-</span></div>
+    <div class="meta-row"><span class="meta-label">Views agree</span><span class="meta-value" id="m-views">-</span></div>
+    <div class="meta-row"><span class="meta-label">Confidence</span><span class="meta-value" id="m-conf">-</span></div>
+    <div class="meta-row"><span class="meta-label">BBox</span><span class="meta-value" id="m-bbox">-</span></div>
+  </div>
+  <div id="label-controls">
+    <h3>Label (keyboard shortcut)</h3>
+    <button class="label-btn" data-label="pole" onclick="setLabel('pole')"><span class="key">1</span>Pole</button>
+    <button class="label-btn" data-label="streetlight" onclick="setLabel('streetlight')"><span class="key">2</span>Streetlight</button>
+    <button class="label-btn" data-label="tree" onclick="setLabel('tree')"><span class="key">3</span>Tree</button>
+    <button class="label-btn" data-label="fence" onclick="setLabel('fence')"><span class="key">4</span>Fence / Wall</button>
+    <button class="label-btn" data-label="other" onclick="setLabel('other')"><span class="key">5</span>Other</button>
+    <button class="label-btn" data-label="unsure" onclick="setLabel('unsure')"><span class="key">S</span>Unsure / Skip</button>
+  </div>
+  <div id="nav-btns">
+    <button onclick="navigate(-1)">&larr; Prev</button>
+    <button onclick="navigate(1)">Next &rarr;</button>
+  </div>
+  <div id="actions">
+    <button class="action-btn" onclick="exportLabels()">Export JSON</button>
+    <button class="action-btn" onclick="document.getElementById('import-file').click()">Import Labels</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importLabels(event)">
+  </div>
+</div>
+
+<script>
+let detections = [];
+let labels = {};
+let currentIdx = 0;
+let activeFilter = 'all';
+let filteredIndices = [];
+let zoomLevel = 1;
+let panX = 0, panY = 0, dragging = false, dragStartX, dragStartY;
+
+async function init() {
+  const resp = await fetch('data/debug/batch/batch_results.json');
+  const results = await resp.json();
+
+  // Flatten all confirmed detections into a single list
+  for (const loc of results) {
+    for (const det of (loc.confirmed || [])) {
+      detections.push({
+        ...det,
+        location: loc.name,
+        lat: loc.lat,
+        lon: loc.lon,
+        directions: loc.directions,
+      });
+    }
+  }
+
+  // Load saved labels from localStorage
+  const saved = localStorage.getItem('pole_labels');
+  if (saved) labels = JSON.parse(saved);
+
+  buildList();
+  if (detections.length > 0) showDetection(0);
+  updateProgress();
+}
+
+function detKey(det) {
+  return `${det.location}_${det.source_view}_${det.bbox.join(',')}`;
+}
+
+function buildList() {
+  const list = document.getElementById('det-list');
+  list.innerHTML = '';
+  filteredIndices = [];
+
+  detections.forEach((det, idx) => {
+    const key = detKey(det);
+    const label = labels[key];
+
+    if (activeFilter === 'unlabeled' && label) return;
+    if (activeFilter !== 'all' && activeFilter !== 'unlabeled' && label !== activeFilter) return;
+
+    filteredIndices.push(idx);
+
+    const item = document.createElement('div');
+    item.className = 'det-item' + (idx === currentIdx ? ' active' : '');
+    item.dataset.idx = idx;
+
+    let badge = '';
+    if (label) {
+      badge = `<span class="label-badge badge-${label}">${label}</span>`;
+    }
+
+    item.innerHTML = `
+      <div>
+        <div>${det.source_view} ${det.est_height}m (${det.num_views}v)</div>
+        <div class="loc">${det.location}</div>
+      </div>
+      ${badge}
+    `;
+    item.onclick = () => showDetection(idx);
+    list.appendChild(item);
+  });
+}
+
+function showDetection(idx) {
+  if (idx < 0 || idx >= detections.length) return;
+  currentIdx = idx;
+  const det = detections[idx];
+
+  // Reset zoom
+  zoomLevel = 1; panX = 0; panY = 0;
+
+  // Load source view image
+  const imgPath = `data/debug/batch/${det.location}/${det.source_view}.png`;
+  const mainImg = document.getElementById('main-img');
+  mainImg.onload = () => {
+    const container = document.getElementById('main-img-container');
+    const cw = container.clientWidth;
+    const ch = container.clientHeight;
+    const iw = mainImg.naturalWidth;
+    const ih = mainImg.naturalHeight;
+
+    // Fit image to container
+    const scale = Math.min(cw / iw, ch / ih);
+    zoomLevel = scale;
+    panX = (cw - iw * scale) / 2;
+    panY = (ch - ih * scale) / 2;
+    updateTransform();
+
+    // Position bbox overlay
+    const [x1, y1, x2, y2] = det.bbox;
+    const overlay = document.getElementById('bbox-overlay');
+    overlay.style.display = 'block';
+    overlay.style.left = (panX + x1 * scale) + 'px';
+    overlay.style.top = (panY + y1 * scale) + 'px';
+    overlay.style.width = ((x2 - x1) * scale) + 'px';
+    overlay.style.height = ((y2 - y1) * scale) + 'px';
+  };
+  mainImg.src = imgPath;
+
+  // Load all 4 direction views
+  const viewsRow = document.getElementById('views-row');
+  viewsRow.innerHTML = '';
+  for (const d of (det.directions || ['north','east','south','west'])) {
+    const thumb = document.createElement('div');
+    thumb.className = 'view-thumb';
+    const highlight = d === det.source_view ? 'border: 2px solid #e94560;' : '';
+    thumb.innerHTML = `
+      <img src="data/debug/batch/${det.location}/${d}_result.jpg" ${highlight ? `style="${highlight}"` : ''} loading="lazy"
+           onerror="this.style.opacity=0.2">
+      <div class="dir-label">${d.toUpperCase()}${d === det.source_view ? ' *' : ''}</div>
+    `;
+    thumb.onclick = () => {
+      // Switch main view to this direction
+      const newImg = `data/debug/batch/${det.location}/${d}.png`;
+      document.getElementById('main-img').src = newImg;
+    };
+    viewsRow.appendChild(thumb);
+  }
+
+  // Update metadata
+  document.getElementById('m-loc').textContent = `${det.location} (${det.lat}, ${det.lon})`;
+  document.getElementById('m-view').textContent = det.source_view;
+  document.getElementById('m-height').textContent = `${det.est_height}m`;
+  document.getElementById('m-views').textContent = `${det.num_views} (${det.agreeing_views.join(', ')})`;
+  document.getElementById('m-conf').textContent = det.conf;
+  document.getElementById('m-bbox').textContent = det.bbox.join(', ');
+
+  // Update label buttons
+  const key = detKey(det);
+  const currentLabel = labels[key];
+  document.querySelectorAll('.label-btn').forEach(btn => {
+    btn.classList.toggle('selected', btn.dataset.label === currentLabel);
+  });
+
+  // Update list highlighting
+  document.querySelectorAll('.det-item').forEach(item => {
+    item.classList.toggle('active', parseInt(item.dataset.idx) === idx);
+  });
+
+  // Scroll active item into view
+  const activeItem = document.querySelector('.det-item.active');
+  if (activeItem) activeItem.scrollIntoView({ block: 'nearest' });
+}
+
+function setLabel(label) {
+  const det = detections[currentIdx];
+  const key = detKey(det);
+  labels[key] = label;
+
+  // Save to localStorage
+  localStorage.setItem('pole_labels', JSON.stringify(labels));
+
+  // Update UI
+  document.querySelectorAll('.label-btn').forEach(btn => {
+    btn.classList.toggle('selected', btn.dataset.label === label);
+  });
+
+  updateProgress();
+  buildList();
+
+  // Auto-advance to next unlabeled
+  const nextUnlabeled = detections.findIndex((d, i) => i > currentIdx && !labels[detKey(d)]);
+  if (nextUnlabeled >= 0) {
+    setTimeout(() => showDetection(nextUnlabeled), 150);
+  }
+}
+
+function navigate(dir) {
+  // Navigate within filtered list
+  const currentFilteredPos = filteredIndices.indexOf(currentIdx);
+  const newPos = currentFilteredPos + dir;
+  if (newPos >= 0 && newPos < filteredIndices.length) {
+    showDetection(filteredIndices[newPos]);
+  }
+}
+
+function updateProgress() {
+  const total = detections.length;
+  const labeled = Object.keys(labels).length;
+  const stats = {};
+  for (const l of Object.values(labels)) {
+    stats[l] = (stats[l] || 0) + 1;
+  }
+  const parts = Object.entries(stats).map(([k, v]) => `${k}: ${v}`).join(' | ');
+  document.getElementById('progress-text').textContent = `${labeled}/${total} labeled ${parts ? '(' + parts + ')' : ''}`;
+  document.getElementById('progress-fill').style.width = `${(labeled / total * 100)}%`;
+}
+
+function exportLabels() {
+  const stats = {};
+  for (const l of Object.values(labels)) {
+    stats[l] = (stats[l] || 0) + 1;
+  }
+
+  const output = {
+    labels: detections.map(det => {
+      const key = detKey(det);
+      return {
+        location: det.location,
+        lat: det.lat,
+        lon: det.lon,
+        source_view: det.source_view,
+        bbox: det.bbox,
+        est_height: det.est_height,
+        num_views: det.num_views,
+        agreeing_views: det.agreeing_views,
+        conf: det.conf,
+        label: labels[key] || null,
+        labeled_at: labels[key] ? new Date().toISOString() : null,
+      };
+    }),
+    stats: {
+      total: detections.length,
+      labeled: Object.keys(labels).length,
+      ...stats,
+    },
+    exported_at: new Date().toISOString(),
+  };
+
+  const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'ground_truth.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importLabels(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.labels) {
+        for (const entry of data.labels) {
+          if (entry.label) {
+            const key = `${entry.location}_${entry.source_view}_${entry.bbox.join(',')}`;
+            labels[key] = entry.label;
+          }
+        }
+        localStorage.setItem('pole_labels', JSON.stringify(labels));
+        buildList();
+        updateProgress();
+        showDetection(currentIdx);
+      }
+    } catch (err) {
+      alert('Invalid JSON file');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function updateTransform() {
+  const img = document.getElementById('main-img');
+  img.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
+
+  // Update bbox overlay position
+  const det = detections[currentIdx];
+  if (det) {
+    const [x1, y1, x2, y2] = det.bbox;
+    const overlay = document.getElementById('bbox-overlay');
+    overlay.style.left = (panX + x1 * zoomLevel) + 'px';
+    overlay.style.top = (panY + y1 * zoomLevel) + 'px';
+    overlay.style.width = ((x2 - x1) * zoomLevel) + 'px';
+    overlay.style.height = ((y2 - y1) * zoomLevel) + 'px';
+  }
+}
+
+// Zoom with scroll wheel
+document.getElementById('main-img-container').addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const container = e.currentTarget;
+  const rect = container.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  const oldZoom = zoomLevel;
+  const delta = e.deltaY > 0 ? 0.9 : 1.1;
+  zoomLevel = Math.max(0.1, Math.min(10, zoomLevel * delta));
+
+  // Zoom towards cursor
+  panX = mx - (mx - panX) * (zoomLevel / oldZoom);
+  panY = my - (my - panY) * (zoomLevel / oldZoom);
+  updateTransform();
+});
+
+// Pan with mouse drag
+const container = document.getElementById('main-img-container');
+container.addEventListener('mousedown', (e) => {
+  dragging = true;
+  dragStartX = e.clientX - panX;
+  dragStartY = e.clientY - panY;
+});
+window.addEventListener('mousemove', (e) => {
+  if (!dragging) return;
+  panX = e.clientX - dragStartX;
+  panY = e.clientY - dragStartY;
+  updateTransform();
+});
+window.addEventListener('mouseup', () => { dragging = false; });
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  switch (e.key) {
+    case '1': setLabel('pole'); break;
+    case '2': setLabel('streetlight'); break;
+    case '3': setLabel('tree'); break;
+    case '4': setLabel('fence'); break;
+    case '5': setLabel('other'); break;
+    case 's': case 'S': setLabel('unsure'); break;
+    case 'ArrowLeft': navigate(-1); break;
+    case 'ArrowRight': navigate(1); break;
+    case 'z': case 'Z':
+      // Toggle zoom to fit vs zoom to bbox
+      if (zoomLevel < 2) {
+        const det = detections[currentIdx];
+        if (det) {
+          const [x1, y1, x2, y2] = det.bbox;
+          const cw = container.clientWidth;
+          const ch = container.clientHeight;
+          const bw = x2 - x1;
+          const bh = y2 - y1;
+          zoomLevel = Math.min(cw / (bw * 3), ch / (bh * 3));
+          panX = cw/2 - (x1 + bw/2) * zoomLevel;
+          panY = ch/2 - (y1 + bh/2) * zoomLevel;
+          updateTransform();
+        }
+      } else {
+        const img = document.getElementById('main-img');
+        const cw = container.clientWidth;
+        const ch = container.clientHeight;
+        zoomLevel = Math.min(cw / img.naturalWidth, ch / img.naturalHeight);
+        panX = (cw - img.naturalWidth * zoomLevel) / 2;
+        panY = (ch - img.naturalHeight * zoomLevel) / 2;
+        updateTransform();
+      }
+      break;
+  }
+});
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    buildList();
+  });
+});
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Power Pole Finder - Imagery Viewer</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; height: 100vh; background: #1a1a2e; color: #e0e0e0; }
+
+#sidebar { width: 400px; display: flex; flex-direction: column; background: #16213e; border-right: 1px solid #0f3460; }
+#sidebar-header { padding: 14px 16px; border-bottom: 1px solid #0f3460; }
+#sidebar-header h1 { font-size: 16px; color: #e94560; margin-bottom: 2px; }
+#sidebar-header p { font-size: 11px; color: #888; }
+
+#location-info { padding: 10px 16px; border-bottom: 1px solid #0f3460; font-size: 12px; background: #1a1a2e; min-height: 48px; }
+#location-info .hint { color: #666; }
+#location-coords { color: #e94560; font-family: monospace; font-size: 14px; user-select: all; cursor: text; }
+#location-count { color: #888; font-size: 12px; margin-top: 4px; }
+
+#oblique-header { padding: 8px 16px; border-bottom: 1px solid #0f3460; font-size: 12px; color: #888; display: flex; gap: 6px; align-items: center; }
+.dir-pill { padding: 3px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; cursor: pointer; border: 1px solid transparent; }
+.dir-pill.active { border-color: currentColor; }
+.dir-pill[data-dir="all"] { background: #1a2744; color: #aaa; }
+.dir-pill[data-dir="north"] { background: #1b4332; color: #95d5b2; }
+.dir-pill[data-dir="east"] { background: #3c1642; color: #c77dff; }
+.dir-pill[data-dir="south"] { background: #6b2737; color: #ff6b6b; }
+.dir-pill[data-dir="west"] { background: #1b3a4b; color: #89c2d9; }
+
+#image-list { flex: 1; overflow-y: auto; padding: 8px; }
+.image-card { background: #1a1a2e; border: 1px solid #0f3460; border-radius: 6px; margin-bottom: 8px; cursor: pointer; overflow: hidden; transition: border-color 0.2s; }
+.image-card:hover, .image-card.selected { border-color: #e94560; }
+.image-card-thumb { width: 100%; height: 220px; object-fit: cover; display: block; background: #0a0a1a; }
+.image-card-info { padding: 6px 10px; }
+.direction-tag { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: 600; text-transform: uppercase; margin-right: 4px; }
+.tag-north { background: #1b4332; color: #95d5b2; }
+.tag-east { background: #3c1642; color: #c77dff; }
+.tag-south { background: #6b2737; color: #ff6b6b; }
+.tag-west { background: #1b3a4b; color: #89c2d9; }
+.tag-top { background: #3a3000; color: #ffd60a; }
+.image-card-info .meta { font-size: 11px; color: #888; margin-top: 3px; }
+.image-card-info .urn-text { word-break: break-all; font-size: 9px; color: #555; margin-top: 2px; user-select: all; }
+
+#main { flex: 1; display: flex; flex-direction: column; }
+#map { flex: 1; }
+
+#preview-panel { display: none; height: 55%; background: #0a0a1a; border-top: 1px solid #0f3460; }
+#preview-panel.visible { display: flex; flex-direction: column; }
+#preview-bar { padding: 6px 16px; border-bottom: 1px solid #0f3460; display: flex; justify-content: space-between; align-items: center; background: #16213e; }
+#preview-bar h3 { font-size: 13px; }
+#preview-bar .meta { font-size: 11px; color: #888; }
+#preview-close { background: none; border: none; color: #e94560; cursor: pointer; font-size: 18px; padding: 4px 8px; }
+#preview-img { flex: 1; overflow: auto; display: flex; align-items: center; justify-content: center; padding: 4px; }
+#preview-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+.selection-rect { stroke: #e94560; stroke-width: 3; fill: rgba(233, 69, 96, 0.1); }
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div id="sidebar-header">
+    <h1>Power Pole Finder</h1>
+    <p>Click on the map to select a location and see oblique imagery</p>
+  </div>
+  <div id="location-info">
+    <div class="hint">Click anywhere on the satellite imagery to select a tile</div>
+  </div>
+  <div id="oblique-header">
+    Views:
+    <span class="dir-pill active" data-dir="all">All</span>
+    <span class="dir-pill" data-dir="north">N</span>
+    <span class="dir-pill" data-dir="east">E</span>
+    <span class="dir-pill" data-dir="south">S</span>
+    <span class="dir-pill" data-dir="west">W</span>
+  </div>
+  <div id="image-list">
+    <div style="padding:16px;color:#666;text-align:center;">Click on the map to get started</div>
+  </div>
+</div>
+
+<div id="main">
+  <div id="map"></div>
+  <div id="preview-panel">
+    <div id="preview-bar">
+      <div>
+        <h3 id="preview-title">Preview</h3>
+        <span class="meta" id="preview-meta"></span>
+      </div>
+      <button id="preview-close">&times;</button>
+    </div>
+    <div id="preview-img"></div>
+  </div>
+</div>
+
+<script>
+const BBOX = {
+  min_lon: -96.00532698173473, min_lat: 41.24140396772262,
+  max_lon: -95.97589954958912, max_lat: 41.25672882015283
+};
+
+let map, metadata = {}, activeDirFilter = 'all';
+let selectionRect = null, selectedTile = null;
+let currentObliques = []; // current set of obliques for filtering
+
+function initMap() {
+  map = L.map('map').fitBounds([
+    [BBOX.min_lat, BBOX.min_lon],
+    [BBOX.max_lat, BBOX.max_lon]
+  ]);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 22, attribution: '&copy; OpenStreetMap'
+  }).addTo(map);
+
+  // EagleView WMTS ortho tiles
+  L.tileLayer('data/wmts/19_{x}_{y}.png', {
+    minZoom: 15, maxZoom: 22,
+    maxNativeZoom: 19, minNativeZoom: 19,
+    tileSize: 256, attribution: 'EagleView',
+    bounds: L.latLngBounds([BBOX.min_lat, BBOX.min_lon], [BBOX.max_lat, BBOX.max_lon]),
+    errorTileUrl: ''
+  }).addTo(map);
+
+  L.rectangle(
+    [[BBOX.min_lat, BBOX.min_lon], [BBOX.max_lat, BBOX.max_lon]],
+    { color: '#e94560', weight: 2, fill: false, dashArray: '5,5' }
+  ).addTo(map);
+
+  map.on('click', onMapClick);
+}
+
+// Convert lat/lon to slippy map tile at zoom 19
+function latLonToTile(lat, lon, zoom) {
+  const n = 2 ** zoom;
+  const x = Math.floor((lon + 180) / 360 * n);
+  const latRad = lat * Math.PI / 180;
+  const y = Math.floor((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2 * n);
+  return { x, y };
+}
+
+// Convert tile x/y back to lat/lon bounds
+function tileToBounds(x, y, zoom) {
+  const n = 2 ** zoom;
+  const lon1 = x / n * 360 - 180;
+  const lon2 = (x + 1) / n * 360 - 180;
+  const lat1 = Math.atan(Math.sinh(Math.PI * (1 - 2 * y / n))) * 180 / Math.PI;
+  const lat2 = Math.atan(Math.sinh(Math.PI * (1 - 2 * (y + 1) / n))) * 180 / Math.PI;
+  return L.latLngBounds([lat2, lon1], [lat1, lon2]);
+}
+
+function onMapClick(e) {
+  const { lat, lng } = e.latlng;
+  const tile = latLonToTile(lat, lng, 19);
+  const bounds = tileToBounds(tile.x, tile.y, 19);
+
+  // Draw selection rectangle
+  if (selectionRect) map.removeLayer(selectionRect);
+  selectionRect = L.rectangle(bounds, {
+    color: '#e94560', weight: 3, fill: true, fillColor: '#e94560', fillOpacity: 0.15
+  }).addTo(map);
+
+  const centerLat = (bounds.getNorth() + bounds.getSouth()) / 2;
+  const centerLon = (bounds.getEast() + bounds.getWest()) / 2;
+  selectedTile = { x: tile.x, y: tile.y, lat: centerLat, lon: centerLon };
+  document.getElementById('location-info').innerHTML =
+    `<div id="location-coords">${centerLat.toFixed(6)}, ${centerLon.toFixed(6)}</div>
+     <div style="font-size:11px;color:#888;margin-top:2px;">Tile: 19/${tile.x}/${tile.y}</div>`;
+
+  // Find oblique images whose footprint covers this tile
+  findObliquesForTile(bounds, centerLat, centerLon);
+}
+
+function parseFootprint(meta) {
+  try {
+    const gj = JSON.parse(meta.ground_footprint.geojson.value);
+    const feat = gj.type === 'FeatureCollection' ? gj.features[0] : (gj.type === 'Feature' ? gj : { geometry: gj });
+    return feat.geometry;
+  } catch { return null; }
+}
+
+function pointInGeom(lat, lng, geom) {
+  const rings = geom.type === 'MultiPolygon' ? geom.coordinates[0] : geom.coordinates;
+  const ring = rings[0];
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i], [xj, yj] = ring[j];
+    if (((yi > lat) !== (yj > lat)) && (lng < (xj - xi) * (lat - yi) / (yj - yi) + xi)) inside = !inside;
+  }
+  return inside;
+}
+
+function findObliquesForTile(bounds, centerLat, centerLon) {
+  const obliques = Object.values(metadata).filter(m => {
+    if (m.type !== 'oblique' || !m.local_path || !m.ground_footprint) return false;
+    const geom = parseFootprint(m);
+    if (!geom) return false;
+    // Check if tile center falls within this image's footprint
+    return pointInGeom(centerLat, centerLon, geom);
+  });
+
+  // Fallback: nearby by query point
+  if (obliques.length === 0) {
+    const nearby = Object.values(metadata).filter(m => {
+      if (!m.local_path || m.type !== 'oblique') return false;
+      const pt = m.query_point;
+      if (!pt) return false;
+      return Math.sqrt((pt.lat - centerLat) ** 2 + (pt.lon - centerLon) ** 2) * 111320 < 150;
+    });
+    obliques.push(...nearby);
+  }
+
+  currentObliques = obliques;
+
+  const countByDir = {};
+  obliques.forEach(m => { countByDir[m.direction] = (countByDir[m.direction] || 0) + 1; });
+  const countStr = Object.entries(countByDir).map(([d, c]) => `${d}:${c}`).join(' ');
+  document.getElementById('location-count')?.remove();
+  const countEl = document.createElement('div');
+  countEl.id = 'location-count';
+  countEl.style.cssText = 'color:#888;font-size:12px;margin-top:4px;';
+  countEl.textContent = `${obliques.length} oblique images (${countStr})`;
+  document.getElementById('location-info').appendChild(countEl);
+
+  renderObliqueList(obliques);
+}
+
+function getLocalUrl(meta) {
+  if (!meta.local_path) return null;
+  const idx = meta.local_path.indexOf('data/');
+  return idx === -1 ? null : meta.local_path.substring(idx);
+}
+
+function renderObliqueList(obliques) {
+  const list = document.getElementById('image-list');
+  list.innerHTML = '';
+
+  // Show the selected ortho tile at the top
+  if (selectedTile) {
+    const orthoCard = document.createElement('div');
+    orthoCard.className = 'image-card';
+    orthoCard.style.borderColor = '#ffd60a';
+    orthoCard.innerHTML = `
+      <img class="image-card-thumb" src="data/wmts/19_${selectedTile.x}_${selectedTile.y}.png" style="height:200px;image-rendering:pixelated;">
+      <div class="image-card-info">
+        <span class="direction-tag tag-top">ORTHO</span>
+        <span style="font-size:11px;color:#888">Tile 19/${selectedTile.x}/${selectedTile.y}</span>
+        <div class="meta">${selectedTile.lat.toFixed(6)}, ${selectedTile.lon.toFixed(6)}</div>
+      </div>
+    `;
+    orthoCard.addEventListener('click', () => {
+      document.querySelectorAll('.image-card').forEach(c => c.classList.remove('selected'));
+      orthoCard.classList.add('selected');
+      const panel = document.getElementById('preview-panel');
+      document.getElementById('preview-title').textContent = `ORTHO | Tile 19/${selectedTile.x}/${selectedTile.y}`;
+      document.getElementById('preview-meta').textContent = `${selectedTile.lat.toFixed(6)}, ${selectedTile.lon.toFixed(6)}`;
+      document.getElementById('preview-img').innerHTML =
+        `<img src="data/wmts/19_${selectedTile.x}_${selectedTile.y}.png" style="image-rendering:pixelated;">`;
+      panel.classList.add('visible');
+      map.invalidateSize();
+    });
+    list.appendChild(orthoCard);
+
+    // Separator
+    const sep = document.createElement('div');
+    sep.style.cssText = 'padding:6px 10px;font-size:11px;color:#888;border-bottom:1px solid #0f3460;margin-bottom:8px;';
+    sep.textContent = `Oblique views (${obliques.length})`;
+    list.appendChild(sep);
+  }
+
+  const filtered = activeDirFilter === 'all' ? obliques : obliques.filter(m => m.direction === activeDirFilter);
+
+  if (filtered.length === 0) {
+    list.innerHTML += '<div style="padding:16px;color:#666;text-align:center;">No oblique images at this location</div>';
+    return;
+  }
+
+  const dirOrder = { north: 0, east: 1, south: 2, west: 3 };
+  filtered.sort((a, b) => (dirOrder[a.direction] ?? 9) - (dirOrder[b.direction] ?? 9));
+
+  for (const meta of filtered) {
+    const card = document.createElement('div');
+    card.className = 'image-card';
+    card.dataset.urn = meta.urn;
+
+    const gsd = meta.calculated_gsd?.value ? `${meta.calculated_gsd.value.toFixed(3)}m` : '';
+    const zoom = meta.zoom_range ? `z${meta.zoom_range.maximum_zoom_level}` : '';
+    const az = meta.look_at?.azimuth ? `${meta.look_at.azimuth.toFixed(0)}deg` : '';
+    const imgUrl = getLocalUrl(meta);
+
+    card.innerHTML = `
+      ${imgUrl ? `<img class="image-card-thumb" src="${imgUrl}" loading="lazy">` : ''}
+      <div class="image-card-info">
+        <span class="direction-tag tag-${meta.direction}">${meta.direction}</span>
+        <span style="font-size:11px;color:#888">${[gsd, zoom, az].filter(Boolean).join(' | ')}</span>
+        <div class="urn-text">${meta.urn}</div>
+      </div>
+    `;
+    card.addEventListener('click', () => showPreview(meta));
+    list.appendChild(card);
+  }
+}
+
+function showPreview(meta) {
+  document.querySelectorAll('.image-card').forEach(c => c.classList.remove('selected'));
+  const card = document.querySelector(`.image-card[data-urn="${CSS.escape(meta.urn)}"]`);
+  if (card) { card.classList.add('selected'); card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+
+  const panel = document.getElementById('preview-panel');
+  document.getElementById('preview-title').textContent =
+    `${meta.direction.toUpperCase()} ${meta.type} | ${meta.capture?.start_date || ''}`;
+
+  const gsd = meta.calculated_gsd?.value ? `${meta.calculated_gsd.value.toFixed(4)}m/px` : '';
+  const az = meta.look_at?.azimuth ? `Az:${meta.look_at.azimuth.toFixed(1)}` : '';
+  const el = meta.look_at?.elevation ? `El:${meta.look_at.elevation.toFixed(1)}` : '';
+  document.getElementById('preview-meta').textContent = [gsd, az, el, meta.urn].filter(Boolean).join(' | ');
+
+  const imgUrl = getLocalUrl(meta);
+  document.getElementById('preview-img').innerHTML = imgUrl
+    ? `<img src="${imgUrl}" alt="${meta.direction}">`
+    : `<p style="color:#888">Image not available</p>`;
+
+  panel.classList.add('visible');
+  map.invalidateSize();
+}
+
+document.getElementById('preview-close').addEventListener('click', () => {
+  document.getElementById('preview-panel').classList.remove('visible');
+  map.invalidateSize();
+});
+
+// Direction filter pills
+document.querySelectorAll('.dir-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.dir-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    activeDirFilter = pill.dataset.dir;
+    renderObliqueList(currentObliques);
+  });
+});
+
+async function loadMetadata() {
+  const resp = await fetch('data/metadata.json');
+  metadata = await resp.json();
+  const withPath = Object.values(metadata).filter(m => m.local_path);
+  const obl = withPath.filter(m => m.type === 'oblique').length;
+  document.getElementById('location-info').innerHTML =
+    `<div class="hint">Click anywhere on the satellite imagery to select a tile</div>
+     <div style="font-size:11px;color:#888;margin-top:4px;">${withPath.length} images loaded (${obl} oblique)</div>`;
+}
+
+initMap();
+loadMetadata();
+</script>
+</body>
+</html>

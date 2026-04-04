@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Eval Sanity Check - Detections vs Ground Truth</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, sans-serif; }
+#map { width: 100%; height: 100vh; }
+.legend { position: absolute; bottom: 20px; left: 20px; background: rgba(0,0,0,0.8); color: #eee; padding: 12px 16px; border-radius: 6px; z-index: 1000; font-size: 13px; }
+.legend div { margin: 4px 0; display: flex; align-items: center; gap: 8px; }
+.legend .dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+#stats { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.8); color: #eee; padding: 12px 16px; border-radius: 6px; z-index: 1000; font-size: 13px; max-width: 400px; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div class="legend">
+  <div><span class="dot" style="background:#00ff88;"></span> GT Pole (58)</div>
+  <div><span class="dot" style="background:#ffd60a;"></span> GT Streetlight (6)</div>
+  <div><span class="dot" style="background:#ff4444; border: 2px solid white;"></span> Detection (91)</div>
+  <div><span class="dot" style="background:#00ffff;"></span> Matched (TP at 20m)</div>
+  <div style="margin-top:8px; font-size:11px; color:#aaa;">Lines connect matched pairs</div>
+</div>
+<div id="stats"></div>
+
+<script>
+const map = L.map('map');
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 22
+}).addTo(map);
+
+L.tileLayer('data/wmts/19_{x}_{y}.png', {
+  minZoom: 15, maxZoom: 22, maxNativeZoom: 19, minNativeZoom: 19,
+  tileSize: 256, errorTileUrl: ''
+}).addTo(map);
+
+async function load() {
+  const [gtResp, evalResp] = await Promise.all([
+    fetch('data/ground_truth_testarea.json'),
+    fetch('data/eval_testarea/eval_results.json')
+  ]);
+  const gt = await gtResp.json();
+  const evalData = await evalResp.json();
+
+  const gtPoles = gt.labels.filter(l => l.label === 'pole');
+  const gtLights = gt.labels.filter(l => l.label === 'streetlight');
+  const dets = evalData.detections;
+
+  // Fit map to data
+  const allLats = [...gtPoles.map(l => l.lat), ...gtLights.map(l => l.lat), ...dets.map(d => d.approx_lat)];
+  const allLons = [...gtPoles.map(l => l.lon), ...gtLights.map(l => l.lon), ...dets.map(d => d.approx_lon)];
+  map.fitBounds([[Math.min(...allLats)-0.001, Math.min(...allLons)-0.001],
+                  [Math.max(...allLats)+0.001, Math.max(...allLons)+0.001]]);
+
+  // Draw GT poles
+  gtPoles.forEach((l, i) => {
+    L.circleMarker([l.lat, l.lon], {
+      radius: 7, fillColor: '#00ff88', color: '#fff', weight: 1, fillOpacity: 0.8
+    }).addTo(map).bindTooltip(`GT Pole #${i+1}`);
+  });
+
+  // Draw GT streetlights
+  gtLights.forEach((l, i) => {
+    L.circleMarker([l.lat, l.lon], {
+      radius: 7, fillColor: '#ffd60a', color: '#fff', weight: 1, fillOpacity: 0.8
+    }).addTo(map).bindTooltip(`GT Streetlight #${i+1}`);
+  });
+
+  // Match detections to GT at 20m
+  const matched = new Set();
+  const matchLines = [];
+  dets.forEach(det => {
+    let bestDist = Infinity, bestIdx = -1;
+    gtPoles.forEach((gt, i) => {
+      const dlat = (det.approx_lat - gt.lat) * 111320;
+      const dlon = (det.approx_lon - gt.lon) * 111320 * 0.75;
+      const dist = Math.sqrt(dlat*dlat + dlon*dlon);
+      if (dist < bestDist) { bestDist = dist; bestIdx = i; }
+    });
+    det._matchDist = bestDist;
+    det._matched = bestDist <= 20 && !matched.has(bestIdx);
+    if (det._matched) {
+      matched.add(bestIdx);
+      matchLines.push([[det.approx_lat, det.approx_lon], [gtPoles[bestIdx].lat, gtPoles[bestIdx].lon]]);
+    }
+  });
+
+  // Draw match lines
+  matchLines.forEach(line => {
+    L.polyline(line, { color: '#00ffff', weight: 1, dashArray: '4,4', opacity: 0.6 }).addTo(map);
+  });
+
+  // Draw detections
+  dets.forEach((det, i) => {
+    const color = det._matched ? '#00ffff' : '#ff4444';
+    L.circleMarker([det.approx_lat, det.approx_lon], {
+      radius: 5, fillColor: color, color: '#fff', weight: 2, fillOpacity: 0.9
+    }).addTo(map).bindTooltip(
+      `Det #${i+1} [${det.source_view}]<br>` +
+      `h=${det.est_height}m, ${det.num_views}v, conf=${det.conf}<br>` +
+      `nearest GT: ${det._matchDist.toFixed(1)}m<br>` +
+      `${det._matched ? 'MATCHED' : 'NO MATCH'}`
+    );
+  });
+
+  // Stats
+  const tp = dets.filter(d => d._matched).length;
+  const fp = dets.length - tp;
+  const fn = gtPoles.length - tp;
+  const p = tp / (tp + fp) || 0;
+  const r = tp / (tp + fn) || 0;
+  const f1 = 2*p*r / (p+r) || 0;
+  document.getElementById('stats').innerHTML = `
+    <strong>Eval at 20m match radius</strong><br>
+    GT: ${gtPoles.length} poles, ${gtLights.length} streetlights<br>
+    Detections: ${dets.length}<br>
+    TP: ${tp} | FP: ${fp} | FN: ${fn}<br>
+    Precision: ${(p*100).toFixed(1)}% | Recall: ${(r*100).toFixed(1)}% | F1: ${f1.toFixed(3)}<br>
+    <br><span style="font-size:11px;color:#aaa;">
+    Avg match dist: ${(dets.filter(d=>d._matched).reduce((s,d)=>s+d._matchDist,0)/Math.max(tp,1)).toFixed(1)}m<br>
+    Avg nearest GT (unmatched): ${(dets.filter(d=>!d._matched).reduce((s,d)=>s+d._matchDist,0)/Math.max(fp,1)).toFixed(1)}m
+    </span>
+  `;
+}
+
+load();
+</script>
+</body>
+</html>

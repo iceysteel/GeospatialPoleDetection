@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Batch Multi-View Consensus Results</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #e0e0e0; padding: 20px; }
+h1 { color: #e94560; margin-bottom: 4px; font-size: 22px; }
+.subtitle { color: #888; font-size: 13px; margin-bottom: 20px; }
+
+.summary-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; font-size: 13px; }
+.summary-table th { text-align: left; padding: 8px 12px; border-bottom: 2px solid #0f3460; color: #e94560; }
+.summary-table td { padding: 6px 12px; border-bottom: 1px solid #0f3460; }
+.summary-table tr:hover { background: #16213e; }
+.summary-table .num { text-align: center; }
+.clickable { cursor: pointer; color: #00bfff; text-decoration: underline; }
+
+.location-section { margin-bottom: 50px; display: none; }
+.location-section.visible { display: block; }
+.location-section h2 { color: #e94560; font-size: 18px; margin-bottom: 8px; border-bottom: 1px solid #0f3460; padding-bottom: 6px; }
+.location-meta { font-size: 12px; color: #888; margin-bottom: 12px; }
+
+.views-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.view-card { background: #16213e; border: 1px solid #0f3460; border-radius: 6px; overflow: hidden; }
+.view-card h3 { padding: 6px 12px; font-size: 12px; color: #aaa; border-bottom: 1px solid #0f3460; }
+.view-card img { width: 100%; display: block; cursor: zoom-in; }
+
+#lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 1000; cursor: zoom-out; }
+#lightbox img { max-width: 95%; max-height: 95%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+#lb-label { position: absolute; top: 20px; left: 20px; color: white; font-size: 16px; background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 4px; }
+
+.show-all-btn { background: #e94560; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; font-size: 13px; margin-bottom: 20px; }
+.back-btn { background: #0f3460; color: #aaa; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-bottom: 12px; }
+
+.legend { display: flex; gap: 20px; margin-bottom: 20px; font-size: 12px; }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-dot { width: 14px; height: 14px; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<h1>Multi-View Consensus - Batch Results (10 Locations)</h1>
+<div class="subtitle">GDino detections → MASt3R 3D consensus (2+ views) → Height filter (4-25m)</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:gray;"></div> GDino raw detection</div>
+  <div class="legend-item"><div class="legend-dot" style="background:lime;"></div> Confirmed pole (2+ views, valid height)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:orange;"></div> Rejected (height out of range)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:red;"></div> Single view only</div>
+</div>
+
+<div id="summary-section">
+<table class="summary-table">
+  <thead>
+    <tr>
+      <th>Location</th>
+      <th>Lat, Lon</th>
+      <th class="num">GDino Raw</th>
+      <th class="num">Multi-View</th>
+      <th class="num">Confirmed Poles</th>
+      <th class="num">Height Rejected</th>
+      <th class="num">Time</th>
+    </tr>
+  </thead>
+  <tbody id="summary-body"></tbody>
+  <tfoot>
+    <tr style="border-top:2px solid #e94560;">
+      <td><strong>TOTAL</strong></td>
+      <td></td>
+      <td class="num" id="total-gdino"></td>
+      <td class="num" id="total-multi"></td>
+      <td class="num" id="total-poles"></td>
+      <td class="num" id="total-rej"></td>
+      <td class="num" id="total-time"></td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+
+<div id="locations-container"></div>
+
+<div id="lightbox" onclick="this.style.display='none'">
+  <div id="lb-label"></div>
+  <img id="lb-img">
+</div>
+
+<script>
+function z(src, label) {
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lb-label').textContent = label;
+  document.getElementById('lightbox').style.display = 'block';
+}
+
+async function loadResults() {
+  const resp = await fetch('data/debug/batch/batch_results.json');
+  const results = await resp.json();
+
+  const tbody = document.getElementById('summary-body');
+  const container = document.getElementById('locations-container');
+  let totals = { gdino: 0, multi: 0, poles: 0, rej: 0, time: 0 };
+
+  results.forEach((r, idx) => {
+    totals.gdino += r.total_gdino;
+    totals.multi += r.multi_view_raw;
+    totals.poles += r.confirmed_poles;
+    totals.rej += r.rejected_height;
+    totals.time += r.time;
+
+    // Summary row
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="clickable" onclick="showLocation('${r.name}')">${r.name}</span></td>
+      <td style="font-size:11px;color:#888;">${r.lat.toFixed(4)}, ${r.lon.toFixed(4)}</td>
+      <td class="num">${r.total_gdino}</td>
+      <td class="num">${r.multi_view_raw}</td>
+      <td class="num" style="color:lime;font-weight:bold;">${r.confirmed_poles}</td>
+      <td class="num" style="color:orange;">${r.rejected_height}</td>
+      <td class="num">${r.time}s</td>
+    `;
+    tbody.appendChild(tr);
+
+    // Location detail section
+    const section = document.createElement('div');
+    section.className = 'location-section';
+    section.id = `loc-${r.name}`;
+
+    let polesHtml = '';
+    if (r.confirmed && r.confirmed.length > 0) {
+      polesHtml = '<div style="margin-top:8px;font-size:12px;">' +
+        r.confirmed.map(p => `<span style="color:lime;">● ${p.source_view} ${p.est_height}m (${p.num_views}v)</span>`).join(' &nbsp; ') +
+        '</div>';
+    }
+
+    section.innerHTML = `
+      <button class="back-btn" onclick="hideLocation('${r.name}')">← Back to summary</button>
+      <h2>${r.name} (${r.lat.toFixed(4)}, ${r.lon.toFixed(4)})</h2>
+      <div class="location-meta">
+        GDino: ${r.total_gdino} → Multi-view: ${r.multi_view_raw} → Poles: ${r.confirmed_poles} | Rejected: ${r.rejected_height} | ${r.time}s
+        ${polesHtml}
+      </div>
+      <div class="views-grid">
+        ${r.directions.map(d => `
+          <div class="view-card">
+            <h3>${d.toUpperCase()}</h3>
+            <img src="data/debug/batch/${r.name}/${d}_result.jpg" onclick="z(this.src, '${r.name} - ${d}')" loading="lazy"
+                 onerror="this.style.display='none'">
+          </div>
+        `).join('')}
+      </div>
+    `;
+    container.appendChild(section);
+  });
+
+  document.getElementById('total-gdino').textContent = totals.gdino;
+  document.getElementById('total-multi').textContent = totals.multi;
+  document.getElementById('total-poles').textContent = totals.poles;
+  document.getElementById('total-rej').textContent = totals.rej;
+  document.getElementById('total-time').textContent = totals.time.toFixed(0) + 's';
+}
+
+function showLocation(name) {
+  document.getElementById('summary-section').style.display = 'none';
+  document.querySelectorAll('.location-section').forEach(s => s.classList.remove('visible'));
+  document.getElementById(`loc-${name}`).classList.add('visible');
+}
+
+function hideLocation(name) {
+  document.getElementById(`loc-${name}`).classList.remove('visible');
+  document.getElementById('summary-section').style.display = 'block';
+}
+
+loadResults();
+</script>
+</body>
+</html>

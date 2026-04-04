@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detection Comparison - Same Location</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #e0e0e0; padding: 20px; }
+h1 { color: #e94560; margin-bottom: 4px; font-size: 22px; }
+.subtitle { color: #888; font-size: 13px; margin-bottom: 24px; }
+
+.direction-section { margin-bottom: 48px; }
+.direction-section h2 { color: #e94560; font-size: 18px; margin-bottom: 12px; border-bottom: 1px solid #0f3460; padding-bottom: 6px; }
+
+.comparison-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+.card { background: #16213e; border: 1px solid #0f3460; border-radius: 6px; overflow: hidden; }
+.card h3 { padding: 8px 12px; font-size: 12px; border-bottom: 1px solid #0f3460; display: flex; justify-content: space-between; }
+.card h3 .time { font-weight: normal; opacity: 0.6; }
+.card h3.original { color: #fff; }
+.card h3.sam { color: #ffd60a; }
+.card h3.gdino { color: #00ff88; }
+.card h3.qwen { color: #00bfff; }
+.card img { width: 100%; display: block; cursor: zoom-in; }
+.card .stats { padding: 6px 12px; font-size: 11px; color: #888; }
+
+#lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 1000; cursor: zoom-out; }
+#lightbox img { max-width: 95%; max-height: 95%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+#lb-label { position: absolute; top: 20px; left: 20px; color: white; font-size: 16px; background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 4px; }
+#lb-close { position: absolute; top: 20px; right: 20px; color: #e94560; font-size: 28px; cursor: pointer; background: rgba(0,0,0,0.6); padding: 4px 14px; border-radius: 4px; border: none; }
+</style>
+</head>
+<body>
+
+<h1>Power Pole Detection - Model Comparison</h1>
+<div class="subtitle">All views centered on same location: 41.248644, -95.998878 (Tile 19/122335/196088) | 50m radius crop at max zoom</div>
+
+<div id="lightbox" onclick="this.style.display='none'">
+  <div id="lb-label"></div>
+  <button id="lb-close">&times;</button>
+  <img id="lb-img">
+</div>
+
+<script>
+function z(src, label) {
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lb-label').textContent = label;
+  document.getElementById('lightbox').style.display = 'block';
+}
+</script>
+
+<div class="direction-section">
+  <h2>NORTH (facing north, azimuth ~6deg)</h2>
+  <div class="comparison-row">
+    <div class="card">
+      <h3 class="original">Original</h3>
+      <img src="data/debug/target/north_original.jpg" onclick="z(this.src,'North - Original')" loading="lazy">
+    </div>
+    <div class="card">
+      <h3 class="sam">SAM2 <span class="time">14.8s</span></h3>
+      <img src="data/debug/target/north_sam.jpg" onclick="z(this.src,'North - SAM2')" loading="lazy">
+      <div class="stats">208 masks total, 4 pole candidates (AR&gt;3)</div>
+    </div>
+    <div class="card">
+      <h3 class="gdino">GroundingDINO <span class="time">2.1s</span></h3>
+      <img src="data/debug/target/north_gdino.jpg" onclick="z(this.src,'North - GroundingDINO')" loading="lazy">
+      <div class="stats">12 detections, conf 0.15-0.27</div>
+    </div>
+    <div class="card">
+      <h3 class="qwen">Qwen3-VL 2B <span class="time">12.5s</span></h3>
+      <img src="data/debug/target/north_qwen.jpg" onclick="z(this.src,'North - Qwen3-VL')" loading="lazy">
+      <div class="stats">1 detection</div>
+    </div>
+  </div>
+</div>
+
+<div class="direction-section">
+  <h2>EAST (facing east, azimuth ~84deg)</h2>
+  <div class="comparison-row">
+    <div class="card">
+      <h3 class="original">Original</h3>
+      <img src="data/debug/target/east_original.jpg" onclick="z(this.src,'East - Original')" loading="lazy">
+    </div>
+    <div class="card">
+      <h3 class="sam">SAM2 <span class="time">95.4s</span></h3>
+      <img src="data/debug/target/east_sam.jpg" onclick="z(this.src,'East - SAM2')" loading="lazy">
+      <div class="stats">230 masks total, 12 pole candidates</div>
+    </div>
+    <div class="card">
+      <h3 class="gdino">GroundingDINO <span class="time">2.3s</span></h3>
+      <img src="data/debug/target/east_gdino.jpg" onclick="z(this.src,'East - GroundingDINO')" loading="lazy">
+      <div class="stats">14 detections, conf 0.15-0.24</div>
+    </div>
+    <div class="card">
+      <h3 class="qwen">Qwen3-VL 2B <span class="time">40.7s</span></h3>
+      <img src="data/debug/target/east_qwen.jpg" onclick="z(this.src,'East - Qwen3-VL')" loading="lazy">
+      <div class="stats">0 detections (thinking loop)</div>
+    </div>
+  </div>
+</div>
+
+<div class="direction-section">
+  <h2>SOUTH (facing south, azimuth ~174deg)</h2>
+  <div class="comparison-row">
+    <div class="card">
+      <h3 class="original">Original</h3>
+      <img src="data/debug/target/south_original.jpg" onclick="z(this.src,'South - Original')" loading="lazy">
+    </div>
+    <div class="card">
+      <h3 class="sam">SAM2 <span class="time">22.6s</span></h3>
+      <img src="data/debug/target/south_sam.jpg" onclick="z(this.src,'South - SAM2')" loading="lazy">
+      <div class="stats">116 masks total, 2 pole candidates</div>
+    </div>
+    <div class="card">
+      <h3 class="gdino">GroundingDINO <span class="time">1.5s</span></h3>
+      <img src="data/debug/target/south_gdino.jpg" onclick="z(this.src,'South - GroundingDINO')" loading="lazy">
+      <div class="stats">17 detections, conf 0.15-0.29</div>
+    </div>
+    <div class="card">
+      <h3 class="qwen">Qwen3-VL 2B <span class="time">42.6s</span></h3>
+      <img src="data/debug/target/south_qwen.jpg" onclick="z(this.src,'South - Qwen3-VL')" loading="lazy">
+      <div class="stats">0 detections (thinking loop)</div>
+    </div>
+  </div>
+</div>
+
+<div class="direction-section">
+  <h2>WEST (facing west, azimuth ~267deg)</h2>
+  <div class="comparison-row">
+    <div class="card">
+      <h3 class="original">Original</h3>
+      <img src="data/debug/target/west_original.jpg" onclick="z(this.src,'West - Original')" loading="lazy">
+    </div>
+    <div class="card">
+      <h3 class="sam">SAM2 <span class="time">135.5s</span></h3>
+      <img src="data/debug/target/west_sam.jpg" onclick="z(this.src,'West - SAM2')" loading="lazy">
+      <div class="stats">133 masks total, 8 pole candidates</div>
+    </div>
+    <div class="card">
+      <h3 class="gdino">GroundingDINO <span class="time">5.1s</span></h3>
+      <img src="data/debug/target/west_gdino.jpg" onclick="z(this.src,'West - GroundingDINO')" loading="lazy">
+      <div class="stats">10 detections, conf 0.15-0.31</div>
+    </div>
+    <div class="card">
+      <h3 class="qwen">Qwen3-VL 2B <span class="time">11.6s</span></h3>
+      <img src="data/debug/target/west_qwen.jpg" onclick="z(this.src,'West - Qwen3-VL')" loading="lazy">
+      <div class="stats">2 detections</div>
+    </div>
+  </div>
+</div>
+
+<div class="direction-section">
+  <h2>MULTI-VIEW CONSENSUS (GDino + MASt3R)</h2>
+  <div class="subtitle" style="margin-bottom:12px;">Green = confirmed (2+ views agree via 3D projection), Red = single view only (rejected), Gray = all GDino detections</div>
+  <div class="comparison-row">
+    <div class="card">
+      <h3 class="original">North</h3>
+      <img src="data/debug/target/north_consensus.jpg" onclick="z(this.src,'North - Consensus')" loading="lazy">
+    </div>
+    <div class="card">
+      <h3 class="original">East</h3>
+      <img src="data/debug/target/east_consensus.jpg" onclick="z(this.src,'East - Consensus')" loading="lazy">
+    </div>
+    <div class="card">
+      <h3 class="original">South</h3>
+      <img src="data/debug/target/south_consensus.jpg" onclick="z(this.src,'South - Consensus')" loading="lazy">
+    </div>
+    <div class="card">
+      <h3 class="original">West</h3>
+      <img src="data/debug/target/west_consensus.jpg" onclick="z(this.src,'West - Consensus')" loading="lazy">
+    </div>
+  </div>
+  <div class="card" style="margin-top:12px; padding:16px;">
+    <div style="font-size:13px;">
+      <span style="color:#00ff88;">53 total detections</span> →
+      <span style="color:lime; font-weight:bold;">22 confirmed (2+ views)</span> |
+      <span style="color:red;">31 single-view rejected</span> |
+      GDino: 2.8s | MASt3R: 30.4s | Total: ~33s
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:40px; padding:20px; background:#16213e; border-radius:8px; border:1px solid #0f3460;">
+  <h2 style="color:#e94560; margin-bottom:12px;">Summary</h2>
+  <table style="width:100%; border-collapse:collapse; font-size:13px;">
+    <tr style="border-bottom:1px solid #0f3460;">
+      <th style="text-align:left; padding:8px;">Direction</th>
+      <th style="text-align:left; padding:8px; color:#ffd60a;">SAM2 candidates</th>
+      <th style="text-align:left; padding:8px; color:#ffd60a;">SAM2 time</th>
+      <th style="text-align:left; padding:8px; color:#00ff88;">GDino detections</th>
+      <th style="text-align:left; padding:8px; color:#00ff88;">GDino time</th>
+      <th style="text-align:left; padding:8px; color:#00bfff;">Qwen detections</th>
+      <th style="text-align:left; padding:8px; color:#00bfff;">Qwen time</th>
+    </tr>
+    <tr><td style="padding:6px 8px;">North</td><td style="padding:6px 8px;">4</td><td style="padding:6px 8px;">14.8s</td><td style="padding:6px 8px;">12</td><td style="padding:6px 8px;">2.1s</td><td style="padding:6px 8px;">1</td><td style="padding:6px 8px;">12.5s</td></tr>
+    <tr><td style="padding:6px 8px;">East</td><td style="padding:6px 8px;">12</td><td style="padding:6px 8px;">95.4s</td><td style="padding:6px 8px;">14</td><td style="padding:6px 8px;">2.3s</td><td style="padding:6px 8px;">0</td><td style="padding:6px 8px;">40.7s</td></tr>
+    <tr><td style="padding:6px 8px;">South</td><td style="padding:6px 8px;">2</td><td style="padding:6px 8px;">22.6s</td><td style="padding:6px 8px;">17</td><td style="padding:6px 8px;">1.5s</td><td style="padding:6px 8px;">0</td><td style="padding:6px 8px;">42.6s</td></tr>
+    <tr style="border-top:1px solid #0f3460;"><td style="padding:6px 8px;">West</td><td style="padding:6px 8px;">8</td><td style="padding:6px 8px;">135.5s</td><td style="padding:6px 8px;">10</td><td style="padding:6px 8px;">5.1s</td><td style="padding:6px 8px;">2</td><td style="padding:6px 8px;">11.6s</td></tr>
+  </table>
+</div>
+
+</body>
+</html>

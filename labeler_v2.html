@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Power Pole Labeler v2 - Map View</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; height: 100vh; background: #1a1a2e; color: #e0e0e0; }
+
+#map { flex: 1; }
+
+#sidebar { width: 360px; display: flex; flex-direction: column; background: #16213e; border-left: 1px solid #0f3460; }
+#sidebar.collapsed { width: 40px; }
+#sidebar.collapsed > *:not(#toggle-sidebar) { display: none; }
+
+#toggle-sidebar { padding: 8px; border-bottom: 1px solid #0f3460; cursor: pointer; text-align: center; font-size: 14px; background: #1a1a2e; }
+
+#info-bar { padding: 10px 12px; border-bottom: 1px solid #0f3460; font-size: 12px; }
+#info-bar .coords { color: #e94560; font-family: monospace; font-size: 13px; }
+
+#label-controls { padding: 10px 12px; border-bottom: 1px solid #0f3460; }
+#label-controls h3 { font-size: 12px; color: #888; margin-bottom: 8px; }
+.label-btn { display: inline-block; padding: 6px 12px; margin: 2px; border: 2px solid #0f3460; background: #1a1a2e; color: #e0e0e0; border-radius: 4px; cursor: pointer; font-size: 12px; }
+.label-btn:hover { border-color: #e94560; }
+.label-btn.active { border-color: #e94560; background: #e94560; color: white; }
+.label-btn .key { font-family: monospace; font-weight: bold; margin-right: 4px; }
+
+#oblique-panel { flex: 1; overflow-y: auto; padding: 8px; }
+#oblique-panel h3 { font-size: 12px; color: #888; margin-bottom: 8px; padding: 0 4px; }
+.oblique-thumb { width: 100%; margin-bottom: 6px; border-radius: 4px; overflow: hidden; border: 1px solid #0f3460; cursor: pointer; }
+.oblique-thumb img { width: 100%; height: 150px; object-fit: cover; display: block; }
+.oblique-thumb .dir-label { padding: 3px 8px; font-size: 11px; color: #888; background: #1a1a2e; }
+
+#stats-bar { padding: 8px 12px; border-top: 1px solid #0f3460; font-size: 11px; color: #888; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; }
+#actions { padding: 8px 12px; border-top: 1px solid #0f3460; display: flex; gap: 6px; }
+.action-btn { flex: 1; padding: 6px; border: 1px solid #0f3460; background: #1a1a2e; color: #aaa; border-radius: 4px; cursor: pointer; font-size: 11px; text-align: center; }
+.action-btn:hover { border-color: #e94560; color: #e0e0e0; }
+
+/* Lightbox */
+#lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 2000; cursor: zoom-out; }
+#lightbox img { max-width: 95%; max-height: 95%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+#lb-label { position: absolute; top: 16px; left: 16px; color: white; background: rgba(0,0,0,0.6); padding: 6px 12px; border-radius: 4px; font-size: 14px; }
+
+.leaflet-container { cursor: crosshair !important; }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<div id="sidebar">
+  <div id="toggle-sidebar" onclick="toggleSidebar()">Panel</div>
+  <div id="info-bar">
+    <div>Click to place | Right-click to delete | Shift+drag to move | Keys 1-5 for category</div>
+    <div class="coords" id="click-coords" style="margin-top:4px;"></div>
+  </div>
+  <div id="label-controls">
+    <h3>Active Label (keyboard shortcut)</h3>
+    <button class="label-btn active" data-label="pole" onclick="setActiveLabel('pole')"><span class="key">1</span>Pole</button>
+    <button class="label-btn" data-label="streetlight" onclick="setActiveLabel('streetlight')"><span class="key">2</span>Light</button>
+    <button class="label-btn" data-label="tree" onclick="setActiveLabel('tree')"><span class="key">3</span>Tree</button>
+    <button class="label-btn" data-label="fence" onclick="setActiveLabel('fence')"><span class="key">4</span>Fence</button>
+    <button class="label-btn" data-label="other" onclick="setActiveLabel('other')"><span class="key">5</span>Other</button>
+    <div style="margin-top:8px;">
+      <label style="font-size:11px;color:#888;"><input type="checkbox" id="show-detections" checked onchange="toggleDetections()"> Show model detections</label>
+    </div>
+  </div>
+  <div id="oblique-panel">
+    <h3>Oblique Views</h3>
+    <div id="oblique-views" style="color:#666;font-size:12px;">Click a location on the map</div>
+  </div>
+  <div id="stats-bar">
+    <span id="stats-text">Loading...</span>
+  </div>
+  <div id="actions">
+    <button class="action-btn" onclick="exportLabels()">Export JSON</button>
+    <button class="action-btn" onclick="document.getElementById('import-file').click()">Import</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importLabels(event)">
+    <button class="action-btn" onclick="clearSelected()" style="color:#e94560;">Delete</button>
+  </div>
+</div>
+
+<div id="lightbox" onclick="this.style.display='none'">
+  <div id="lb-label"></div>
+  <img id="lb-img">
+</div>
+
+<script>
+const BBOX = {
+  min_lon: -96.00532698173473, min_lat: 41.24140396772262,
+  max_lon: -95.97589954958912, max_lat: 41.25672882015283
+};
+
+const LABEL_COLORS = {
+  pole: '#00ff88',
+  streetlight: '#ffd60a',
+  tree: '#52b788',
+  fence: '#c77dff',
+  other: '#aaa'
+};
+
+let map, metadata = {};
+let labels = []; // {id, lat, lon, label, marker}
+let nextId = 1;
+let activeLabel = 'pole';
+let selectedMarker = null;
+let detectionMarkers = [];
+let showDetections = true;
+
+function initMap() {
+  map = L.map('map').fitBounds([
+    [BBOX.min_lat, BBOX.min_lon],
+    [BBOX.max_lat, BBOX.max_lon]
+  ]);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 22, attribution: '&copy; OSM'
+  }).addTo(map);
+
+  L.tileLayer('data/wmts/19_{x}_{y}.png', {
+    minZoom: 15, maxZoom: 22,
+    maxNativeZoom: 19, minNativeZoom: 19,
+    tileSize: 256, attribution: 'EagleView',
+    bounds: L.latLngBounds([BBOX.min_lat, BBOX.min_lon], [BBOX.max_lat, BBOX.max_lon]),
+    errorTileUrl: ''
+  }).addTo(map);
+
+  L.rectangle(
+    [[BBOX.min_lat, BBOX.min_lon], [BBOX.max_lat, BBOX.max_lon]],
+    { color: '#e94560', weight: 1, fill: false, dashArray: '5,5', opacity: 0.3 }
+  ).addTo(map);
+
+  // Focus area: ~300m around the original test tile (41.248644, -95.998878)
+  const FOCUS = {
+    lat: 41.248644, lon: -95.998878,
+    radius_deg_lat: 0.0018, // ~200m
+    radius_deg_lon: 0.0024, // ~200m (adjusted for latitude)
+  };
+  const focusBounds = [
+    [FOCUS.lat - FOCUS.radius_deg_lat, FOCUS.lon - FOCUS.radius_deg_lon],
+    [FOCUS.lat + FOCUS.radius_deg_lat, FOCUS.lon + FOCUS.radius_deg_lon]
+  ];
+  L.rectangle(focusBounds, {
+    color: '#00ff88', weight: 3, fill: false, dashArray: '8,4'
+  }).addTo(map);
+  L.marker([FOCUS.lat + FOCUS.radius_deg_lat + 0.0002, FOCUS.lon], {
+    icon: L.divIcon({ className: '', html: '<div style="color:#00ff88;font-size:12px;font-weight:bold;white-space:nowrap;">LABEL THIS AREA</div>', iconAnchor: [60, 0] })
+  }).addTo(map);
+
+  // Zoom to focus area
+  map.fitBounds(focusBounds, { padding: [50, 50] });
+
+  map.on('click', onMapClick);
+  map.on('contextmenu', onRightClick);
+}
+
+function onRightClick(e) {
+  // Right-click near a marker to delete it
+  const clickLatLng = e.latlng;
+  let closest = null;
+  let closestDist = Infinity;
+  for (const entry of labels) {
+    const d = map.distance(clickLatLng, L.latLng(entry.lat, entry.lon));
+    if (d < closestDist) { closestDist = d; closest = entry; }
+  }
+  // Delete if within ~5m
+  if (closest && closestDist < 5) {
+    map.removeLayer(closest.marker);
+    labels = labels.filter(l => l.id !== closest.id);
+    if (selectedMarker && selectedMarker.id === closest.id) selectedMarker = null;
+    saveLabels();
+    updateStats();
+  }
+}
+
+function onMapClick(e) {
+  const { lat, lng } = e.latlng;
+  document.getElementById('click-coords').textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+
+  // Place a new label marker
+  const id = nextId++;
+  const marker = L.circleMarker([lat, lng], {
+    radius: 8,
+    fillColor: LABEL_COLORS[activeLabel],
+    color: '#fff',
+    weight: 2,
+    fillOpacity: 0.9,
+    draggable: false
+  }).addTo(map);
+
+  const entry = { id, lat, lon: lng, label: activeLabel, marker, labeled_at: new Date().toISOString() };
+  labels.push(entry);
+
+  marker.bindTooltip(`${activeLabel} #${id}`, { permanent: false });
+  marker.on('click', (ev) => {
+    L.DomEvent.stopPropagation(ev);
+    selectMarker(entry);
+  });
+
+  // Make draggable via mousedown
+  enableDrag(marker, entry);
+
+  selectMarker(entry);
+  showObliques(lat, lng);
+  saveLabels();
+  updateStats();
+}
+
+function enableDrag(marker, entry) {
+  let dragging = false;
+  marker.on('mousedown', (e) => {
+    if (e.originalEvent.shiftKey) {
+      dragging = true;
+      map.dragging.disable();
+      L.DomEvent.stopPropagation(e);
+    }
+  });
+  map.on('mousemove', (e) => {
+    if (!dragging) return;
+    marker.setLatLng(e.latlng);
+    entry.lat = e.latlng.lat;
+    entry.lon = e.latlng.lng;
+  });
+  map.on('mouseup', () => {
+    if (dragging) {
+      dragging = false;
+      map.dragging.enable();
+      saveLabels();
+    }
+  });
+}
+
+function selectMarker(entry) {
+  // Deselect previous
+  if (selectedMarker) {
+    selectedMarker.marker.setStyle({ color: '#fff', weight: 2 });
+  }
+  selectedMarker = entry;
+  entry.marker.setStyle({ color: '#e94560', weight: 3 });
+
+  document.getElementById('click-coords').textContent =
+    `#${entry.id} ${entry.label} | ${entry.lat.toFixed(6)}, ${entry.lon.toFixed(6)}`;
+
+  // Update active label to match
+  setActiveLabel(entry.label, false);
+  showObliques(entry.lat, entry.lon);
+}
+
+function setActiveLabel(label, updateSelected = true) {
+  activeLabel = label;
+  document.querySelectorAll('.label-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.label === label);
+  });
+
+  // If a marker is selected, update its label
+  if (updateSelected && selectedMarker) {
+    selectedMarker.label = label;
+    selectedMarker.marker.setStyle({ fillColor: LABEL_COLORS[label] });
+    selectedMarker.marker.setTooltipContent(`${label} #${selectedMarker.id}`);
+    saveLabels();
+    updateStats();
+  }
+}
+
+function clearSelected() {
+  if (!selectedMarker) return;
+  map.removeLayer(selectedMarker.marker);
+  labels = labels.filter(l => l.id !== selectedMarker.id);
+  selectedMarker = null;
+  document.getElementById('click-coords').textContent = '';
+  saveLabels();
+  updateStats();
+}
+
+function showObliques(lat, lon) {
+  const panel = document.getElementById('oblique-views');
+  panel.innerHTML = '';
+
+  // Find oblique images whose footprint contains this point
+  const matching = {};
+  for (const [urn, m] of Object.entries(metadata)) {
+    if (m.type !== 'oblique' || !m.local_path || !m.ground_footprint) continue;
+
+    try {
+      const gj = JSON.parse(m.ground_footprint.geojson.value);
+      const feat = gj.type === 'FeatureCollection' ? gj.features[0] : gj;
+      const geom = feat.geometry || feat;
+      const coords = geom.type === 'MultiPolygon' ? geom.coordinates[0] : geom.coordinates;
+      const ring = coords[0] && Array.isArray(coords[0][0]) ? coords[0] : coords;
+
+      let inside = false;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const [xi, yi] = ring[i], [xj, yj] = ring[j];
+        if (((yi > lat) !== (yj > lat)) && (lon < (xj - xi) * (lat - yi) / (yj - yi) + xi))
+          inside = !inside;
+      }
+      if (!inside) continue;
+
+      const gsd = m.calculated_gsd?.value || 999;
+      const d = m.direction;
+      if (!matching[d] || gsd < matching[d].gsd) {
+        matching[d] = { urn, gsd, meta: m };
+      }
+    } catch {}
+  }
+
+  const dirs = Object.keys(matching).sort();
+  if (dirs.length === 0) {
+    panel.innerHTML = '<div style="color:#666;font-size:12px;padding:8px;">No oblique images cover this location</div>';
+    return;
+  }
+
+  for (const d of dirs) {
+    const m = matching[d].meta;
+    const localPath = m.local_path;
+    const idx = localPath.indexOf('data/');
+    const url = idx >= 0 ? localPath.substring(idx) : null;
+    if (!url) continue;
+
+    const thumb = document.createElement('div');
+    thumb.className = 'oblique-thumb';
+    thumb.innerHTML = `
+      <img src="${url}" loading="lazy" onerror="this.style.opacity=0.2"
+           onclick="document.getElementById('lb-img').src=this.src; document.getElementById('lb-label').textContent='${d.toUpperCase()} | ${m.calculated_gsd?.value?.toFixed(4) || '?'}m/px'; document.getElementById('lightbox').style.display='block';">
+      <div class="dir-label">${d.toUpperCase()} | ${m.calculated_gsd?.value?.toFixed(4) || '?'}m/px | z${m.zoom_range?.maximum_zoom_level || '?'}</div>
+    `;
+    panel.appendChild(thumb);
+  }
+}
+
+async function loadDetections() {
+  try {
+    const resp = await fetch('data/debug/batch/batch_results.json');
+    const results = await resp.json();
+
+    for (const loc of results) {
+      for (const det of (loc.confirmed || [])) {
+        // Approximate GPS from detection (rough, same as before)
+        const marker = L.circleMarker([loc.lat, loc.lon], {
+          radius: 5,
+          fillColor: '#ff6b6b',
+          color: '#ff6b6b',
+          weight: 1,
+          fillOpacity: 0.3,
+          opacity: 0.4
+        }).addTo(map);
+        marker.bindTooltip(`Model: ${det.source_view} ${det.est_height}m (${det.num_views}v)`, { permanent: false });
+        detectionMarkers.push(marker);
+      }
+    }
+  } catch {}
+}
+
+function toggleDetections() {
+  showDetections = !showDetections;
+  detectionMarkers.forEach(m => {
+    if (showDetections) m.addTo(map);
+    else map.removeLayer(m);
+  });
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('collapsed');
+  map.invalidateSize();
+}
+
+function saveLabels() {
+  const data = labels.map(l => ({
+    id: l.id, lat: l.lat, lon: l.lon, label: l.label, labeled_at: l.labeled_at
+  }));
+  localStorage.setItem('pole_labels_v2', JSON.stringify(data));
+}
+
+function loadSavedLabels() {
+  const saved = localStorage.getItem('pole_labels_v2');
+  if (!saved) return;
+  const data = JSON.parse(saved);
+  for (const entry of data) {
+    const marker = L.circleMarker([entry.lat, entry.lon], {
+      radius: 8,
+      fillColor: LABEL_COLORS[entry.label] || '#aaa',
+      color: '#fff',
+      weight: 2,
+      fillOpacity: 0.9
+    }).addTo(map);
+    marker.bindTooltip(`${entry.label} #${entry.id}`, { permanent: false });
+
+    const labelEntry = { ...entry, marker };
+    labels.push(labelEntry);
+    marker.on('click', (ev) => { L.DomEvent.stopPropagation(ev); selectMarker(labelEntry); });
+    enableDrag(marker, labelEntry);
+
+    if (entry.id >= nextId) nextId = entry.id + 1;
+  }
+  updateStats();
+}
+
+function updateStats() {
+  const counts = {};
+  for (const l of labels) {
+    counts[l.label] = (counts[l.label] || 0) + 1;
+  }
+  const parts = Object.entries(counts).map(([k, v]) =>
+    `<span style="color:${LABEL_COLORS[k] || '#aaa'}">${k}: ${v}</span>`
+  ).join(' | ');
+  document.getElementById('stats-text').innerHTML = `Total: ${labels.length} ${parts ? '| ' + parts : ''}`;
+}
+
+function exportLabels() {
+  const counts = {};
+  for (const l of labels) counts[l.label] = (counts[l.label] || 0) + 1;
+
+  const output = {
+    labels: labels.map(l => ({
+      id: l.id, lat: l.lat, lon: l.lon, label: l.label, labeled_at: l.labeled_at
+    })),
+    stats: { total: labels.length, ...counts },
+    exported_at: new Date().toISOString()
+  };
+
+  const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'ground_truth_v2.json';
+  a.click();
+}
+
+function importLabels(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      // Clear existing
+      labels.forEach(l => map.removeLayer(l.marker));
+      labels = [];
+      nextId = 1;
+
+      for (const entry of data.labels) {
+        const marker = L.circleMarker([entry.lat, entry.lon], {
+          radius: 8,
+          fillColor: LABEL_COLORS[entry.label] || '#aaa',
+          color: '#fff', weight: 2, fillOpacity: 0.9
+        }).addTo(map);
+        marker.bindTooltip(`${entry.label} #${entry.id}`, { permanent: false });
+        const labelEntry = { ...entry, marker };
+        labels.push(labelEntry);
+        marker.on('click', (ev) => { L.DomEvent.stopPropagation(ev); selectMarker(labelEntry); });
+        enableDrag(marker, labelEntry);
+        if (entry.id >= nextId) nextId = entry.id + 1;
+      }
+      saveLabels();
+      updateStats();
+    } catch (err) { alert('Invalid JSON: ' + err.message); }
+  };
+  reader.readAsText(file);
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT') return;
+  switch (e.key) {
+    case '1': setActiveLabel('pole'); break;
+    case '2': setActiveLabel('streetlight'); break;
+    case '3': setActiveLabel('tree'); break;
+    case '4': setActiveLabel('fence'); break;
+    case '5': setActiveLabel('other'); break;
+    case 'Delete': case 'Backspace': clearSelected(); break;
+    case 'Escape':
+      if (selectedMarker) { selectedMarker.marker.setStyle({ color: '#fff', weight: 2 }); selectedMarker = null; }
+      break;
+  }
+});
+
+async function init() {
+  initMap();
+  const resp = await fetch('data/metadata.json');
+  metadata = await resp.json();
+  loadSavedLabels();
+  loadDetections();
+  updateStats();
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+.env
+data/
+models/
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+pipeline.log
