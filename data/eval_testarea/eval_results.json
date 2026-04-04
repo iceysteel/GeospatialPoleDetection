@@ -1,0 +1,2180 @@
+{
+  "detections": [
+    {
+      "source_view": "west",
+      "bbox": [
+        376,
+        233,
+        455,
+        409
+      ],
+      "conf": 0.287,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 10.3,
+      "approx_lat": 41.246551,
+      "approx_lon": -96.001667,
+      "cell": "r0_c0",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        1905,
+        348,
+        2023,
+        539
+      ],
+      "conf": 0.365,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 10.5,
+      "approx_lat": 41.24664,
+      "approx_lon": -96.001011,
+      "cell": "r0_c0",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        827,
+        152,
+        892,
+        361
+      ],
+      "conf": 0.253,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 11.5,
+      "approx_lat": 41.24696,
+      "approx_lon": -96.000793,
+      "cell": "r0_c0",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        985,
+        915,
+        1035,
+        1089
+      ],
+      "conf": 0.231,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 9.9,
+      "approx_lat": 41.246975,
+      "approx_lon": -96.000374,
+      "cell": "r0_c1",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        1330,
+        1532,
+        1384,
+        1759
+      ],
+      "conf": 0.179,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "est_height": 13.3,
+      "approx_lat": 41.246811,
+      "approx_lon": -95.999969,
+      "cell": "r0_c1",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        1978,
+        1963,
+        2011,
+        2076
+      ],
+      "conf": 0.177,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "est_height": 6.6,
+      "approx_lat": 41.247028,
+      "approx_lon": -95.999847,
+      "cell": "r0_c1",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        912,
+        1505,
+        1019,
+        1726
+      ],
+      "conf": 0.232,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 12.8,
+      "approx_lat": 41.246732,
+      "approx_lon": -95.99894,
+      "cell": "r0_c2",
+      "cluster_size": 3
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        505,
+        112,
+        581,
+        352
+      ],
+      "conf": 0.34,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "est_height": 13.4,
+      "approx_lat": 41.247059,
+      "approx_lon": -95.998661,
+      "cell": "r0_c3",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        629,
+        1050,
+        699,
+        1288
+      ],
+      "conf": 0.223,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "est_height": 13.3,
+      "approx_lat": 41.246793,
+      "approx_lon": -95.998623,
+      "cell": "r0_c3",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        1332,
+        1267,
+        1394,
+        1546
+      ],
+      "conf": 0.201,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "est_height": 15.8,
+      "approx_lat": 41.246906,
+      "approx_lon": -95.998623,
+      "cell": "r0_c3",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "south",
+      "bbox": [
+        45,
+        1055,
+        130,
+        1315
+      ],
+      "conf": 0.294,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 14.8,
+      "approx_lat": 41.247013,
+      "approx_lon": -95.997871,
+      "cell": "r0_c3",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "south",
+      "bbox": [
+        257,
+        1444,
+        346,
+        1687
+      ],
+      "conf": 0.219,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 13.8,
+      "approx_lat": 41.247189,
+      "approx_lon": -95.997993,
+      "cell": "r0_c3",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        1322,
+        560,
+        1424,
+        852
+      ],
+      "conf": 0.456,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 16.7,
+      "approx_lat": 41.246921,
+      "approx_lon": -95.997232,
+      "cell": "r0_c4",
+      "cluster_size": 4
+    },
+    {
+      "source_view": "south",
+      "bbox": [
+        1992,
+        896,
+        2061,
+        1161
+      ],
+      "conf": 0.368,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "est_height": 15.0,
+      "approx_lat": 41.246915,
+      "approx_lon": -95.997648,
+      "cell": "r0_c4",
+      "cluster_size": 3
+    },
+    {
+      "source_view": "south",
+      "bbox": [
+        1560,
+        244,
+        1589,
+        418
+      ],
+      "conf": 0.236,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 9.9,
+      "approx_lat": 41.246559,
+      "approx_lon": -95.997448,
+      "cell": "r0_c4",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "south",
+      "bbox": [
+        2508,
+        267,
+        2554,
+        524
+      ],
+      "conf": 0.153,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "est_height": 14.6,
+      "approx_lat": 41.246552,
+      "approx_lon": -95.997887,
+      "cell": "r0_c4",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        661,
+        737,
+        748,
+        1051
+      ],
+      "conf": 0.461,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "est_height": 17.9,
+      "approx_lat": 41.246903,
+      "approx_lon": -95.996475,
+      "cell": "r0_c5",
+      "cluster_size": 3
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        513,
+        1,
+        605,
+        407
+      ],
+      "conf": 0.152,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "est_height": 22.7,
+      "approx_lat": 41.247097,
+      "approx_lon": -95.996674,
+      "cell": "r0_c5",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        1710,
+        509,
+        1791,
+        746
+      ],
+      "conf": 0.444,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "est_height": 13.6,
+      "approx_lat": 41.246944,
+      "approx_lon": -95.996651,
+      "cell": "r0_c5",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        801,
+        547,
+        865,
+        760
+      ],
+      "conf": 0.319,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "est_height": 12.2,
+      "approx_lat": 41.246662,
+      "approx_lon": -95.996666,
+      "cell": "r0_c5",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        918,
+        219,
+        967,
+        406
+      ],
+      "conf": 0.249,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 10.2,
+      "approx_lat": 41.247658,
+      "approx_lon": -96.000832,
+      "cell": "r1_c0",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        2433,
+        1416,
+        2546,
+        1600
+      ],
+      "conf": 0.231,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 10.1,
+      "approx_lat": 41.247257,
+      "approx_lon": -96.00161,
+      "cell": "r1_c0",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        365,
+        866,
+        420,
+        1129
+      ],
+      "conf": 0.266,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "est_height": 14.7,
+      "approx_lat": 41.247509,
+      "approx_lon": -96.000603,
+      "cell": "r1_c1",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        2659,
+        1469,
+        2700,
+        1656
+      ],
+      "conf": 0.223,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 10.9,
+      "approx_lat": 41.247892,
+      "approx_lon": -95.999969,
+      "cell": "r1_c1",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        443,
+        759,
+        490,
+        1053
+      ],
+      "conf": 0.214,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "est_height": 16.4,
+      "approx_lat": 41.24759,
+      "approx_lon": -95.999563,
+      "cell": "r1_c2",
+      "cluster_size": 4
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        1766,
+        4,
+        1824,
+        335
+      ],
+      "conf": 0.214,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "est_height": 18.8,
+      "approx_lat": 41.247543,
+      "approx_lon": -95.998863,
+      "cell": "r1_c2",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "south",
+      "bbox": [
+        2085,
+        526,
+        2124,
+        710
+      ],
+      "conf": 0.161,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 10.4,
+      "approx_lat": 41.247379,
+      "approx_lon": -95.999603,
+      "cell": "r1_c2",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        820,
+        1026,
+        851,
+        1190
+      ],
+      "conf": 0.326,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 9.6,
+      "approx_lat": 41.247498,
+      "approx_lon": -95.999229,
+      "cell": "r1_c2",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        1800,
+        963,
+        1867,
+        1165
+      ],
+      "conf": 0.151,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "south",
+        "west"
+      ],
+      "est_height": 11.8,
+      "approx_lat": 41.247791,
+      "approx_lon": -95.99926,
+      "cell": "r1_c2",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        649,
+        779,
+        683,
+        1001
+      ],
+      "conf": 0.161,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "est_height": 12.4,
+      "approx_lat": 41.247551,
+      "approx_lon": -95.998581,
+      "cell": "r1_c3",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        576,
+        1044,
+        619,
+        1358
+      ],
+      "conf": 0.17,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "est_height": 17.8,
+      "approx_lat": 41.247826,
+      "approx_lon": -95.998558,
+      "cell": "r1_c3",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        1591,
+        142,
+        1746,
+        580
+      ],
+      "conf": 0.274,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "est_height": 20.9,
+      "approx_lat": 41.247694,
+      "approx_lon": -95.997116,
+      "cell": "r1_c4",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        2345,
+        560,
+        2444,
+        865
+      ],
+      "conf": 0.242,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "est_height": 17.6,
+      "approx_lat": 41.247387,
+      "approx_lon": -95.997181,
+      "cell": "r1_c4",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "south",
+      "bbox": [
+        2503,
+        647,
+        2553,
+        915
+      ],
+      "conf": 0.343,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "est_height": 15.2,
+      "approx_lat": 41.247488,
+      "approx_lon": -95.997921,
+      "cell": "r1_c4",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        1537,
+        862,
+        1590,
+        1117
+      ],
+      "conf": 0.158,
+      "num_views": 3,
+      "agreeing_views": [
+        "north",
+        "south",
+        "west"
+      ],
+      "est_height": 14.7,
+      "approx_lat": 41.247604,
+      "approx_lon": -95.99736,
+      "cell": "r1_c4",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        1785,
+        180,
+        1829,
+        345
+      ],
+      "conf": 0.243,
+      "num_views": 4,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south",
+        "west"
+      ],
+      "est_height": 9.7,
+      "approx_lat": 41.247749,
+      "approx_lon": -95.996169,
+      "cell": "r1_c5",
+      "cluster_size": 3
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        1989,
+        464,
+        2035,
+        732
+      ],
+      "conf": 0.357,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 15.3,
+      "approx_lat": 41.247311,
+      "approx_lon": -95.996338,
+      "cell": "r1_c5",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        1909,
+        905,
+        1952,
+        1098
+      ],
+      "conf": 0.295,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 11.0,
+      "approx_lat": 41.247326,
+      "approx_lon": -95.996529,
+      "cell": "r1_c5",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "south",
+      "bbox": [
+        1450,
+        973,
+        1531,
+        1153
+      ],
+      "conf": 0.169,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "est_height": 10.2,
+      "approx_lat": 41.247674,
+      "approx_lon": -95.996487,
+      "cell": "r1_c5",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        2716,
+        1302,
+        2789,
+        1500
+      ],
+      "conf": 0.256,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 10.8,
+      "approx_lat": 41.247936,
+      "approx_lon": -96.001613,
+      "cell": "r2_c0",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        1619,
+        1850,
+        1671,
+        2051
+      ],
+      "conf": 0.33,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "est_height": 11.0,
+      "approx_lat": 41.248272,
+      "approx_lon": -96.001793,
+      "cell": "r2_c0",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        2716,
+        277,
+        2795,
+        493
+      ],
+      "conf": 0.43,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 12.6,
+      "approx_lat": 41.248676,
+      "approx_lon": -96.001633,
+      "cell": "r2_c0",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        1934,
+        786,
+        1968,
+        1002
+      ],
+      "conf": 0.193,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "est_height": 12.1,
+      "approx_lat": 41.248348,
+      "approx_lon": -95.999191,
+      "cell": "r2_c2",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        837,
+        660,
+        876,
+        930
+      ],
+      "conf": 0.254,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 15.3,
+      "approx_lat": 41.248497,
+      "approx_lon": -95.999245,
+      "cell": "r2_c2",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        1036,
+        13,
+        1144,
+        339
+      ],
+      "conf": 0.171,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "est_height": 19.0,
+      "approx_lat": 41.248283,
+      "approx_lon": -95.999695,
+      "cell": "r2_c2",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        1453,
+        548,
+        1493,
+        758
+      ],
+      "conf": 0.337,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "est_height": 14.4,
+      "approx_lat": 41.248318,
+      "approx_lon": -95.998611,
+      "cell": "r2_c3",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        418,
+        490,
+        497,
+        745
+      ],
+      "conf": 0.251,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 14.8,
+      "approx_lat": 41.248678,
+      "approx_lon": -95.998688,
+      "cell": "r3_c3",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        1701,
+        645,
+        1740,
+        877
+      ],
+      "conf": 0.277,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "est_height": 13.0,
+      "approx_lat": 41.248268,
+      "approx_lon": -95.997192,
+      "cell": "r2_c4",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        1103,
+        816,
+        1131,
+        969
+      ],
+      "conf": 0.174,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "est_height": 8.6,
+      "approx_lat": 41.24823,
+      "approx_lon": -95.997437,
+      "cell": "r2_c4",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        545,
+        330,
+        584,
+        409
+      ],
+      "conf": 0.156,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "est_height": 4.4,
+      "approx_lat": 41.248522,
+      "approx_lon": -95.997635,
+      "cell": "r2_c4",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        1235,
+        1670,
+        1310,
+        1983
+      ],
+      "conf": 0.201,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 17.8,
+      "approx_lat": 41.248368,
+      "approx_lon": -95.997833,
+      "cell": "r2_c4",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        186,
+        103,
+        234,
+        338
+      ],
+      "conf": 0.176,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "est_height": 13.5,
+      "approx_lat": 41.247932,
+      "approx_lon": -95.99794,
+      "cell": "r2_c4",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        1923,
+        54,
+        2036,
+        406
+      ],
+      "conf": 0.198,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "est_height": 19.7,
+      "approx_lat": 41.248619,
+      "approx_lon": -95.996277,
+      "cell": "r2_c5",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "south",
+      "bbox": [
+        1611,
+        1671,
+        1714,
+        1993
+      ],
+      "conf": 0.224,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "est_height": 18.3,
+      "approx_lat": 41.248646,
+      "approx_lon": -95.996628,
+      "cell": "r2_c5",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "south",
+      "bbox": [
+        1296,
+        1380,
+        1500,
+        1657
+      ],
+      "conf": 0.191,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "est_height": 15.7,
+      "approx_lat": 41.248512,
+      "approx_lon": -95.996498,
+      "cell": "r2_c5",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "south",
+      "bbox": [
+        557,
+        1216,
+        595,
+        1434
+      ],
+      "conf": 0.174,
+      "num_views": 3,
+      "agreeing_views": [
+        "north",
+        "south",
+        "west"
+      ],
+      "est_height": 12.4,
+      "approx_lat": 41.248455,
+      "approx_lon": -95.996155,
+      "cell": "r2_c5",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "south",
+      "bbox": [
+        1152,
+        167,
+        1217,
+        355
+      ],
+      "conf": 0.153,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "est_height": 10.7,
+      "approx_lat": 41.247959,
+      "approx_lon": -95.99633,
+      "cell": "r2_c5",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        1125,
+        525,
+        1184,
+        908
+      ],
+      "conf": 0.161,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "est_height": 21.4,
+      "approx_lat": 41.249149,
+      "approx_lon": -96.001404,
+      "cell": "r3_c0",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        1745,
+        621,
+        1807,
+        893
+      ],
+      "conf": 0.367,
+      "num_views": 4,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south",
+        "west"
+      ],
+      "est_height": 17.1,
+      "approx_lat": 41.248884,
+      "approx_lon": -96.001199,
+      "cell": "r3_c0",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        963,
+        710,
+        1023,
+        994
+      ],
+      "conf": 0.348,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "est_height": 16.1,
+      "approx_lat": 41.249092,
+      "approx_lon": -96.001171,
+      "cell": "r3_c0",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        286,
+        708,
+        328,
+        1093
+      ],
+      "conf": 0.265,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 21.1,
+      "approx_lat": 41.249336,
+      "approx_lon": -96.001106,
+      "cell": "r3_c0",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        672,
+        519,
+        709,
+        757
+      ],
+      "conf": 0.26,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "est_height": 13.0,
+      "approx_lat": 41.249203,
+      "approx_lon": -96.000992,
+      "cell": "r3_c0",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        2223,
+        378,
+        2306,
+        633
+      ],
+      "conf": 0.184,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 14.0,
+      "approx_lat": 41.248671,
+      "approx_lon": -96.001041,
+      "cell": "r3_c0",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        626,
+        1541,
+        701,
+        1695
+      ],
+      "conf": 0.22,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "est_height": 9.0,
+      "approx_lat": 41.248764,
+      "approx_lon": -96.000786,
+      "cell": "r3_c0",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        1232,
+        1494,
+        1286,
+        1765
+      ],
+      "conf": 0.426,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "est_height": 15.1,
+      "approx_lat": 41.248729,
+      "approx_lon": -95.999496,
+      "cell": "r3_c2",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        1644,
+        4,
+        1751,
+        373
+      ],
+      "conf": 0.217,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 16.8,
+      "approx_lat": 41.249176,
+      "approx_lon": -95.999676,
+      "cell": "r3_c2",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        132,
+        1278,
+        237,
+        1642
+      ],
+      "conf": 0.166,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 21.3,
+      "approx_lat": 41.248745,
+      "approx_lon": -95.999039,
+      "cell": "r3_c2",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        1825,
+        1284,
+        1861,
+        1441
+      ],
+      "conf": 0.161,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 9.2,
+      "approx_lat": 41.249237,
+      "approx_lon": -95.9991,
+      "cell": "r3_c2",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        2091,
+        1514,
+        2185,
+        1795
+      ],
+      "conf": 0.224,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "est_height": 15.7,
+      "approx_lat": 41.248753,
+      "approx_lon": -95.998177,
+      "cell": "r3_c3",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        185,
+        1590,
+        247,
+        1800
+      ],
+      "conf": 0.175,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 12.2,
+      "approx_lat": 41.248638,
+      "approx_lon": -95.997993,
+      "cell": "r3_c3",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        1370,
+        958,
+        1458,
+        1174
+      ],
+      "conf": 0.16,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "est_height": 12.1,
+      "approx_lat": 41.248989,
+      "approx_lon": -95.996529,
+      "cell": "r3_c5",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        953,
+        1543,
+        1098,
+        1889
+      ],
+      "conf": 0.202,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "est_height": 17.5,
+      "approx_lat": 41.249107,
+      "approx_lon": -95.996826,
+      "cell": "r3_c5",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        1005,
+        723,
+        1062,
+        959
+      ],
+      "conf": 0.388,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 12.9,
+      "approx_lat": 41.249832,
+      "approx_lon": -96.001137,
+      "cell": "r4_c0",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        1967,
+        590,
+        2022,
+        839
+      ],
+      "conf": 0.369,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 13.6,
+      "approx_lat": 41.249527,
+      "approx_lon": -96.001129,
+      "cell": "r4_c0",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        1457,
+        1062,
+        1547,
+        1227
+      ],
+      "conf": 0.339,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 9.6,
+      "approx_lat": 41.249729,
+      "approx_lon": -96.000198,
+      "cell": "r4_c1",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        1275,
+        268,
+        1305,
+        395
+      ],
+      "conf": 0.161,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "est_height": 7.1,
+      "approx_lat": 41.250027,
+      "approx_lon": -95.999397,
+      "cell": "r4_c2",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "south",
+      "bbox": [
+        287,
+        2,
+        343,
+        224
+      ],
+      "conf": 0.19,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 12.6,
+      "approx_lat": 41.249477,
+      "approx_lon": -95.999031,
+      "cell": "r4_c2",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        1446,
+        489,
+        1542,
+        798
+      ],
+      "conf": 0.324,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 18.1,
+      "approx_lat": 41.249706,
+      "approx_lon": -95.999611,
+      "cell": "r4_c2",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        1540,
+        901,
+        1574,
+        1070
+      ],
+      "conf": 0.323,
+      "num_views": 4,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south",
+        "west"
+      ],
+      "est_height": 13.4,
+      "approx_lat": 41.249719,
+      "approx_lon": -95.998374,
+      "cell": "r4_c3",
+      "cluster_size": 4
+    },
+    {
+      "source_view": "south",
+      "bbox": [
+        229,
+        515,
+        280,
+        780
+      ],
+      "conf": 0.327,
+      "num_views": 3,
+      "agreeing_views": [
+        "north",
+        "south",
+        "west"
+      ],
+      "est_height": 15.0,
+      "approx_lat": 41.24964,
+      "approx_lon": -95.997879,
+      "cell": "r4_c3",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        2182,
+        1442,
+        2267,
+        1683
+      ],
+      "conf": 0.323,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "est_height": 14.0,
+      "approx_lat": 41.249971,
+      "approx_lon": -95.998069,
+      "cell": "r4_c3",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        2694,
+        515,
+        2785,
+        748
+      ],
+      "conf": 0.351,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 13.3,
+      "approx_lat": 41.250056,
+      "approx_lon": -95.997217,
+      "cell": "r5_c4",
+      "cluster_size": 5
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        1366,
+        584,
+        1406,
+        828
+      ],
+      "conf": 0.237,
+      "num_views": 4,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south",
+        "west"
+      ],
+      "est_height": 13.6,
+      "approx_lat": 41.249855,
+      "approx_lon": -95.997459,
+      "cell": "r4_c4",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        2385,
+        1522,
+        2487,
+        1787
+      ],
+      "conf": 0.254,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 15.1,
+      "approx_lat": 41.250042,
+      "approx_lon": -95.997849,
+      "cell": "r5_c4",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        1524,
+        1006,
+        1559,
+        1253
+      ],
+      "conf": 0.237,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "south",
+        "west"
+      ],
+      "est_height": 14.2,
+      "approx_lat": 41.249806,
+      "approx_lon": -95.997205,
+      "cell": "r4_c4",
+      "cluster_size": 3
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        1169,
+        3,
+        1238,
+        265
+      ],
+      "conf": 0.192,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "est_height": 14.6,
+      "approx_lat": 41.250114,
+      "approx_lon": -95.997498,
+      "cell": "r4_c4",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        966,
+        1427,
+        1053,
+        1706
+      ],
+      "conf": 0.339,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "est_height": 15.9,
+      "approx_lat": 41.24979,
+      "approx_lon": -95.997846,
+      "cell": "r4_c4",
+      "cluster_size": 3
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        784,
+        1105,
+        811,
+        1355
+      ],
+      "conf": 0.205,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "est_height": 14.4,
+      "approx_lat": 41.249512,
+      "approx_lon": -95.997253,
+      "cell": "r4_c4",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        234,
+        1168,
+        272,
+        1411
+      ],
+      "conf": 0.175,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "est_height": 14.0,
+      "approx_lat": 41.249332,
+      "approx_lon": -95.997238,
+      "cell": "r4_c4",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        1019,
+        686,
+        1079,
+        943
+      ],
+      "conf": 0.417,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 14.1,
+      "approx_lat": 41.250558,
+      "approx_lon": -96.001221,
+      "cell": "r5_c0",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        1895,
+        577,
+        1942,
+        849
+      ],
+      "conf": 0.39,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 14.9,
+      "approx_lat": 41.250278,
+      "approx_lon": -96.001137,
+      "cell": "r5_c0",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        2668,
+        1688,
+        2719,
+        1863
+      ],
+      "conf": 0.161,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 9.6,
+      "approx_lat": 41.250118,
+      "approx_lon": -96.001793,
+      "cell": "r5_c0",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        1078,
+        368,
+        1149,
+        622
+      ],
+      "conf": 0.271,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "est_height": 14.2,
+      "approx_lat": 41.250667,
+      "approx_lon": -95.999393,
+      "cell": "r5_c2",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        1692,
+        396,
+        1720,
+        570
+      ],
+      "conf": 0.263,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "est_height": 9.7,
+      "approx_lat": 41.250652,
+      "approx_lon": -95.999222,
+      "cell": "r5_c2",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        1563,
+        1254,
+        1615,
+        1524
+      ],
+      "conf": 0.234,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 15.8,
+      "approx_lat": 41.250465,
+      "approx_lon": -95.999161,
+      "cell": "r5_c2",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        547,
+        439,
+        621,
+        693
+      ],
+      "conf": 0.202,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 14.8,
+      "approx_lat": 41.250156,
+      "approx_lon": -95.999626,
+      "cell": "r5_c2",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "south",
+      "bbox": [
+        1275,
+        1138,
+        1313,
+        1385
+      ],
+      "conf": 0.428,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "south",
+        "west"
+      ],
+      "est_height": 14.9,
+      "approx_lat": 41.250639,
+      "approx_lon": -95.998479,
+      "cell": "r5_c3",
+      "cluster_size": 5
+    },
+    {
+      "source_view": "north",
+      "bbox": [
+        803,
+        781,
+        837,
+        1010
+      ],
+      "conf": 0.218,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "est_height": 15.6,
+      "approx_lat": 41.250418,
+      "approx_lon": -95.998714,
+      "cell": "r5_c3",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        765,
+        1801,
+        808,
+        2055
+      ],
+      "conf": 0.312,
+      "num_views": 3,
+      "agreeing_views": [
+        "north",
+        "south",
+        "west"
+      ],
+      "est_height": 14.7,
+      "approx_lat": 41.250265,
+      "approx_lon": -95.997963,
+      "cell": "r5_c3",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        969,
+        604,
+        1077,
+        864
+      ],
+      "conf": 0.234,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 14.8,
+      "approx_lat": 41.25058,
+      "approx_lon": -95.997322,
+      "cell": "r5_c4",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        1453,
+        1405,
+        1568,
+        1702
+      ],
+      "conf": 0.171,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "est_height": 16.9,
+      "approx_lat": 41.250389,
+      "approx_lon": -95.997795,
+      "cell": "r5_c4",
+      "cluster_size": 1
+    },
+    {
+      "source_view": "east",
+      "bbox": [
+        514,
+        600,
+        557,
+        864
+      ],
+      "conf": 0.244,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "est_height": 15.1,
+      "approx_lat": 41.250633,
+      "approx_lon": -95.996468,
+      "cell": "r5_c5",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "south",
+      "bbox": [
+        215,
+        1606,
+        339,
+        1917
+      ],
+      "conf": 0.255,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "est_height": 17.6,
+      "approx_lat": 41.25066,
+      "approx_lon": -95.996112,
+      "cell": "r5_c5",
+      "cluster_size": 2
+    },
+    {
+      "source_view": "west",
+      "bbox": [
+        2109,
+        1515,
+        2147,
+        1741
+      ],
+      "conf": 0.294,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "est_height": 13.0,
+      "approx_lat": 41.250626,
+      "approx_lon": -95.995972,
+      "cell": "r5_c5",
+      "cluster_size": 1
+    }
+  ],
+  "evaluation": {
+    "5": {
+      "tp": 11,
+      "fp": 93,
+      "fn": 43,
+      "fp_streetlight": 2,
+      "precision": 0.106,
+      "recall": 0.204,
+      "f1": 0.139,
+      "gt_poles": 54,
+      "gt_streetlights": 6,
+      "detections": 104
+    },
+    "10": {
+      "tp": 26,
+      "fp": 78,
+      "fn": 28,
+      "fp_streetlight": 4,
+      "precision": 0.25,
+      "recall": 0.481,
+      "f1": 0.329,
+      "gt_poles": 54,
+      "gt_streetlights": 6,
+      "detections": 104
+    },
+    "15": {
+      "tp": 30,
+      "fp": 74,
+      "fn": 24,
+      "fp_streetlight": 4,
+      "precision": 0.288,
+      "recall": 0.556,
+      "f1": 0.38,
+      "gt_poles": 54,
+      "gt_streetlights": 6,
+      "detections": 104
+    },
+    "20": {
+      "tp": 31,
+      "fp": 73,
+      "fn": 23,
+      "fp_streetlight": 4,
+      "precision": 0.298,
+      "recall": 0.574,
+      "f1": 0.392,
+      "gt_poles": 54,
+      "gt_streetlights": 6,
+      "detections": 104
+    },
+    "30": {
+      "tp": 33,
+      "fp": 71,
+      "fn": 21,
+      "fp_streetlight": 6,
+      "precision": 0.317,
+      "recall": 0.611,
+      "f1": 0.418,
+      "gt_poles": 54,
+      "gt_streetlights": 6,
+      "detections": 104
+    }
+  },
+  "gt_summary": {
+    "poles": 54,
+    "streetlights": 6
+  },
+  "grid_cells": 36,
+  "total_time": 1000.1
+}
