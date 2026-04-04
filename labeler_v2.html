@@ -54,7 +54,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; d
 <div id="sidebar">
   <div id="toggle-sidebar" onclick="toggleSidebar()">Panel</div>
   <div id="info-bar">
-    <div>Click to place | Right-click to delete | Shift+drag to move | Keys 1-5 for category</div>
+    <div>Click to place | Right-click to delete | <strong>M</strong> to move selected | Keys 1-5 for category</div>
     <div class="coords" id="click-coords" style="margin-top:4px;"></div>
   </div>
   <div id="label-controls">
@@ -79,6 +79,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; d
     <button class="action-btn" onclick="exportLabels()">Export JSON</button>
     <button class="action-btn" onclick="document.getElementById('import-file').click()">Import</button>
     <input type="file" id="import-file" accept=".json" style="display:none" onchange="importLabels(event)">
+    <button class="action-btn" onclick="startMoveMode()" style="color:#ffd60a;">Move (M)</button>
     <button class="action-btn" onclick="clearSelected()" style="color:#e94560;">Delete</button>
   </div>
 </div>
@@ -109,6 +110,37 @@ let activeLabel = 'pole';
 let selectedMarker = null;
 let detectionMarkers = [];
 let showDetections = true;
+let moveMode = false;
+
+function makeLabelIcon(label, selected) {
+  const color = LABEL_COLORS[label] || '#aaa';
+  const border = selected ? '#e94560' : '#fff';
+  const size = selected ? 20 : 16;
+  const offset = size / 2;
+  return L.divIcon({
+    className: '',
+    html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};border:2px solid ${border};margin:-${offset}px 0 0 -${offset}px;cursor:grab;"></div>`,
+    iconSize: [0, 0],
+  });
+}
+
+function createDraggableMarker(lat, lon, entry) {
+  const marker = L.marker([lat, lon], {
+    draggable: true,
+    icon: makeLabelIcon(entry.label, false),
+  }).addTo(map);
+  marker.bindTooltip(`${entry.label} #${entry.id}`, { permanent: false });
+  marker.on('click', (ev) => { L.DomEvent.stopPropagation(ev); selectMarker(entry); });
+  marker.on('dragend', () => {
+    const pos = marker.getLatLng();
+    entry.lat = pos.lat;
+    entry.lon = pos.lng;
+    saveLabels();
+    document.getElementById('click-coords').textContent =
+      `Moved #${entry.id} to ${pos.lat.toFixed(6)}, ${pos.lng.toFixed(6)}`;
+  });
+  return marker;
+}
 
 function initMap() {
   map = L.map('map').fitBounds([
@@ -120,13 +152,15 @@ function initMap() {
     maxZoom: 22, attribution: '&copy; OSM'
   }).addTo(map);
 
-  L.tileLayer('data/wmts/19_{x}_{y}.png', {
-    minZoom: 15, maxZoom: 22,
-    maxNativeZoom: 19, minNativeZoom: 19,
-    tileSize: 256, attribution: 'EagleView',
-    bounds: L.latLngBounds([BBOX.min_lat, BBOX.min_lon], [BBOX.max_lat, BBOX.max_lon]),
-    errorTileUrl: ''
-  }).addTo(map);
+  // EagleView ortho tiles — multiple zoom levels, highest available on top
+  [19, 20, 21, 22, 23].forEach(z => {
+    L.tileLayer(`data/wmts/${z}_{x}_{y}.png`, {
+      minZoom: z, maxZoom: 23,
+      maxNativeZoom: z, minNativeZoom: z,
+      tileSize: 256, attribution: 'EagleView',
+      errorTileUrl: ''
+    }).addTo(map);
+  });
 
   L.rectangle(
     [[BBOX.min_lat, BBOX.min_lon], [BBOX.max_lat, BBOX.max_lon]],
@@ -180,28 +214,34 @@ function onMapClick(e) {
   const { lat, lng } = e.latlng;
   document.getElementById('click-coords').textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
 
+  // Move mode: relocate the selected marker to the clicked position
+  if (moveMode && selectedMarker) {
+    selectedMarker.lat = lat;
+    selectedMarker.lon = lng;
+    // Remove old marker, create new one at new position
+    map.removeLayer(selectedMarker.marker);
+    const newMarker = L.circleMarker([lat, lng], {
+      radius: 8,
+      fillColor: LABEL_COLORS[selectedMarker.label],
+      color: '#e94560', weight: 3, fillOpacity: 0.9
+    }).addTo(map);
+    newMarker.bindTooltip(`${selectedMarker.label} #${selectedMarker.id}`, { permanent: false });
+    newMarker.on('click', (ev) => { L.DomEvent.stopPropagation(ev); selectMarker(selectedMarker); });
+    enableDrag(newMarker, selectedMarker);
+    selectedMarker.marker = newMarker;
+    moveMode = false;
+    map.getContainer().style.cursor = '';
+    document.getElementById('click-coords').textContent =
+      `Moved #${selectedMarker.id} to ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    saveLabels();
+    return;
+  }
+
   // Place a new label marker
   const id = nextId++;
-  const marker = L.circleMarker([lat, lng], {
-    radius: 8,
-    fillColor: LABEL_COLORS[activeLabel],
-    color: '#fff',
-    weight: 2,
-    fillOpacity: 0.9,
-    draggable: false
-  }).addTo(map);
-
-  const entry = { id, lat, lon: lng, label: activeLabel, marker, labeled_at: new Date().toISOString() };
+  const entry = { id, lat, lon: lng, label: activeLabel, marker: null, labeled_at: new Date().toISOString() };
+  entry.marker = createDraggableMarker(lat, lng, entry);
   labels.push(entry);
-
-  marker.bindTooltip(`${activeLabel} #${id}`, { permanent: false });
-  marker.on('click', (ev) => {
-    L.DomEvent.stopPropagation(ev);
-    selectMarker(entry);
-  });
-
-  // Make draggable via mousedown
-  enableDrag(marker, entry);
 
   selectMarker(entry);
   showObliques(lat, lng);
@@ -209,37 +249,15 @@ function onMapClick(e) {
   updateStats();
 }
 
-function enableDrag(marker, entry) {
-  let dragging = false;
-  marker.on('mousedown', (e) => {
-    if (e.originalEvent.shiftKey) {
-      dragging = true;
-      map.dragging.disable();
-      L.DomEvent.stopPropagation(e);
-    }
-  });
-  map.on('mousemove', (e) => {
-    if (!dragging) return;
-    marker.setLatLng(e.latlng);
-    entry.lat = e.latlng.lat;
-    entry.lon = e.latlng.lng;
-  });
-  map.on('mouseup', () => {
-    if (dragging) {
-      dragging = false;
-      map.dragging.enable();
-      saveLabels();
-    }
-  });
-}
+// enableDrag removed — L.marker with draggable:true handles drag natively
 
 function selectMarker(entry) {
   // Deselect previous
   if (selectedMarker) {
-    selectedMarker.marker.setStyle({ color: '#fff', weight: 2 });
+    selectedMarker.marker.setIcon(makeLabelIcon(selectedMarker.label, false));
   }
   selectedMarker = entry;
-  entry.marker.setStyle({ color: '#e94560', weight: 3 });
+  entry.marker.setIcon(makeLabelIcon(entry.label, true));
 
   document.getElementById('click-coords').textContent =
     `#${entry.id} ${entry.label} | ${entry.lat.toFixed(6)}, ${entry.lon.toFixed(6)}`;
@@ -258,7 +276,7 @@ function setActiveLabel(label, updateSelected = true) {
   // If a marker is selected, update its label
   if (updateSelected && selectedMarker) {
     selectedMarker.label = label;
-    selectedMarker.marker.setStyle({ fillColor: LABEL_COLORS[label] });
+    selectedMarker.marker.setIcon(makeLabelIcon(label, true));
     selectedMarker.marker.setTooltipContent(`${label} #${selectedMarker.id}`);
     saveLabels();
     updateStats();
@@ -379,20 +397,9 @@ function loadSavedLabels() {
   if (!saved) return;
   const data = JSON.parse(saved);
   for (const entry of data) {
-    const marker = L.circleMarker([entry.lat, entry.lon], {
-      radius: 8,
-      fillColor: LABEL_COLORS[entry.label] || '#aaa',
-      color: '#fff',
-      weight: 2,
-      fillOpacity: 0.9
-    }).addTo(map);
-    marker.bindTooltip(`${entry.label} #${entry.id}`, { permanent: false });
-
-    const labelEntry = { ...entry, marker };
+    const labelEntry = { ...entry, marker: null };
+    labelEntry.marker = createDraggableMarker(entry.lat, entry.lon, labelEntry);
     labels.push(labelEntry);
-    marker.on('click', (ev) => { L.DomEvent.stopPropagation(ev); selectMarker(labelEntry); });
-    enableDrag(marker, labelEntry);
-
     if (entry.id >= nextId) nextId = entry.id + 1;
   }
   updateStats();
@@ -441,16 +448,9 @@ function importLabels(event) {
       nextId = 1;
 
       for (const entry of data.labels) {
-        const marker = L.circleMarker([entry.lat, entry.lon], {
-          radius: 8,
-          fillColor: LABEL_COLORS[entry.label] || '#aaa',
-          color: '#fff', weight: 2, fillOpacity: 0.9
-        }).addTo(map);
-        marker.bindTooltip(`${entry.label} #${entry.id}`, { permanent: false });
-        const labelEntry = { ...entry, marker };
+        const labelEntry = { ...entry, marker: null };
+        labelEntry.marker = createDraggableMarker(entry.lat, entry.lon, labelEntry);
         labels.push(labelEntry);
-        marker.on('click', (ev) => { L.DomEvent.stopPropagation(ev); selectMarker(labelEntry); });
-        enableDrag(marker, labelEntry);
         if (entry.id >= nextId) nextId = entry.id + 1;
       }
       saveLabels();
@@ -460,29 +460,206 @@ function importLabels(event) {
   reader.readAsText(file);
 }
 
-// Keyboard shortcuts
+// Keyboard shortcuts — single consolidated handler
 document.addEventListener('keydown', (e) => {
-  if (e.target.tagName === 'INPUT') return;
-  switch (e.key) {
-    case '1': setActiveLabel('pole'); break;
-    case '2': setActiveLabel('streetlight'); break;
-    case '3': setActiveLabel('tree'); break;
-    case '4': setActiveLabel('fence'); break;
-    case '5': setActiveLabel('other'); break;
-    case 'Delete': case 'Backspace': clearSelected(); break;
-    case 'Escape':
-      if (selectedMarker) { selectedMarker.marker.setStyle({ color: '#fff', weight: 2 }); selectedMarker = null; }
-      break;
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  const key = e.key.toLowerCase();
+  // Label category
+  if (key === '1') { setActiveLabel('pole'); return; }
+  if (key === '2') { setActiveLabel('streetlight'); return; }
+  if (key === '3') { setActiveLabel('tree'); return; }
+  if (key === '4') { setActiveLabel('fence'); return; }
+  if (key === '5') { setActiveLabel('other'); return; }
+  // Move mode
+  if (key === 'm') { startMoveMode(); return; }
+  // Delete
+  if (key === 'delete' || key === 'backspace') { clearSelected(); return; }
+  // Escape
+  if (key === 'escape') {
+    moveMode = false;
+    map.getContainer().style.cursor = '';
+    if (selectedMarker) { selectedMarker.marker.setIcon(makeLabelIcon(selectedMarker.label, false)); selectedMarker = null; }
+    return;
   }
+  // Review shortcuts
+  if (key === 'a' || key === 'y') { acceptAuto(); return; }
+  if (key === 'r' || key === 'x') { rejectAuto(); return; }
+  if (key === 'n') { reviewNext(); return; }
+  if (key === 'p') { reviewPrev(); return; }
 });
+
+// ---- Auto-label review mode ----
+let autoLabels = [];
+let autoMarkers = [];
+let currentAutoIdx = -1;
+
+async function loadAutoLabels() {
+  try {
+    const resp = await fetch('data/ground_truth_testarea.json?t=' + Date.now());
+    const gt = await resp.json();
+    autoLabels = gt.labels.filter(l => l.source === 'auto_detected');
+    if (autoLabels.length === 0) return;
+
+    // Add review panel
+    const controls = document.getElementById('label-controls');
+    const reviewDiv = document.createElement('div');
+    reviewDiv.id = 'review-panel';
+    reviewDiv.style.cssText = 'padding:8px 12px; border-bottom:1px solid #0f3460;';
+    reviewDiv.innerHTML = `
+      <h3 style="font-size:12px;color:#e94560;margin-bottom:6px;">AUTO LABELS TO REVIEW (${autoLabels.length})</h3>
+      <div style="display:flex;gap:4px;margin-bottom:6px;">
+        <button class="action-btn" onclick="reviewPrev()" style="flex:0;">◀</button>
+        <button class="action-btn" onclick="acceptAuto()" style="background:#1a4d2e;color:#00ff88;flex:1;">✓ Accept as Pole</button>
+        <button class="action-btn" onclick="rejectAuto()" style="background:#4d1a1a;color:#ff4444;flex:1;">✗ Not a Pole</button>
+        <button class="action-btn" onclick="reviewNext()" style="flex:0;">▶</button>
+      </div>
+      <div id="review-status" style="font-size:11px;color:#888;">Click an auto label or press N/P</div>
+      <div id="review-crop" style="margin-top:6px;text-align:center;"></div>
+    `;
+    controls.parentNode.insertBefore(reviewDiv, controls.nextSibling);
+
+    // Plot auto labels on map
+    autoLabels.forEach((l, i) => {
+      const marker = L.circleMarker([l.lat, l.lon], {
+        radius: 9, fillColor: '#00ccff', color: '#ff0',
+        weight: 2.5, fillOpacity: 0.5, dashArray: '4,3'
+      }).addTo(map);
+      marker.bindTooltip(`Auto #${i+1} — click to review`);
+      marker.on('click', (ev) => {
+        L.DomEvent.stopPropagation(ev);
+        reviewAutoLabel(i);
+      });
+      autoMarkers.push(marker);
+    });
+
+    updateReviewStats();
+  } catch (e) { console.log('No auto labels:', e); }
+}
+
+function reviewAutoLabel(idx) {
+  if (idx < 0 || idx >= autoLabels.length) return;
+  currentAutoIdx = idx;
+  const l = autoLabels[idx];
+
+  // Highlight current
+  autoMarkers.forEach((m, i) => {
+    if (i === idx) {
+      m.setStyle({ color: '#ff0', weight: 4, fillOpacity: 0.9, radius: 12 });
+    } else if (l._reviewed) {
+      // already reviewed — dim
+    } else {
+      m.setStyle({ color: '#ff0', weight: 2.5, fillOpacity: 0.5, radius: 9 });
+    }
+  });
+
+  // Pan to it
+  map.setView([l.lat, l.lon], Math.max(map.getZoom(), 19));
+
+  // Show crop
+  const cropDiv = document.getElementById('review-crop');
+  const fpIdx = l._fpIdx >= 0 ? String(l._fpIdx).padStart(2, '0') : null;
+  const cropUrl = fpIdx ? `data/eval_testarea/fp_inspect/fp_${fpIdx}_${l.cell}_${l.view}.jpg` : null;
+  cropDiv.innerHTML = cropUrl
+    ? `<img src="${cropUrl}" style="max-width:100%;max-height:200px;border:2px solid #ff0;border-radius:4px;cursor:pointer;"
+           onclick="document.getElementById('lb-img').src=this.src;document.getElementById('lb-label').textContent='Auto #${idx+1} ${l.cell} ${l.view}';document.getElementById('lightbox').style.display='block';">
+       <div style="font-size:10px;color:#888;margin-top:2px;">GDino:${l.gdino_conf} VLM:${l.vlm_conf} | ${l.cell} ${l.view}</div>`
+    : '<div style="color:#666;font-size:11px;">No crop available</div>';
+
+  document.getElementById('review-status').innerHTML =
+    `Reviewing #${idx+1}/${autoLabels.length} | ${l.cell} ${l.view}`;
+
+  // Show obliques at this location
+  showObliques(l.lat, l.lon);
+}
+
+function acceptAuto() {
+  if (currentAutoIdx < 0) return;
+  const l = autoLabels[currentAutoIdx];
+
+  // Add as a confirmed label
+  const id = nextId++;
+  const entry = { id, lat: l.lat, lon: l.lon, label: 'pole', marker: null, labeled_at: new Date().toISOString() };
+  entry.marker = createDraggableMarker(l.lat, l.lon, entry);
+  labels.push(entry);
+
+  // Remove auto marker
+  map.removeLayer(autoMarkers[currentAutoIdx]);
+  autoMarkers[currentAutoIdx].setStyle({ fillColor: '#00ff88', fillOpacity: 0.2, radius: 4 });
+  l._reviewed = 'accepted';
+
+  saveLabels();
+  updateStats();
+  updateReviewStats();
+  reviewNext();
+}
+
+function rejectAuto() {
+  if (currentAutoIdx < 0) return;
+  const l = autoLabels[currentAutoIdx];
+
+  // Dim the marker
+  autoMarkers[currentAutoIdx].setStyle({ fillColor: '#ff4444', fillOpacity: 0.2, radius: 4, color: '#ff4444', weight: 1 });
+  l._reviewed = 'rejected';
+
+  updateReviewStats();
+  reviewNext();
+}
+
+function reviewNext() {
+  // Find next unreviewed
+  for (let i = 1; i <= autoLabels.length; i++) {
+    const idx = (currentAutoIdx + i) % autoLabels.length;
+    if (!autoLabels[idx]._reviewed) {
+      reviewAutoLabel(idx);
+      return;
+    }
+  }
+  document.getElementById('review-status').innerHTML = '<span style="color:#00ff88;">All reviewed!</span>';
+}
+
+function reviewPrev() {
+  for (let i = 1; i <= autoLabels.length; i++) {
+    const idx = (currentAutoIdx - i + autoLabels.length) % autoLabels.length;
+    if (!autoLabels[idx]._reviewed) {
+      reviewAutoLabel(idx);
+      return;
+    }
+  }
+}
+
+function updateReviewStats() {
+  const accepted = autoLabels.filter(l => l._reviewed === 'accepted').length;
+  const rejected = autoLabels.filter(l => l._reviewed === 'rejected').length;
+  const remaining = autoLabels.length - accepted - rejected;
+  const panel = document.getElementById('review-panel');
+  if (panel) {
+    panel.querySelector('h3').innerHTML =
+      `AUTO REVIEW: <span style="color:#00ff88">${accepted}✓</span> <span style="color:#ff4444">${rejected}✗</span> <span style="color:#888">${remaining} left</span>`;
+  }
+}
+
+function startMoveMode() {
+  if (!selectedMarker) {
+    document.getElementById('click-coords').textContent = 'Select a label first, then press M';
+    return;
+  }
+  moveMode = true;
+  map.getContainer().style.cursor = 'crosshair';
+  document.getElementById('click-coords').innerHTML =
+    `<span style="color:#e94560;font-weight:bold;">MOVE MODE</span>: click new position for #${selectedMarker.id} (Esc to cancel)`;
+}
 
 async function init() {
   initMap();
-  const resp = await fetch('data/metadata.json');
+  const resp = await fetch('data/metadata.json?t=' + Date.now());
   metadata = await resp.json();
   loadSavedLabels();
   loadDetections();
+  await loadAutoLabels();
   updateStats();
+
+  // Start review on first auto label
+  if (autoLabels.length > 0) reviewAutoLabel(0);
 }
 
 init();
