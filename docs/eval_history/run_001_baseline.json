@@ -1,0 +1,36 @@
+{
+  "run_id": "001",
+  "date": "2026-04-05",
+  "description": "First evaluation with verified GT (94 poles, manually corrected positions)",
+  "gt_file": "data/ground_truth_testarea.json",
+  "gt_poles": 94,
+  "primary_metric": "F1 at 10m match radius",
+  "results": {
+    "gdino_ft_raw": {
+      "pipeline": "Fine-tuned GDino-Base + MASt3R oblique consensus + 3D hybrid georef",
+      "detections": 193,
+      "10m": {"precision": 0.285, "recall": 0.598, "f1": 0.386},
+      "15m": {"precision": 0.394, "recall": 0.826, "f1": 0.533}
+    },
+    "gdino_ft_vlm_0.7": {
+      "pipeline": "GDino-ft + Qwen 3.5 27B VLM (pole >= 0.7)",
+      "detections": 147,
+      "10m": {"precision": 0.333, "recall": 0.533, "f1": 0.410},
+      "15m": {"precision": 0.442, "recall": 0.707, "f1": 0.544}
+    },
+    "gdino_ft_gd0.22_vlm0.9": {
+      "pipeline": "GDino-ft (conf>=0.22) + VLM (pole >= 0.9)",
+      "detections": 91,
+      "10m": {"precision": 0.451, "recall": 0.446, "f1": 0.448},
+      "15m": {"precision": 0.582, "recall": 0.576, "f1": 0.579}
+    },
+    "sam3_mast3r_ortho": {
+      "pipeline": "SAM3 base + AerialMegaDepth MASt3R oblique→ortho projection",
+      "detections": 28,
+      "10m": {"precision": 0.214, "recall": 0.064, "f1": 0.098},
+      "note": "Low recall due to SAM3 finding only ~2 dets/image on full obliques"
+    }
+  },
+  "best_f1_10m": 0.448,
+  "best_config": "GDino-ft GD>=0.22 VLM>=0.9"
+}
