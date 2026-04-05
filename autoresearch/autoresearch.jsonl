@@ -57,3 +57,4 @@
 {"f1": 0.7024, "precision": 0.7973, "recall": 0.6277, "tp": 59, "fp": 15, "fn": 35, "rmse": 5.0, "detections": 74, "detections_raw": 100, "gt_poles": 94, "time": 514.7, "status": "ok", "timestamp": "2026-04-05T10:28:10-07:00", "change": "PointCloudOptimizer (was Modular) — NEW BEST F1 0.702"}
 {"f1": 0.6901, "precision": 0.7662, "recall": 0.6277, "tp": 59, "fp": 18, "fn": 35, "rmse": 5.3, "detections": 77, "detections_raw": 103, "gt_poles": 94, "time": 639.6, "status": "ok", "timestamp": "2026-04-05T10:39:54.313021"}
 {"f1": 0.6826, "precision": 0.7808, "recall": 0.6064, "tp": 57, "fp": 16, "fn": 37, "rmse": 5.1, "detections": 73, "detections_raw": 100, "gt_poles": 94, "time": 386.0, "status": "ok", "timestamp": "2026-04-05T10:47:17.801202"}
+{"f1": 0.6982, "precision": 0.7867, "recall": 0.6277, "tp": 59, "fp": 16, "fn": 35, "rmse": 4.9, "detections": 75, "detections_raw": 101, "gt_poles": 94, "time": 515.1, "status": "ok", "timestamp": "2026-04-05T10:56:20.329651"}
