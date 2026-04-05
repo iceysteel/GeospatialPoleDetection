@@ -30,6 +30,7 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 # Detection
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
+SAM3_PROMPTS_EXTRA = ['wooden pole']  # Additional prompts to boost recall
 SAM3_THRESHOLD = 0.40
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
@@ -226,20 +227,40 @@ def run_pipeline():
             oblique = Image.open(img_path).convert('RGB')
             w, h = oblique.size
 
-            # SAM3 detection
+            # SAM3 detection — multi-prompt for recall
             state = sam3_proc.set_image(oblique)
-            state = sam3_proc.set_text_prompt(state=state, prompt=SAM3_PROMPT)
-            if len(state['boxes']) == 0: continue
-
-            # Extract detections
+            all_prompts = [SAM3_PROMPT] + SAM3_PROMPTS_EXTRA
             dets = []
-            for i in range(len(state['boxes'])):
-                box = state['boxes'][i].tolist()
-                score = state['scores'][i].item()
-                dets.append({
-                    'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
-                    'score': score,
-                })
+            for prompt in all_prompts:
+                state = sam3_proc.set_text_prompt(state=state, prompt=prompt)
+                for i in range(len(state['boxes'])):
+                    box = state['boxes'][i].tolist()
+                    score = state['scores'][i].item()
+                    dets.append({
+                        'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
+                        'score': score,
+                    })
+            # Dedup overlapping boxes from different prompts (IoU > 0.5)
+            if len(dets) > 1:
+                keep = [True] * len(dets)
+                for i in range(len(dets)):
+                    if not keep[i]: continue
+                    for j in range(i + 1, len(dets)):
+                        if not keep[j]: continue
+                        bi, bj = dets[i]['bbox'], dets[j]['bbox']
+                        ix1 = max(bi[0], bj[0]); iy1 = max(bi[1], bj[1])
+                        ix2 = min(bi[2], bj[2]); iy2 = min(bi[3], bj[3])
+                        inter = max(0, ix2-ix1) * max(0, iy2-iy1)
+                        a1 = (bi[2]-bi[0]) * (bi[3]-bi[1])
+                        a2 = (bj[2]-bj[0]) * (bj[3]-bj[1])
+                        iou = inter / (a1 + a2 - inter + 1e-6)
+                        if iou > 0.5:
+                            # Keep higher score
+                            if dets[i]['score'] >= dets[j]['score']:
+                                keep[j] = False
+                            else:
+                                keep[i] = False; break
+                dets = [d for d, k in zip(dets, keep) if k]
 
             # MASt3R project to ortho
             projected = match_and_project(img_path, ortho, mast3r, device, dets, (h, w))
