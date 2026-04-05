@@ -56,6 +56,7 @@ Current best: **F1@10m = 0.714** (3-prompt SAM3 [telephone/wooden/power pole], p
 - Iteration 60: power pole prompt at 0.40 → F1=0.670 ❌ (8 more TPs but 25 more FPs)
 - Iteration 61: power pole at 0.55 → F1=0.681 ❌ (5 more TPs but 16 more FPs)
 - Iteration 62: power pole at 0.65 → F1=0.714 ✅ NEW BEST! (+1 TP, same FPs)
+- Iteration 63-73: electric pole, sv_min 0.42, dedup 14m, linear schedule, utility pole@0.70, MASt3R 120 iters, 95% bbox height, quality-aware GPS, 448px, 3x3 median, GDino fallback — all ≤0.714
 
 ## Hard Constraints
 - MUST use SAM3 (or SAM3-LoRA) for detection in oblique views
@@ -93,6 +94,12 @@ Current best: **F1@10m = 0.714** (3-prompt SAM3 [telephone/wooden/power pole], p
 - Multi-point projection (3 points along pole, median GPS): hurts localization, RMSE +0.5m
 - Threshold 0.48: slightly worse than 0.45, recall drops faster than precision gains
 - Two-tier with single_view_min=0.55: too aggressive, removes legitimate single-view TPs
+- VLM post-filter (Qwen 3.5 27B): removes TPs but not FPs — VLM can't distinguish at crop level
+- Direction-aware multi-view: no benefit over cluster-size two-tier
+- MASt3R linear schedule: cosine is strictly better
+- MASt3R 448px or 120 iters: 512px and 100 iters are optimal
+- Quality-aware GPS (reproj error weighting): no improvement
+- GDino fallback for empty SAM3 images: GDino also finds nothing
 
 ## Promising Directions (DEEP CHANGES)
 1. **VLM post-filtering**: After SAM3+MASt3R, classify each detection crop with
