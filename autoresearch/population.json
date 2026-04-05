@@ -1,6 +1,21 @@
 {
   "configs": [
     {
+      "id": "multiprompt_twotier_dedup14",
+      "f1_10m": 0.6667,
+      "params": {
+        "detector": "sam3",
+        "prompts": ["telephone pole", "wooden pole"],
+        "threshold": 0.40,
+        "single_view_min_score": 0.45,
+        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
+        "ortho_radius": 60,
+        "project_base": true,
+        "dedup_radius": 14
+      },
+      "description": "Multi-prompt + two-tier + dedup 14m — NEW BEST F1 0.6667, recall 61.7%"
+    },
+    {
       "id": "twotier_040_sv045_dedup14",
       "f1_10m": 0.6506,
       "params": {
@@ -130,6 +145,6 @@
     }
   ],
   "max_population": 5,
-  "generation": 9,
-  "total_experiments": 32
+  "generation": 10,
+  "total_experiments": 34
 }

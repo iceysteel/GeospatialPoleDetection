@@ -2,7 +2,7 @@
 
 ## Objective
 Maximize F1@10m for detecting utility poles in aerial imagery.
-Current best: **F1@10m = 0.6506** (SAM3 threshold=0.40, ortho_crop=60m, dedup=14m, two-tier: single-view min 0.45)
+Current best: **F1@10m = 0.6667** (multi-prompt SAM3, thresh=0.40, ortho=60m, dedup=14m, two-tier sv_min=0.45)
 
 ## Progress So Far
 - Baseline: F1=0.335 (SAM3 thresh=0.10, ortho=80m)
@@ -38,6 +38,8 @@ Current best: **F1@10m = 0.6506** (SAM3 threshold=0.40, ortho_crop=60m, dedup=14
 - Iteration 30: two-tier single-view min 0.50 → F1=0.623 ❌ (marginal)
 - Iteration 31: two-tier thresh 0.35 + sv min 0.45 → F1=0.617 ❌ (more FPs)
 - Iteration 32: dedup 14m + two-tier → F1=0.651 ✅ NEW BEST!
+- Iteration 33: dedup 16m + two-tier → F1=0.650 ❌ (merged 1 TP)
+- Iteration 34: multi-prompt (telephone+wooden pole) → F1=0.667 ✅ NEW BEST!
 
 ## Hard Constraints
 - MUST use SAM3 (or SAM3-LoRA) for detection in oblique views
