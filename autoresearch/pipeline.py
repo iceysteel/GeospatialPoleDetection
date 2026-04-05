@@ -288,8 +288,20 @@ def run_pipeline():
             if dist < DEDUP_RADIUS_M:
                 cluster.append(all_points[j]); used[j] = True
         best = max(cluster, key=lambda x: x['score'])
-        best['lat'] = round(sum(c['lat'] for c in cluster) / len(cluster), 6)
-        best['lon'] = round(sum(c['lon'] for c in cluster) / len(cluster), 6)
+        # Trimmed mean: for 3+ point clusters, remove the point farthest from centroid
+        avg_lat = sum(c['lat'] for c in cluster) / len(cluster)
+        avg_lon = sum(c['lon'] for c in cluster) / len(cluster)
+        if len(cluster) >= 3:
+            # Find farthest point from centroid
+            dists = [math.sqrt(((c['lat'] - avg_lat) * 111320) ** 2 +
+                              ((c['lon'] - avg_lon) * m) ** 2) for c in cluster]
+            worst_idx = max(range(len(dists)), key=lambda k: dists[k])
+            trimmed = [c for k, c in enumerate(cluster) if k != worst_idx]
+            best['lat'] = round(sum(c['lat'] for c in trimmed) / len(trimmed), 6)
+            best['lon'] = round(sum(c['lon'] for c in trimmed) / len(trimmed), 6)
+        else:
+            best['lat'] = round(avg_lat, 6)
+            best['lon'] = round(avg_lon, 6)
         # Two-tier: single-view detections need higher confidence
         if len(cluster) >= 2 or best['score'] >= SINGLE_VIEW_MIN_SCORE:
             deduped.append(best)
