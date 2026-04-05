@@ -2,7 +2,7 @@
 
 ## Objective
 Maximize F1@10m for detecting utility poles in aerial imagery.
-Current best: **F1@10m = 0.598** (SAM3 threshold=0.45, ortho_crop=60m)
+Current best: **F1@10m = 0.616** (SAM3 threshold=0.45, ortho_crop=60m, dedup=12m)
 
 ## Progress So Far
 - Baseline: F1=0.335 (SAM3 thresh=0.10, ortho=80m)
@@ -25,6 +25,14 @@ Current best: **F1@10m = 0.598** (SAM3 threshold=0.45, ortho_crop=60m)
 - Iteration 17: threshold 0.40 + dedup 8m → F1=0.566 ❌ (more FP)
 - Iteration 18: threshold 0.45 + dedup 8m → F1=0.564 ❌ (more FP)
 - Iteration 19: threshold 0.42 → F1=0.596 ❌ (marginal, 0.45 still best)
+- Iteration 20: VLM post-filter borderline → F1=0.559 ❌ (VLM classified everything as pole)
+- Iteration 21: cluster scoring (thresh 0.40, cluster_score>=0.55) → F1=0.592 ❌ (killed 8 TPs)
+- Iteration 22: GDino ensemble (thresh 0.30) → F1=0.452 ❌ (90 extra FPs)
+- Iteration 23: GDino ensemble (thresh 0.50) → F1=0.582 ❌ (still too many FPs)
+- Iteration 24: GDino cross-validation → F1=0.595 ❌ (GDino confirms everything)
+- Iteration 25: multi-point projection → F1=0.591 ❌ (hurt localization, RMSE +0.5m)
+- Iteration 26: threshold 0.48 + ortho 60m → F1=0.592 ❌ (recall drops too much)
+- Iteration 27: dedup 12m + ortho 60m + thresh 0.45 → F1=0.616 ✅ NEW BEST!
 
 ## Hard Constraints
 - MUST use SAM3 (or SAM3-LoRA) for detection in oblique views
@@ -55,6 +63,12 @@ Current best: **F1@10m = 0.598** (SAM3 threshold=0.45, ortho_crop=60m)
 - Score-weighted centroid: worse than equal-weight averaging
 - Dedup radius 8m: keeps too many FP duplicates separate
 - Threshold 0.42: marginal, 0.45 is the sweet spot
+- VLM (Qwen 3.5 27B) post-filtering on borderline SAM3 dets: VLM classifies everything as pole
+- Cluster scoring (cluster_size * max_score): too aggressive, kills single-view TPs
+- GDino ensemble (add GDino detections to SAM3): GDino adds far more FPs than TPs
+- GDino cross-validation (keep SAM3 dets GDino confirms): GDino confirms everything including FPs
+- Multi-point projection (3 points along pole, median GPS): hurts localization, RMSE +0.5m
+- Threshold 0.48: slightly worse than 0.45, recall drops faster than precision gains
 
 ## Promising Directions (DEEP CHANGES)
 1. **VLM post-filtering**: After SAM3+MASt3R, classify each detection crop with

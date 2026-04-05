@@ -1,6 +1,20 @@
 {
   "configs": [
     {
+      "id": "dedup12_threshold045_ortho60",
+      "f1_10m": 0.6163,
+      "params": {
+        "detector": "sam3",
+        "prompt": "telephone pole",
+        "threshold": 0.45,
+        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
+        "ortho_radius": 60,
+        "project_base": true,
+        "dedup_radius": 12
+      },
+      "description": "SAM3 threshold 0.45, ortho 60m, dedup 12m — NEW BEST F1 0.6163, precision 68.0%"
+    },
+    {
       "id": "threshold_045_ortho60",
       "f1_10m": 0.5978,
       "params": {
@@ -12,7 +26,7 @@
         "project_base": true,
         "dedup_radius": 10
       },
-      "description": "SAM3 threshold 0.45, ortho 60m — NEW BEST F1 0.5978, precision 61.1%"
+      "description": "SAM3 threshold 0.45, ortho 60m — F1 0.5978, precision 61.1%"
     },
     {
       "id": "threshold_040_ortho60",
@@ -86,6 +100,6 @@
     }
   ],
   "max_population": 5,
-  "generation": 6,
-  "total_experiments": 14
+  "generation": 7,
+  "total_experiments": 27
 }
