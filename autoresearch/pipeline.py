@@ -288,15 +288,8 @@ def run_pipeline():
             if dist < DEDUP_RADIUS_M:
                 cluster.append(all_points[j]); used[j] = True
         best = max(cluster, key=lambda x: x['score'])
-        if len(cluster) >= 3:
-            lats = sorted(c['lat'] for c in cluster)
-            lons = sorted(c['lon'] for c in cluster)
-            mid = len(lats) // 2
-            best['lat'] = round(lats[mid], 6)
-            best['lon'] = round(lons[mid], 6)
-        else:
-            best['lat'] = round(sum(c['lat'] for c in cluster) / len(cluster), 6)
-            best['lon'] = round(sum(c['lon'] for c in cluster) / len(cluster), 6)
+        best['lat'] = round(sum(c['lat'] for c in cluster) / len(cluster), 6)
+        best['lon'] = round(sum(c['lon'] for c in cluster) / len(cluster), 6)
         # Two-tier: single-view detections need higher confidence
         if len(cluster) >= 2 or best['score'] >= SINGLE_VIEW_MIN_SCORE:
             deduped.append(best)
