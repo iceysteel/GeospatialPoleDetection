@@ -29,7 +29,7 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 
 # Detection
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
-SAM3_PROMPT = 'utility pole'
+SAM3_PROMPT = 'telephone pole'
 SAM3_THRESHOLD = 0.35
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
