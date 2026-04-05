@@ -31,7 +31,7 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
 SAM3_PROMPTS_EXTRA = ['wooden pole']  # Additional prompts to boost recall
-SAM3_THRESHOLD = 0.40
+SAM3_THRESHOLD = 0.38
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
     "cba430d22f6fdc3f06ad3841274ec7bb55885f2f/sam3.pt")
@@ -141,7 +141,7 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
         pairs = make_pairs(imgs, scene_graph='complete', symmetrize=True)
         output = inference(pairs, mast3r, device, batch_size=1)
         scene = global_aligner(output, device=device, mode=GlobalAlignerMode.PointCloudOptimizer)
-        scene.compute_global_alignment(init='mst', niter=50, schedule='cosine', lr=0.01)
+        scene.compute_global_alignment(init='mst', niter=100, schedule='cosine', lr=0.01)
         pts3d = scene.get_pts3d()
         poses = scene.get_im_poses()
         focals = scene.get_focals()
