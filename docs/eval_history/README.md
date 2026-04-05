@@ -11,3 +11,4 @@ Tracking F1 scores at **10m match radius** (industry standard) against verified 
 | 002 | 2026-04-05 | SAM3-LoRA v2 + AerialMegaDepth→ortho | thresh=0.10, clean GT training | 17.0% | 16.0% | 0.165 | LoRA v2 with MASt3R-projected training data |
 | 003 | 2026-04-05 | AutoResearch baseline | SAM3 base + AerialMegaDepth, grid cells | 21.0% | 81.9% | 0.335 | New eval harness, all grid cells |
 | 004 | 2026-04-05 | AutoResearch (20 experiments) | SAM3 thresh=0.40, ortho=60m | 56.9% | 61.7% | 0.592 | Autonomous loop, 6 improvements |
+| 005 | 2026-04-05 | AutoResearch extended (30 exp) | SAM3 thresh=0.45, ortho=60m | 61.1% | 58.5% | 0.598 | Best from autonomous loop |
