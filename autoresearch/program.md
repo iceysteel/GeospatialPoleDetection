@@ -56,6 +56,7 @@ Current best: **F1@10m = 0.714** (3-prompt SAM3 [telephone/wooden/power pole], p
 - Iteration 60: power pole prompt at 0.40 → F1=0.670 ❌ (8 more TPs but 25 more FPs)
 - Iteration 61: power pole at 0.55 → F1=0.681 ❌ (5 more TPs but 16 more FPs)
 - Iteration 62: power pole at 0.65 → F1=0.714 ✅ NEW BEST! (+1 TP, same FPs)
+- Iteration 63-71: electric pole, sv_min 0.42, dedup 14m, linear schedule, utility pole 0.70, MASt3R 120 iters, 95% bbox, quality-aware GPS, 448px, 3x3 median — all ≤0.714
 
 ## Hard Constraints
 - MUST use SAM3 (or SAM3-LoRA) for detection in oblique views

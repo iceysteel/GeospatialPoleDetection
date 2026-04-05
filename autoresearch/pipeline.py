@@ -50,6 +50,11 @@ DEDUP_RADIUS_M = 15
 # Two-tier confidence: single-view detections need higher score
 SINGLE_VIEW_MIN_SCORE = 0.45
 
+# GDino fallback for empty images
+GDINO_FALLBACK = True
+GDINO_MODEL_DIR = os.path.join(PROJECT_ROOT, 'models', 'gdino_finetuned', 'best')
+GDINO_THRESHOLD = 0.60
+
 # ============================================================================
 # PIPELINE FUNCTIONS
 # ============================================================================
@@ -86,6 +91,30 @@ def load_mast3r(device='cuda'):
     """Load MASt3R model."""
     from mast3r.model import AsymmetricMASt3R
     return AsymmetricMASt3R.from_pretrained(MAST3R_CHECKPOINT).to(device).eval()
+
+
+def load_gdino(device='cuda'):
+    """Load fine-tuned GDino model."""
+    from transformers import AutoProcessor, AutoModelForZeroShotObjectDetection
+    proc = AutoProcessor.from_pretrained(GDINO_MODEL_DIR)
+    model = AutoModelForZeroShotObjectDetection.from_pretrained(GDINO_MODEL_DIR).to(device)
+    return proc, model
+
+
+def run_gdino(proc, model, image, device='cuda', threshold=GDINO_THRESHOLD):
+    """Run GDino detection, return list of dets with bbox and score."""
+    inputs = proc(images=image, text="pole.", return_tensors="pt").to(device)
+    with torch.no_grad():
+        outputs = model(**inputs)
+    results = proc.post_process_grounded_object_detection(
+        outputs, inputs.input_ids, threshold=threshold, text_threshold=threshold,
+        target_sizes=[image.size[::-1]]
+    )[0]
+    dets = []
+    for box, score in zip(results['boxes'], results['scores']):
+        b = box.cpu().tolist()
+        dets.append({'bbox': [int(b[0]), int(b[1]), int(b[2]), int(b[3])], 'score': score.item()})
+    return dets
 
 
 def stitch_ortho(center_lat, center_lon, radius_m=ORTHO_CROP_RADIUS_M, zoom=ORTHO_ZOOM):
@@ -212,6 +241,7 @@ def run_pipeline():
 
     DIRECTIONS = ['north', 'east', 'south', 'west']
     all_points = []
+    empty_images = []  # Track images with 0 SAM3 detections for GDino fallback
 
     for ci, cell in enumerate(grid):
         lat, lon = cell['lat'], cell['lon']
@@ -267,6 +297,10 @@ def run_pipeline():
                                 keep[i] = False; break
                 dets = [d for d, k in zip(dets, keep) if k]
 
+            if not dets:
+                empty_images.append((img_path, ortho, ortho_meta, (h, w)))
+                continue
+
             # MASt3R project to ortho
             projected = match_and_project(img_path, ortho, mast3r, device, dets, (h, w))
 
@@ -278,6 +312,28 @@ def run_pipeline():
                     'lon': round(pt_lon, 6),
                     'score': proj['score'],
                 })
+
+    # GDino fallback for images where SAM3 found nothing
+    if GDINO_FALLBACK and empty_images:
+        del sam3_proc
+        torch.cuda.empty_cache()
+        import gc; gc.collect()
+        gdino_proc, gdino_model = load_gdino(device)
+        for img_path, ortho, ortho_meta, oblique_size in empty_images:
+            oblique = Image.open(img_path).convert('RGB')
+            gdino_dets = run_gdino(gdino_proc, gdino_model, oblique, device)
+            if not gdino_dets: continue
+            projected = match_and_project(img_path, ortho, mast3r, device, gdino_dets, oblique_size)
+            for proj in projected:
+                ox, oy = proj['ortho_px']
+                pt_lat, pt_lon = ortho_pixel_to_gps(ox, oy, ortho_meta)
+                all_points.append({
+                    'lat': round(pt_lat, 6),
+                    'lon': round(pt_lon, 6),
+                    'score': proj['score'],
+                })
+        del gdino_proc, gdino_model
+        torch.cuda.empty_cache()
 
     # Dedup with two-tier confidence filtering
     m = 111320 * math.cos(math.radians(41.249))
