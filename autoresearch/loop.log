@@ -86,3 +86,16 @@ Iteration 5 complete
 AutoResearch Iteration 6
 Sun Apr  5 05:01:17 AM PDT 2026
 ========================================
+**Iteration 6 complete.**
+
+- **Change**: ortho_crop_radius 60m → 50m
+- **Result**: F1=0.5577 (vs best 0.5592) — marginal regression
+- **Action**: Reverted. 60m appears to be the sweet spot for ortho radius.
+
+Key takeaway: 50m is slightly too tight, losing 1 TP. The ortho radius dimension is now well-explored (30m too small, 50m slightly worse, 60m best, 80m worse). Next iteration should explore a different lever — threshold=0.40, score-weighted dedup averaging, or dedup_radius tuning.
+Iteration 6 complete
+
+========================================
+AutoResearch Iteration 7
+Sun Apr  5 05:06:31 AM PDT 2026
+========================================
