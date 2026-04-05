@@ -256,8 +256,8 @@ def run_pipeline(args):
     ortho_full, ortho_full_meta = stitch_ortho_for_footprint(FOCUS_LAT, FOCUS_LON, radius_m=300, zoom=21)
     print(f"  Ortho: {ortho_full.size}, {ortho_full_meta['tiles']} tiles")
 
-    # Load SAM3
-    print("Loading SAM3...", flush=True)
+    # Load SAM3 + LoRA v2
+    print("Loading SAM3 + LoRA v2...", flush=True)
     import sam3 as sam3_module
     from sam3 import build_sam3_image_model
     from sam3.model.sam3_image_processor import Sam3Processor
@@ -265,6 +265,19 @@ def run_pipeline(args):
     bpe_path = os.path.join(sam3_root, 'assets', 'bpe_simple_vocab_16e6.txt.gz')
     sam3_model = build_sam3_image_model(bpe_path=bpe_path, device=device,
                                          checkpoint_path=SAM3_CKPT, load_from_HF=False)
+    # Inject LoRA v2 weights (trained on MASt3R-projected verified GT)
+    import sys as _sys
+    _sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'models', 'sam3_lora'))
+    from lora_layers import LoRAConfig, apply_lora_to_model, load_lora_weights
+    lora_cfg = LoRAConfig(rank=16, alpha=32, dropout=0.05,
+        target_modules=['q_proj','k_proj','v_proj','out_proj','qkv','proj','fc1','fc2','c_fc','c_proj'],
+        apply_to_vision_encoder=True, apply_to_text_encoder=True, apply_to_geometry_encoder=True,
+        apply_to_detr_encoder=True, apply_to_detr_decoder=True, apply_to_mask_decoder=True)
+    sam3_model = apply_lora_to_model(sam3_model, lora_cfg)
+    lora_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'sam3_finetuned', 'lora_v2', 'best_lora_weights.pt')
+    load_lora_weights(sam3_model, lora_path)
+    sam3_model = sam3_model.cuda()
+    print("  LoRA v2 loaded!")
     sam3_proc = Sam3Processor(sam3_model, confidence_threshold=SAM3_THRESHOLD)
 
     # Load MASt3R (AerialMegaDepth)
