@@ -20,6 +20,11 @@ Current best: **F1@10m = 0.598** (SAM3 threshold=0.45, ortho_crop=60m)
 - Iteration 12: SAM3-LoRA v2 → F1=0.086 ❌ (catastrophic failure)
 - Iteration 13: aspect ratio filter → F1=0.592 ❌ (no effect, filter too loose)
 - Iteration 14: ortho crop 55m → F1=0.586 ❌ (smaller crop hurt recall)
+- Iteration 15: MASt3R 768px → F1=0.536 ❌ (higher res hurt matching)
+- Iteration 16: score-weighted centroid → F1=0.586 ❌ (hurt positioning)
+- Iteration 17: threshold 0.40 + dedup 8m → F1=0.566 ❌ (more FP)
+- Iteration 18: threshold 0.45 + dedup 8m → F1=0.564 ❌ (more FP)
+- Iteration 19: threshold 0.42 → F1=0.596 ❌ (marginal, 0.45 still best)
 
 ## Hard Constraints
 - MUST use SAM3 (or SAM3-LoRA) for detection in oblique views
@@ -46,6 +51,10 @@ Current best: **F1@10m = 0.598** (SAM3 threshold=0.45, ortho_crop=60m)
 - SAM3-LoRA v2: catastrophically worse than base SAM3
 - Aspect ratio filtering: SAM3 detections already have reasonable ratios
 - Ortho crop 55m: too little context, hurt recall
+- MASt3R 768px: higher resolution degraded matching quality (RMSE +0.5m)
+- Score-weighted centroid: worse than equal-weight averaging
+- Dedup radius 8m: keeps too many FP duplicates separate
+- Threshold 0.42: marginal, 0.45 is the sweet spot
 
 ## Promising Directions (DEEP CHANGES)
 1. **VLM post-filtering**: After SAM3+MASt3R, classify each detection crop with
