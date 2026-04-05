@@ -7,7 +7,7 @@ file to improve F1@10m. Must use SAM3 + MASt3R as core components.
 
 Current best F1@10m: 0.448 (GDino-ft + VLM, oblique consensus)
 """
-import sys, os, json, math, time, tempfile, base64, io, requests
+import sys, os, json, math, time, tempfile
 
 PROJECT_ROOT = os.path.join(os.path.dirname(__file__), '..')
 sys.path.insert(0, os.path.join(PROJECT_ROOT, 'src'))
@@ -49,11 +49,6 @@ DEDUP_RADIUS_M = 15
 
 # Two-tier confidence: single-view detections need higher score
 SINGLE_VIEW_MIN_SCORE = 0.45
-
-# VLM post-filter
-VLM_FILTER = True
-VLM_MODEL = 'qwen3.5:27b'
-VLM_OLLAMA_URL = 'http://localhost:11434/api/generate'
 
 # ============================================================================
 # PIPELINE FUNCTIONS
@@ -185,60 +180,9 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
 
         uo = u.item() / (tw / ortho_w)
         vo = v.item() / (th / ortho_h)
-        results.append({'ortho_px': (int(round(uo)), int(round(vo))), 'score': det['score'], 'bbox': det['bbox']})
+        results.append({'ortho_px': (int(round(uo)), int(round(vo))), 'score': det['score']})
 
     return results
-
-
-def vlm_is_pole(image, bbox):
-    """Ask VLM to identify object in crop. Returns True if it could be a pole."""
-    x1, y1, x2, y2 = bbox
-    # Pad crop by 30% for context
-    w, h = x2 - x1, y2 - y1
-    pad_x, pad_y = int(w * 0.3), int(h * 0.3)
-    cx1 = max(0, x1 - pad_x)
-    cy1 = max(0, y1 - pad_y)
-    cx2 = min(image.width, x2 + pad_x)
-    cy2 = min(image.height, y2 + pad_y)
-    crop = image.crop((cx1, cy1, cx2, cy2))
-    # Resize crop to max 384px for speed
-    crop.thumbnail((384, 384))
-    buf = io.BytesIO()
-    crop.save(buf, format='JPEG', quality=85)
-    img_b64 = base64.b64encode(buf.getvalue()).decode()
-    try:
-        resp = requests.post(VLM_OLLAMA_URL, json={
-            'model': VLM_MODEL,
-            'prompt': 'What is the main tall vertical object in this image? Answer with ONLY the object name in 1-3 words. No explanation.',
-            'images': [img_b64],
-            'stream': False,
-            'think': False,
-            'options': {'temperature': 0, 'num_predict': 30},
-        }, timeout=30)
-        answer = resp.json().get('response', '').strip().lower()
-        # Strip any remaining think tags
-        if '</think>' in answer:
-            answer = answer.split('</think>')[-1].strip()
-    except Exception:
-        return True  # On error, keep the detection
-    # Very conservative: only remove if clearly NOT a pole
-    pole_words = ['pole', 'post', 'utility', 'telephone', 'wooden', 'power',
-                  'electric', 'mast', 'pylon', 'pillar', 'column']
-    if any(w in answer for w in pole_words):
-        return True
-    # If answer is ambiguous/short/empty, keep it
-    if len(answer) < 3:
-        return True
-    # Only reject if VLM named a specific non-pole object
-    non_pole = ['tree', 'bush', 'shrub', 'building', 'house', 'roof',
-                'car', 'truck', 'vehicle', 'fence', 'sign', 'antenna',
-                'chimney', 'tower', 'crane', 'scaffold', 'lamppost',
-                'streetlight', 'street light', 'light', 'lamp', 'flag',
-                'shadow', 'road', 'wire', 'cable', 'nothing', 'wall']
-    for word in non_pole:
-        if word in answer:
-            return False
-    return True  # Default: keep
 
 
 # ============================================================================
@@ -321,23 +265,14 @@ def run_pipeline():
             # MASt3R project to ortho
             projected = match_and_project(img_path, ortho, mast3r, device, dets, (h, w))
 
-            for pi, proj in enumerate(projected):
+            for proj in projected:
                 ox, oy = proj['ortho_px']
                 pt_lat, pt_lon = ortho_pixel_to_gps(ox, oy, ortho_meta)
-                # Find matching detection for crop info
-                det_bbox = proj.get('bbox')
                 all_points.append({
                     'lat': round(pt_lat, 6),
                     'lon': round(pt_lon, 6),
                     'score': proj['score'],
-                    'img_path': img_path,
-                    'bbox': det_bbox,
                 })
-
-    # Free GPU memory before VLM filtering
-    del sam3_proc, mast3r
-    torch.cuda.empty_cache()
-    import gc; gc.collect()
 
     # Dedup with two-tier confidence filtering
     m = 111320 * math.cos(math.radians(41.249))
@@ -358,22 +293,5 @@ def run_pipeline():
         # Two-tier: single-view detections need higher confidence
         if len(cluster) >= 2 or best['score'] >= SINGLE_VIEW_MIN_SCORE:
             deduped.append(best)
-
-    # VLM post-filter: remove clear false positives
-    if VLM_FILTER:
-        from PIL import Image as PILImage
-        filtered = []
-        for det in deduped:
-            img_path = det.get('img_path')
-            bbox = det.get('bbox')
-            if img_path and bbox and os.path.exists(img_path):
-                img = PILImage.open(img_path).convert('RGB')
-                if vlm_is_pole(img, bbox):
-                    filtered.append(det)
-                else:
-                    pass  # VLM says not a pole — remove
-            else:
-                filtered.append(det)  # No crop info, keep
-        deduped = filtered
 
     return deduped
