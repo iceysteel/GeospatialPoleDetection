@@ -2,7 +2,7 @@
 
 ## Objective
 Maximize F1@10m for detecting utility poles in aerial imagery.
-Current best: **F1@10m = 0.616** (SAM3 threshold=0.45, ortho_crop=60m, dedup=12m)
+Current best: **F1@10m = 0.6243** (SAM3 threshold=0.40, ortho_crop=60m, dedup=12m, two-tier: single-view min 0.45)
 
 ## Progress So Far
 - Baseline: F1=0.335 (SAM3 thresh=0.10, ortho=80m)
@@ -33,6 +33,8 @@ Current best: **F1@10m = 0.616** (SAM3 threshold=0.45, ortho_crop=60m, dedup=12m
 - Iteration 25: multi-point projection → F1=0.591 ❌ (hurt localization, RMSE +0.5m)
 - Iteration 26: threshold 0.48 + ortho 60m → F1=0.592 ❌ (recall drops too much)
 - Iteration 27: dedup 12m + ortho 60m + thresh 0.45 → F1=0.616 ✅ NEW BEST!
+- Iteration 28: two-tier (thresh 0.40, single-view min 0.55) → F1=0.614 ❌ (too aggressive)
+- Iteration 29: two-tier (thresh 0.40, single-view min 0.45) → F1=0.624 ✅ NEW BEST!
 
 ## Hard Constraints
 - MUST use SAM3 (or SAM3-LoRA) for detection in oblique views
@@ -69,6 +71,7 @@ Current best: **F1@10m = 0.616** (SAM3 threshold=0.45, ortho_crop=60m, dedup=12m
 - GDino cross-validation (keep SAM3 dets GDino confirms): GDino confirms everything including FPs
 - Multi-point projection (3 points along pole, median GPS): hurts localization, RMSE +0.5m
 - Threshold 0.48: slightly worse than 0.45, recall drops faster than precision gains
+- Two-tier with single_view_min=0.55: too aggressive, removes legitimate single-view TPs
 
 ## Promising Directions (DEEP CHANGES)
 1. **VLM post-filtering**: After SAM3+MASt3R, classify each detection crop with
