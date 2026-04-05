@@ -45,7 +45,7 @@ ORTHO_ZOOM = 21
 PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 
 # Dedup
-DEDUP_RADIUS_M = 15
+DEDUP_RADIUS_M = 14
 
 # Two-tier confidence: single-view detections need higher score
 SINGLE_VIEW_MIN_SCORE = 0.45
