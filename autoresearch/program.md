@@ -53,6 +53,8 @@ Current best: **F1@10m = 0.707** (multi-prompt SAM3, thresh=0.40, ortho=60m, ded
 - Iteration 57: VLM post-filter (Qwen 3.5 27B, conservative) → F1=0.675 ❌ (removed 4 TPs, 0 FPs)
 - Iteration 58: direction-aware multi-view + thresh 0.35 + sv_min 0.50 → F1=0.675 ❌ (4 extra FPs)
 
+- Iteration 59: trimmed mean GPS → F1=0.695 ❌ (lost 1 TP, moved centroid wrong way)
+
 ## Hard Constraints
 - MUST use SAM3 (or SAM3-LoRA) for detection in oblique views
 - MUST use MASt3R for oblique→ortho cross-view mapping
