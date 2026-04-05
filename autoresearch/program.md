@@ -50,6 +50,8 @@ Current best: **F1@10m = 0.707** (multi-prompt SAM3, thresh=0.40, ortho=60m, ded
 - Iteration 49: PointCloudOptimizer (was Modular) → F1=0.702 ✅ NEW BEST!
 - Iteration 50-55: PCO 150/50 iters, thresh tuning, sv_min tuning, pole prompt — all worse
 - Iteration 56: PCO + dedup 15m → F1=0.707 ✅ NEW BEST!
+- Iteration 57: VLM post-filter (Qwen 3.5 27B, conservative) → F1=0.675 ❌ (removed 4 TPs, 0 FPs)
+- Iteration 58: direction-aware multi-view + thresh 0.35 + sv_min 0.50 → F1=0.675 ❌ (4 extra FPs)
 
 ## Hard Constraints
 - MUST use SAM3 (or SAM3-LoRA) for detection in oblique views
