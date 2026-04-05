@@ -193,7 +193,7 @@ def run_pipeline(args):
     print("Loading MASt3R...", flush=True)
     from mast3r.model import AsymmetricMASt3R
     mast3r_model = AsymmetricMASt3R.from_pretrained(
-        'naver/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric').to(device).eval()
+        'kvuong2711/checkpoint-aerial-mast3r').to(device).eval()
     gpu_memory_report()
 
     # Step 3: Process each grid cell

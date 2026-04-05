@@ -108,7 +108,7 @@ def run_multiview_classification(eval_results_path, grid_index_path, model='qwen
 
     print("Loading MASt3R...")
     mast3r_model = AsymmetricMASt3R.from_pretrained(
-        'naver/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric').to(device).eval()
+        'kvuong2711/checkpoint-aerial-mast3r').to(device).eval()
 
     all_classified = []
     t_total = time.time()

@@ -158,7 +158,7 @@ def run_hires_3d_analysis(eval_results_path, grid_index_path, device='cuda:0'):
 
     print(f"Loading MASt3R...")
     mast3r = AsymmetricMASt3R.from_pretrained(
-        'naver/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric').to(device).eval()
+        'kvuong2711/checkpoint-aerial-mast3r').to(device).eval()
     gpu_memory_report()
 
     dets = eval_data['detections']
