@@ -51,3 +51,16 @@ Iteration 3 complete
 AutoResearch Iteration 4
 Sun Apr  5 04:41:32 AM PDT 2026
 ========================================
+**Iteration 4 complete.**
+
+**Result: F1@10m = 0.4865 (WORSENED from 0.5268)** — reverted.
+
+The multi-view consensus filter (require cluster_size >= 2) was too aggressive. It cut FPs dramatically (57→18, precision 48.6%→66.7%) but killed recall (57.5%→38.3%) because many real poles are only visible from one oblique direction. 
+
+**Learnings logged:** A softer approach (score boosting for multi-view rather than hard filtering) or trying a different lever entirely (prompt engineering, ortho crop radius, threshold 0.40) would be better next experiments.
+Iteration 4 complete
+
+========================================
+AutoResearch Iteration 5
+Sun Apr  5 04:47:36 AM PDT 2026
+========================================

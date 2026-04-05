@@ -2,7 +2,7 @@
 
 ## Objective
 Maximize F1@10m for detecting utility poles in aerial imagery.
-Current best: **F1@10m = 0.5268** (SAM3 threshold=0.35)
+Current best: **F1@10m = 0.5592** (SAM3 threshold=0.35, ortho_radius=60m)
 Previous best: F1@10m = 0.3348 (SAM3 threshold=0.10)
 SAM3+MASt3R baseline: **F1@10m = 0.165**
 
@@ -24,8 +24,10 @@ SAM3+MASt3R baseline: **F1@10m = 0.165**
 - **SAM3 threshold 0.10→0.20**: F1 0.3348→0.4876. Precision nearly doubled (0.21→0.37) with modest recall drop (0.82→0.73). Many FPs were low-confidence — threshold is a high-leverage knob.
 - **SAM3 threshold 0.20→0.30**: F1 0.4876→0.5182. Precision 36.5%→45.2%, recall 73.4%→60.6%. Still net positive — FP count halved (120→69) while losing 12 TPs (69→57). Threshold tuning may still have room but recall is getting thin.
 - **SAM3 threshold 0.30→0.35**: F1 0.5182→0.5268. Precision 45.2%→48.6%, recall 60.6%→57.5%. Diminishing gains — only 12 fewer FPs (69→57) with 3 fewer TPs (57→54). Threshold approaching plateau; next iteration should try a different lever.
+- **Ortho crop radius 80m→60m**: F1 0.5268→0.5592. Precision 48.6%→50.4%, recall 57.5%→62.8%. RMSE improved 5.8m→4.9m. Smaller crop gives MASt3R higher resolution, improving both projection accuracy and recall. Still room to explore (50m? 70m?).
 
 ## What We've Tried and Failed
+- **SAM3 prompt "utility pole" instead of "telephone pole"**: F1 0.5268→0.165. Catastrophic regression — SAM3 detects very different objects with "utility pole". The prompt "telephone pole" is critical and should not be changed.
 - **Multi-view consensus (min 2 detections per cluster)**: F1 0.5268→0.4865. Precision soared (48.6%→66.7%) but recall cratered (57.5%→38.3%). Lost 18 TPs (54→36) — too many real poles are only visible from one direction. The filter is too aggressive at cluster_size>=2; could revisit with a softer version (e.g., boost score for multi-view but don't hard-filter).
 - AerialMegaDepth vs standard MASt3R for oblique↔oblique: identical performance
 - Large ortho crops (200m): poles invisible at 512px MASt3R resolution
