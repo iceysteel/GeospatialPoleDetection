@@ -1,4208 +1,1760 @@
 {
-  "poles_in_ortho": [
+  "poles": [
     {
-      "cell": "r0_c0",
-      "direction": "east",
-      "score": 0.232,
-      "oblique_bbox": [
-        832,
-        164,
-        885,
-        362
-      ],
-      "ortho_pixel": [
-        1490,
-        8090
-      ],
-      "lat": 41.246889,
-      "lon": -96.000969,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r0_c2",
-      "direction": "south",
-      "score": 0.125,
-      "oblique_bbox": [
-        1265,
-        1142,
-        1285,
-        1307
-      ],
-      "ortho_pixel": [
-        3911,
-        7962
-      ],
-      "lat": 41.246953,
-      "lon": -95.999345,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r0_c3",
-      "direction": "west",
-      "score": 0.652,
-      "oblique_bbox": [
-        2176,
-        1782,
-        2205,
-        1998
-      ],
-      "ortho_pixel": [
-        5743,
-        7743
-      ],
-      "lat": 41.247063,
-      "lon": -95.998117,
-      "num_views": 4,
-      "cluster_size": 12
-    },
-    {
-      "cell": "r0_c4",
-      "direction": "west",
-      "score": 0.75,
-      "oblique_bbox": [
-        2058,
-        -2,
-        2114,
-        208
-      ],
-      "ortho_pixel": [
-        6079,
-        7643
-      ],
-      "lat": 41.247114,
-      "lon": -95.997891,
-      "num_views": 4,
-      "cluster_size": 9
-    },
-    {
-      "cell": "r0_c3",
-      "direction": "west",
-      "score": 0.602,
-      "oblique_bbox": [
-        2000,
-        543,
-        2020,
-        750
-      ],
-      "ortho_pixel": [
-        5035,
-        7886
-      ],
-      "lat": 41.246991,
-      "lon": -95.998592,
-      "num_views": 4,
-      "cluster_size": 15
-    },
-    {
-      "cell": "r0_c3",
-      "direction": "south",
-      "score": 0.57,
-      "oblique_bbox": [
-        53,
-        1060,
-        117,
-        1322
-      ],
-      "ortho_pixel": [
-        5960,
-        7886
-      ],
-      "lat": 41.246991,
-      "lon": -95.997971,
-      "num_views": 3,
-      "cluster_size": 6
-    },
-    {
-      "cell": "r0_c3",
-      "direction": "east",
-      "score": 0.208,
-      "oblique_bbox": [
-        135,
-        1121,
-        156,
-        1230
-      ],
-      "ortho_pixel": [
-        5181,
-        7462
-      ],
-      "lat": 41.247205,
-      "lon": -95.998493,
-      "num_views": 3,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r0_c4",
-      "direction": "south",
-      "score": 0.711,
-      "oblique_bbox": [
-        2309,
-        1164,
-        2367,
-        1420
-      ],
-      "ortho_pixel": [
-        5993,
-        8147
-      ],
-      "lat": 41.24686,
-      "lon": -95.997949,
-      "num_views": 4,
-      "cluster_size": 12
-    },
-    {
-      "cell": "r0_c3",
-      "direction": "south",
-      "score": 0.187,
-      "oblique_bbox": [
-        2751,
-        1488,
-        2796,
-        1707
-      ],
-      "ortho_pixel": [
-        4468,
-        7791
-      ],
-      "lat": 41.247039,
-      "lon": -95.998972,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r0_c3",
-      "direction": "west",
-      "score": 0.158,
-      "oblique_bbox": [
-        1565,
-        1441,
-        1582,
-        1544
-      ],
-      "ortho_pixel": [
-        5401,
-        8151
-      ],
-      "lat": 41.246858,
-      "lon": -95.998346,
-      "num_views": 2,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r1_c3",
-      "direction": "south",
-      "score": 0.118,
-      "oblique_bbox": [
-        2475,
-        17,
-        2504,
-        99
-      ],
-      "ortho_pixel": [
-        4618,
-        7543
-      ],
-      "lat": 41.247164,
-      "lon": -95.998871,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r1_c3",
-      "direction": "north",
-      "score": 0.516,
-      "oblique_bbox": [
-        744,
-        1410,
-        773,
-        1624
-      ],
-      "ortho_pixel": [
-        5022,
-        7323
-      ],
-      "lat": 41.247275,
-      "lon": -95.9986,
-      "num_views": 3,
-      "cluster_size": 6
-    },
-    {
-      "cell": "r0_c4",
-      "direction": "north",
-      "score": 0.828,
-      "oblique_bbox": [
-        309,
-        415,
-        382,
-        655
-      ],
-      "ortho_pixel": [
-        6345,
-        7984
-      ],
-      "lat": 41.246942,
-      "lon": -95.997713,
-      "num_views": 3,
-      "cluster_size": 14
-    },
-    {
-      "cell": "r0_c4",
-      "direction": "north",
-      "score": 0.863,
-      "oblique_bbox": [
-        1647,
-        308,
-        1692,
-        571
-      ],
-      "ortho_pixel": [
-        7025,
-        7930
-      ],
-      "lat": 41.246969,
-      "lon": -95.997257,
-      "num_views": 4,
-      "cluster_size": 9
-    },
-    {
-      "cell": "r1_c4",
-      "direction": "west",
-      "score": 0.256,
-      "oblique_bbox": [
-        776,
-        1017,
-        803,
-        1101
-      ],
-      "ortho_pixel": [
-        6745,
-        7350
-      ],
-      "lat": 41.247261,
-      "lon": -95.997445,
-      "num_views": 4,
-      "cluster_size": 13
-    },
-    {
-      "cell": "r0_c4",
-      "direction": "east",
-      "score": 0.789,
-      "oblique_bbox": [
-        483,
-        560,
-        533,
-        758
-      ],
-      "ortho_pixel": [
-        7044,
-        7526
-      ],
-      "lat": 41.247172,
-      "lon": -95.997244,
-      "num_views": 4,
-      "cluster_size": 12
-    },
-    {
-      "cell": "r0_c4",
-      "direction": "east",
-      "score": 0.117,
-      "oblique_bbox": [
-        1156,
-        60,
-        1174,
-        107
-      ],
-      "ortho_pixel": [
-        7439,
-        7809
-      ],
-      "lat": 41.24703,
-      "lon": -95.99698,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r1_c4",
-      "direction": "south",
-      "score": 0.348,
-      "oblique_bbox": [
-        2515,
-        655,
-        2547,
-        911
-      ],
-      "ortho_pixel": [
-        6112,
-        7129
-      ],
-      "lat": 41.247373,
-      "lon": -95.997869,
-      "num_views": 4,
-      "cluster_size": 8
-    },
-    {
-      "cell": "r0_c4",
-      "direction": "west",
-      "score": 0.192,
-      "oblique_bbox": [
-        1639,
-        978,
-        1705,
-        1206
-      ],
-      "ortho_pixel": [
-        6771,
-        8039
-      ],
-      "lat": 41.246915,
-      "lon": -95.997428,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r0_c5",
-      "direction": "west",
-      "score": 0.289,
-      "oblique_bbox": [
-        1710,
-        519,
-        1797,
-        751
-      ],
-      "ortho_pixel": [
-        8079,
-        7892
-      ],
-      "lat": 41.246989,
-      "lon": -95.996551,
-      "num_views": 2,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r0_c5",
-      "direction": "east",
-      "score": 0.119,
-      "oblique_bbox": [
-        114,
-        1754,
-        130,
-        1796
-      ],
-      "ortho_pixel": [
-        7736,
-        7776
-      ],
-      "lat": 41.247047,
-      "lon": -95.996781,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r1_c0",
-      "direction": "east",
-      "score": 0.122,
-      "oblique_bbox": [
-        1878,
-        86,
-        1914,
-        250
-      ],
-      "ortho_pixel": [
-        1480,
-        7276
-      ],
-      "lat": 41.247299,
-      "lon": -96.000976,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r1_c0",
-      "direction": "east",
+      "lat": 41.248542,
+      "lon": -95.99982,
       "score": 0.262,
-      "oblique_bbox": [
-        920,
-        223,
-        965,
-        403
-      ],
-      "ortho_pixel": [
-        1468,
-        6625
-      ],
-      "lat": 41.247627,
-      "lon": -96.000984,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r1_c0",
       "direction": "east",
-      "score": 0.172,
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:22250",
       "oblique_bbox": [
-        1711,
-        444,
-        1741,
-        549
-      ],
-      "ortho_pixel": [
-        1228,
-        7070
-      ],
-      "lat": 41.247403,
-      "lon": -96.001145,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r1_c1",
-      "direction": "north",
-      "score": 0.142,
-      "oblique_bbox": [
-        532,
-        427,
-        573,
-        877
-      ],
-      "ortho_pixel": [
-        2165,
-        6636
-      ],
-      "lat": 41.247621,
-      "lon": -96.000517,
-      "num_views": 2,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r2_c2",
-      "direction": "north",
-      "score": 0.114,
-      "oblique_bbox": [
-        2,
-        2099,
-        14,
-        2170
-      ],
-      "ortho_pixel": [
-        3027,
-        6391
-      ],
-      "lat": 41.247745,
-      "lon": -95.999938,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r1_c1",
-      "direction": "north",
-      "score": 0.155,
-      "oblique_bbox": [
-        1046,
-        1246,
-        1100,
-        1410
-      ],
-      "ortho_pixel": [
-        2461,
-        7255
-      ],
-      "lat": 41.247309,
-      "lon": -96.000317,
-      "num_views": 2,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r2_c2",
-      "direction": "north",
-      "score": 0.309,
-      "oblique_bbox": [
-        195,
-        1793,
-        278,
-        1985
-      ],
-      "ortho_pixel": [
-        3056,
-        5931
-      ],
-      "lat": 41.247977,
-      "lon": -95.999918,
-      "num_views": 3,
-      "cluster_size": 6
-    },
-    {
-      "cell": "r1_c2",
-      "direction": "west",
-      "score": 0.43,
-      "oblique_bbox": [
-        724,
-        116,
-        785,
-        589
-      ],
-      "ortho_pixel": [
-        3638,
-        6908
-      ],
-      "lat": 41.247484,
-      "lon": -95.999528,
-      "num_views": 2,
-      "cluster_size": 10
-    },
-    {
-      "cell": "r1_c2",
-      "direction": "north",
-      "score": 0.195,
-      "oblique_bbox": [
-        1930,
-        560,
-        1996,
-        1071
-      ],
-      "ortho_pixel": [
-        4304,
-        6746
-      ],
-      "lat": 41.247566,
-      "lon": -95.999082,
-      "num_views": 2,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r1_c2",
-      "direction": "north",
-      "score": 0.227,
-      "oblique_bbox": [
-        135,
-        791,
-        170,
-        896
-      ],
-      "ortho_pixel": [
-        3392,
-        6919
-      ],
-      "lat": 41.247478,
-      "lon": -95.999693,
-      "num_views": 2,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r1_c2",
-      "direction": "west",
-      "score": 0.49,
-      "oblique_bbox": [
-        826,
-        1031,
-        844,
-        1192
-      ],
-      "ortho_pixel": [
-        4048,
-        7003
-      ],
-      "lat": 41.247436,
-      "lon": -95.999253,
-      "num_views": 2,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r2_c2",
-      "direction": "south",
-      "score": 0.271,
-      "oblique_bbox": [
-        2971,
-        -4,
-        3000,
-        194
-      ],
-      "ortho_pixel": [
-        3097,
-        6203
-      ],
-      "lat": 41.24784,
-      "lon": -95.999891,
-      "num_views": 1,
-      "cluster_size": 3
-    },
-    {
-      "cell": "r2_c3",
-      "direction": "north",
-      "score": 0.447,
-      "oblique_bbox": [
-        434,
-        1907,
-        461,
-        2124
-      ],
-      "ortho_pixel": [
-        4558,
-        6103
-      ],
-      "lat": 41.24789,
-      "lon": -95.998911,
-      "num_views": 2,
-      "cluster_size": 7
-    },
-    {
-      "cell": "r2_c2",
-      "direction": "north",
-      "score": 0.422,
-      "oblique_bbox": [
-        1323,
-        1736,
-        1342,
-        1927
-      ],
-      "ortho_pixel": [
-        3683,
-        6066
-      ],
-      "lat": 41.247909,
-      "lon": -95.999498,
-      "num_views": 2,
-      "cluster_size": 3
-    },
-    {
-      "cell": "r1_c2",
-      "direction": "west",
-      "score": 0.322,
-      "oblique_bbox": [
-        1339,
-        424,
-        1364,
-        534
-      ],
-      "ortho_pixel": [
-        3717,
-        6467
-      ],
-      "lat": 41.247707,
-      "lon": -95.999475,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r2_c3",
-      "direction": "south",
-      "score": 0.342,
-      "oblique_bbox": [
-        1461,
-        -7,
-        1476,
-        76
-      ],
-      "ortho_pixel": [
-        5098,
-        6275
-      ],
-      "lat": 41.247803,
-      "lon": -95.998549,
-      "num_views": 3,
-      "cluster_size": 6
-    },
-    {
-      "cell": "r1_c3",
-      "direction": "south",
-      "score": 0.233,
-      "oblique_bbox": [
-        806,
-        535,
-        831,
-        598
-      ],
-      "ortho_pixel": [
-        5684,
-        6994
-      ],
-      "lat": 41.24744,
-      "lon": -95.998156,
-      "num_views": 2,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r1_c3",
-      "direction": "north",
-      "score": 0.562,
-      "oblique_bbox": [
-        653,
-        783,
-        677,
-        991
-      ],
-      "ortho_pixel": [
-        4946,
-        6820
-      ],
-      "lat": 41.247529,
-      "lon": -95.998651,
-      "num_views": 2,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r1_c3",
-      "direction": "north",
-      "score": 0.264,
-      "oblique_bbox": [
-        2051,
-        167,
-        2082,
-        226
-      ],
-      "ortho_pixel": [
-        5789,
-        6165
-      ],
-      "lat": 41.247859,
-      "lon": -95.998086,
-      "num_views": 3,
-      "cluster_size": 8
-    },
-    {
-      "cell": "r2_c3",
-      "direction": "north",
-      "score": 0.424,
-      "oblique_bbox": [
+        698,
         1845,
-        1973,
-        1863,
-        2178
+        742,
+        1948
       ],
-      "ortho_pixel": [
-        5394,
-        6079
+      "ortho_pixel_local": [
+        1998,
+        176
       ],
-      "lat": 41.247903,
-      "lon": -95.998351,
-      "num_views": 3,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r2_c4",
-      "direction": "south",
-      "score": 0.684,
-      "oblique_bbox": [
-        2735,
-        47,
-        2764,
-        311
-      ],
-      "ortho_pixel": [
-        6089,
-        6062
-      ],
-      "lat": 41.24791,
-      "lon": -95.997885,
-      "num_views": 3,
-      "cluster_size": 6
-    },
-    {
-      "cell": "r1_c3",
-      "direction": "south",
-      "score": 0.145,
-      "oblique_bbox": [
-        1333,
-        953,
-        1382,
-        1148
-      ],
-      "ortho_pixel": [
-        5355,
-        6451
-      ],
-      "lat": 41.247715,
-      "lon": -95.998378,
       "num_views": 2,
       "cluster_size": 2
     },
     {
-      "cell": "r1_c4",
-      "direction": "west",
-      "score": 0.566,
-      "oblique_bbox": [
-        1169,
-        34,
-        1210,
-        260
-      ],
-      "ortho_pixel": [
-        6125,
-        6862
-      ],
-      "lat": 41.247508,
-      "lon": -95.99786,
-      "num_views": 3,
-      "cluster_size": 5
-    },
-    {
-      "cell": "r1_c3",
-      "direction": "south",
-      "score": 0.126,
-      "oblique_bbox": [
-        587,
-        41,
-        622,
-        179
-      ],
-      "ortho_pixel": [
-        5806,
-        7375
-      ],
-      "lat": 41.247249,
-      "lon": -95.998075,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r1_c3",
-      "direction": "south",
-      "score": 0.426,
-      "oblique_bbox": [
-        1670,
-        1704,
-        1695,
-        1921
-      ],
-      "ortho_pixel": [
-        5010,
-        5922
-      ],
-      "lat": 41.247981,
-      "lon": -95.998608,
-      "num_views": 3,
-      "cluster_size": 8
-    },
-    {
-      "cell": "r1_c4",
-      "direction": "south",
-      "score": 0.208,
-      "oblique_bbox": [
-        847,
-        716,
-        883,
-        971
-      ],
-      "ortho_pixel": [
-        7088,
-        6594
-      ],
-      "lat": 41.247642,
-      "lon": -95.997214,
-      "num_views": 3,
-      "cluster_size": 8
-    },
-    {
-      "cell": "r2_c4",
+      "lat": 41.248094,
+      "lon": -95.999086,
+      "score": 0.84,
       "direction": "east",
-      "score": 0.594,
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:22250",
       "oblique_bbox": [
-        2766,
-        1756,
-        2796,
-        2003
-      ],
-      "ortho_pixel": [
-        6271,
-        6372
-      ],
-      "lat": 41.247754,
-      "lon": -95.997763,
-      "num_views": 4,
-      "cluster_size": 13
-    },
-    {
-      "cell": "r1_c4",
-      "direction": "north",
-      "score": 0.625,
-      "oblique_bbox": [
-        1771,
-        1015,
-        1801,
-        1174
-      ],
-      "ortho_pixel": [
-        7037,
-        7149
-      ],
-      "lat": 41.247363,
-      "lon": -95.997249,
-      "num_views": 2,
-      "cluster_size": 6
-    },
-    {
-      "cell": "r1_c4",
-      "direction": "south",
-      "score": 0.363,
-      "oblique_bbox": [
-        696,
-        1313,
-        724,
-        1583
-      ],
-      "ortho_pixel": [
-        6758,
-        6438
-      ],
-      "lat": 41.247721,
-      "lon": -95.997436,
-      "num_views": 4,
-      "cluster_size": 8
-    },
-    {
-      "cell": "r1_c4",
-      "direction": "south",
-      "score": 0.147,
-      "oblique_bbox": [
-        1561,
-        1119,
-        1579,
-        1178
-      ],
-      "ortho_pixel": [
-        6609,
-        6589
-      ],
-      "lat": 41.247645,
-      "lon": -95.997535,
-      "num_views": 3,
-      "cluster_size": 5
-    },
-    {
-      "cell": "r1_c4",
-      "direction": "east",
-      "score": 0.805,
-      "oblique_bbox": [
-        444,
-        414,
-        512,
-        696
-      ],
-      "ortho_pixel": [
-        7072,
-        5985
-      ],
-      "lat": 41.24795,
-      "lon": -95.997225,
-      "num_views": 3,
-      "cluster_size": 7
-    },
-    {
-      "cell": "r2_c4",
-      "direction": "north",
-      "score": 0.348,
-      "oblique_bbox": [
-        1106,
-        817,
-        1127,
-        962
-      ],
-      "ortho_pixel": [
-        6729,
-        5617
-      ],
-      "lat": 41.248135,
-      "lon": -95.997456,
-      "num_views": 4,
-      "cluster_size": 14
-    },
-    {
-      "cell": "r1_c4",
-      "direction": "east",
-      "score": 0.149,
-      "oblique_bbox": [
-        2315,
-        -2,
-        2337,
-        25
-      ],
-      "ortho_pixel": [
-        7570,
-        7124
-      ],
-      "lat": 41.247375,
-      "lon": -95.996892,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r1_c4",
-      "direction": "east",
-      "score": 0.112,
-      "oblique_bbox": [
-        1877,
-        1564,
-        1914,
-        1604
-      ],
-      "ortho_pixel": [
-        6591,
-        7002
-      ],
-      "lat": 41.247437,
-      "lon": -95.997548,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r2_c4",
-      "direction": "east",
-      "score": 0.143,
-      "oblique_bbox": [
-        2529,
-        -5,
-        2552,
-        71
-      ],
-      "ortho_pixel": [
-        7445,
-        6153
-      ],
-      "lat": 41.247865,
-      "lon": -95.996975,
-      "num_views": 2,
-      "cluster_size": 3
-    },
-    {
-      "cell": "r1_c4",
-      "direction": "south",
-      "score": 0.128,
-      "oblique_bbox": [
-        2657,
-        1520,
-        2675,
-        1593
-      ],
-      "ortho_pixel": [
-        5908,
-        6396
-      ],
-      "lat": 41.247743,
-      "lon": -95.998006,
-      "num_views": 2,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r1_c4",
-      "direction": "west",
-      "score": 0.131,
-      "oblique_bbox": [
-        1943,
-        546,
-        1959,
-        621
-      ],
-      "ortho_pixel": [
-        6565,
-        6145
-      ],
-      "lat": 41.247869,
-      "lon": -95.997566,
-      "num_views": 2,
-      "cluster_size": 3
-    },
-    {
-      "cell": "r1_c5",
-      "direction": "east",
-      "score": 0.303,
-      "oblique_bbox": [
-        1913,
-        911,
-        1948,
-        1100
-      ],
-      "ortho_pixel": [
-        8173,
-        7122
-      ],
-      "lat": 41.247377,
-      "lon": -95.996488,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r2_c0",
-      "direction": "north",
-      "score": 0.404,
-      "oblique_bbox": [
-        2561,
-        1588,
-        2584,
-        1811
-      ],
-      "ortho_pixel": [
-        1437,
-        5654
-      ],
-      "lat": 41.248117,
-      "lon": -96.001005,
-      "num_views": 1,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r2_c0",
-      "direction": "west",
-      "score": 0.136,
-      "oblique_bbox": [
-        1732,
-        1243,
-        1760,
-        1465
-      ],
-      "ortho_pixel": [
-        1270,
-        5120
-      ],
-      "lat": 41.248386,
-      "lon": -96.001116,
-      "num_views": 3,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r2_c1",
-      "direction": "east",
-      "score": 0.609,
-      "oblique_bbox": [
-        70,
-        934,
-        121,
-        1121
-      ],
-      "ortho_pixel": [
-        1553,
-        4950
-      ],
-      "lat": 41.248471,
-      "lon": -96.000926,
-      "num_views": 4,
-      "cluster_size": 15
-    },
-    {
-      "cell": "r2_c0",
-      "direction": "east",
-      "score": 0.268,
-      "oblique_bbox": [
-        2177,
-        65,
-        2247,
-        232
-      ],
-      "ortho_pixel": [
-        1650,
-        5914
-      ],
-      "lat": 41.247985,
-      "lon": -96.000861,
-      "num_views": 3,
-      "cluster_size": 6
-    },
-    {
-      "cell": "r2_c0",
-      "direction": "north",
-      "score": 0.136,
-      "oblique_bbox": [
-        2806,
-        927,
-        2832,
-        987
-      ],
-      "ortho_pixel": [
-        1560,
-        5292
-      ],
-      "lat": 41.248299,
-      "lon": -96.000922,
-      "num_views": 4,
-      "cluster_size": 5
-    },
-    {
-      "cell": "r2_c0",
-      "direction": "east",
-      "score": 0.113,
-      "oblique_bbox": [
-        1461,
-        528,
-        1488,
-        611
-      ],
-      "ortho_pixel": [
-        1085,
-        5425
-      ],
-      "lat": 41.248232,
-      "lon": -96.00124,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r2_c0",
-      "direction": "west",
-      "score": 0.303,
-      "oblique_bbox": [
-        2871,
-        878,
-        2904,
-        1129
-      ],
-      "ortho_pixel": [
-        1442,
-        4690
-      ],
-      "lat": 41.248603,
-      "lon": -96.001001,
-      "num_views": 2,
-      "cluster_size": 5
-    },
-    {
-      "cell": "r2_c0",
-      "direction": "west",
-      "score": 0.852,
-      "oblique_bbox": [
-        2724,
-        288,
-        2795,
-        492
-      ],
-      "ortho_pixel": [
-        1041,
-        4737
-      ],
-      "lat": 41.248579,
-      "lon": -96.00127,
-      "num_views": 2,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r2_c0",
-      "direction": "west",
-      "score": 0.177,
-      "oblique_bbox": [
-        438,
-        1390,
-        514,
-        1417
-      ],
-      "ortho_pixel": [
-        1242,
-        5933
-      ],
-      "lat": 41.247975,
-      "lon": -96.001136,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r2_c1",
-      "direction": "east",
-      "score": 0.613,
-      "oblique_bbox": [
-        1600,
-        1763,
-        1654,
-        1924
-      ],
-      "ortho_pixel": [
-        2995,
-        5041
-      ],
-      "lat": 41.248425,
-      "lon": -95.999959,
-      "num_views": 3,
-      "cluster_size": 16
-    },
-    {
-      "cell": "r2_c1",
-      "direction": "north",
-      "score": 0.213,
-      "oblique_bbox": [
-        998,
-        774,
-        1021,
-        908
-      ],
-      "ortho_pixel": [
-        2192,
-        5013
-      ],
-      "lat": 41.24844,
-      "lon": -96.000498,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c1",
-      "direction": "north",
-      "score": 0.473,
-      "oblique_bbox": [
-        497,
-        1540,
-        526,
-        1769
-      ],
-      "ortho_pixel": [
-        1949,
-        4309
-      ],
-      "lat": 41.248795,
-      "lon": -96.000661,
-      "num_views": 3,
-      "cluster_size": 8
-    },
-    {
-      "cell": "r2_c1",
-      "direction": "west",
-      "score": 0.307,
-      "oblique_bbox": [
-        1809,
-        1420,
-        1834,
-        1594
-      ],
-      "ortho_pixel": [
-        2309,
-        5760
-      ],
-      "lat": 41.248064,
-      "lon": -96.00042,
-      "num_views": 2,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r2_c1",
-      "direction": "east",
-      "score": 0.855,
-      "oblique_bbox": [
-        342,
-        1573,
-        414,
-        1822
-      ],
-      "ortho_pixel": [
-        1966,
-        5213
-      ],
-      "lat": 41.248339,
-      "lon": -96.000649,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r3_c1",
-      "direction": "west",
-      "score": 0.637,
-      "oblique_bbox": [
-        490,
-        810,
-        553,
-        1013
-      ],
-      "ortho_pixel": [
-        2521,
-        4625
-      ],
-      "lat": 41.248635,
-      "lon": -96.000277,
-      "num_views": 3,
-      "cluster_size": 15
-    },
-    {
-      "cell": "r3_c2",
-      "direction": "north",
-      "score": 0.535,
-      "oblique_bbox": [
-        67,
-        1504,
-        84,
-        1726
-      ],
-      "ortho_pixel": [
-        3195,
-        4465
-      ],
-      "lat": 41.248716,
-      "lon": -95.999825,
-      "num_views": 3,
-      "cluster_size": 9
-    },
-    {
-      "cell": "r3_c1",
-      "direction": "west",
-      "score": 0.578,
-      "oblique_bbox": [
-        576,
-        1422,
-        654,
-        1654
-      ],
-      "ortho_pixel": [
-        2769,
-        4731
-      ],
-      "lat": 41.248582,
-      "lon": -96.000112,
-      "num_views": 2,
-      "cluster_size": 3
-    },
-    {
-      "cell": "r3_c1",
-      "direction": "east",
-      "score": 0.229,
-      "oblique_bbox": [
-        2214,
-        1071,
-        2315,
-        1243
-      ],
-      "ortho_pixel": [
-        2168,
-        4550
-      ],
-      "lat": 41.248673,
-      "lon": -96.000514,
-      "num_views": 2,
-      "cluster_size": 7
-    },
-    {
-      "cell": "r2_c1",
-      "direction": "east",
-      "score": 0.175,
-      "oblique_bbox": [
-        2227,
-        1738,
-        2250,
-        1796
-      ],
-      "ortho_pixel": [
-        3176,
-        4749
-      ],
-      "lat": 41.248573,
-      "lon": -95.999839,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c1",
-      "direction": "east",
-      "score": 0.758,
-      "oblique_bbox": [
-        2586,
-        1272,
-        2664,
-        1523
-      ],
-      "ortho_pixel": [
-        1829,
-        4689
-      ],
-      "lat": 41.248603,
-      "lon": -96.000741,
-      "num_views": 3,
-      "cluster_size": 7
-    },
-    {
-      "cell": "r2_c1",
-      "direction": "west",
-      "score": 0.275,
-      "oblique_bbox": [
-        1759,
-        1043,
-        1779,
-        1313
-      ],
-      "ortho_pixel": [
-        2044,
-        5601
-      ],
-      "lat": 41.248143,
-      "lon": -96.000597,
-      "num_views": 1,
-      "cluster_size": 3
-    },
-    {
-      "cell": "r3_c2",
-      "direction": "north",
-      "score": 0.672,
-      "oblique_bbox": [
-        2362,
-        1535,
-        2391,
-        1794
-      ],
-      "ortho_pixel": [
-        4393,
-        4407
-      ],
-      "lat": 41.248745,
-      "lon": -95.999022,
-      "num_views": 3,
-      "cluster_size": 8
-    },
-    {
-      "cell": "r2_c3",
-      "direction": "north",
-      "score": 0.617,
-      "oblique_bbox": [
-        319,
-        790,
-        341,
-        992
-      ],
-      "ortho_pixel": [
-        4404,
-        5165
-      ],
-      "lat": 41.248363,
-      "lon": -95.999015,
-      "num_views": 3,
-      "cluster_size": 9
-    },
-    {
-      "cell": "r2_c3",
-      "direction": "north",
-      "score": 0.566,
-      "oblique_bbox": [
-        1065,
-        805,
-        1092,
-        1024
-      ],
-      "ortho_pixel": [
-        4894,
-        5198
-      ],
-      "lat": 41.248346,
-      "lon": -95.998686,
-      "num_views": 4,
-      "cluster_size": 11
-    },
-    {
-      "cell": "r3_c2",
-      "direction": "west",
-      "score": 0.711,
-      "oblique_bbox": [
-        15,
-        418,
-        90,
-        658
-      ],
-      "ortho_pixel": [
-        3599,
-        4546
-      ],
-      "lat": 41.248675,
-      "lon": -95.999554,
-      "num_views": 4,
-      "cluster_size": 18
-    },
-    {
-      "cell": "r2_c2",
-      "direction": "north",
-      "score": 0.424,
-      "oblique_bbox": [
+        2259,
         1215,
-        762,
-        1234,
-        937
+        2373,
+        1474
       ],
-      "ortho_pixel": [
-        3536,
-        5230
+      "ortho_pixel_local": [
+        3051,
+        1116
       ],
-      "lat": 41.24833,
-      "lon": -95.999596,
-      "num_views": 3,
-      "cluster_size": 8
-    },
-    {
-      "cell": "r2_c2",
-      "direction": "north",
-      "score": 0.208,
-      "oblique_bbox": [
-        1247,
-        984,
-        1293,
-        1415
-      ],
-      "ortho_pixel": [
-        3685,
-        5472
-      ],
-      "lat": 41.248208,
-      "lon": -95.999497,
-      "num_views": 2,
-      "cluster_size": 6
-    },
-    {
-      "cell": "r2_c2",
-      "direction": "north",
-      "score": 0.135,
-      "oblique_bbox": [
-        1790,
-        491,
-        1811,
-        617
-      ],
-      "ortho_pixel": [
-        4070,
-        4877
-      ],
-      "lat": 41.248508,
-      "lon": -95.999238,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r2_c2",
-      "direction": "south",
-      "score": 0.369,
-      "oblique_bbox": [
-        1077,
-        807,
-        1095,
-        1028
-      ],
-      "ortho_pixel": [
-        3985,
-        5297
-      ],
-      "lat": 41.248297,
-      "lon": -95.999295,
-      "num_views": 3,
-      "cluster_size": 7
-    },
-    {
-      "cell": "r3_c3",
-      "direction": "north",
-      "score": 0.262,
-      "oblique_bbox": [
-        1051,
-        1542,
-        1081,
-        1788
-      ],
-      "ortho_pixel": [
-        4952,
-        4452
-      ],
-      "lat": 41.248723,
-      "lon": -95.998647,
-      "num_views": 4,
-      "cluster_size": 14
-    },
-    {
-      "cell": "r2_c2",
-      "direction": "east",
-      "score": 0.118,
-      "oblique_bbox": [
-        2891,
-        1740,
-        2924,
-        1983
-      ],
-      "ortho_pixel": [
-        3461,
-        6317
-      ],
-      "lat": 41.247782,
-      "lon": -95.999647,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c2",
-      "direction": "west",
-      "score": 0.171,
-      "oblique_bbox": [
-        339,
-        764,
-        362,
-        827
-      ],
-      "ortho_pixel": [
-        3791,
-        4499
-      ],
-      "lat": 41.248699,
-      "lon": -95.999425,
-      "num_views": 2,
-      "cluster_size": 3
-    },
-    {
-      "cell": "r3_c2",
-      "direction": "west",
-      "score": 0.637,
-      "oblique_bbox": [
-        138,
-        1285,
-        241,
-        1518
-      ],
-      "ortho_pixel": [
-        4169,
-        4581
-      ],
-      "lat": 41.248657,
-      "lon": -95.999172,
       "num_views": 2,
       "cluster_size": 7
     },
     {
-      "cell": "r2_c4",
-      "direction": "south",
-      "score": 0.75,
-      "oblique_bbox": [
-        2350,
-        1824,
-        2422,
-        2039
-      ],
-      "ortho_pixel": [
-        6154,
-        4797
-      ],
-      "lat": 41.248548,
-      "lon": -95.997841,
-      "num_views": 4,
-      "cluster_size": 21
-    },
-    {
-      "cell": "r2_c3",
-      "direction": "south",
-      "score": 0.389,
-      "oblique_bbox": [
-        1803,
-        1417,
-        1833,
-        2002
-      ],
-      "ortho_pixel": [
-        5179,
-        4785
-      ],
-      "lat": 41.248554,
-      "lon": -95.998495,
-      "num_views": 4,
-      "cluster_size": 17
-    },
-    {
-      "cell": "r3_c3",
-      "direction": "west",
-      "score": 0.641,
-      "oblique_bbox": [
-        535,
-        1257,
-        604,
-        1591
-      ],
-      "ortho_pixel": [
-        5722,
-        4734
-      ],
-      "lat": 41.24858,
-      "lon": -95.998131,
-      "num_views": 3,
-      "cluster_size": 13
-    },
-    {
-      "cell": "r2_c3",
-      "direction": "north",
-      "score": 0.147,
-      "oblique_bbox": [
-        1370,
-        623,
-        1397,
-        781
-      ],
-      "ortho_pixel": [
-        5218,
-        4971
-      ],
-      "lat": 41.248461,
-      "lon": -95.998469,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r2_c3",
-      "direction": "north",
-      "score": 0.209,
-      "oblique_bbox": [
-        907,
-        1216,
-        934,
-        1315
-      ],
-      "ortho_pixel": [
-        4905,
-        5498
-      ],
-      "lat": 41.248195,
-      "lon": -95.998679,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c3",
-      "direction": "south",
-      "score": 0.477,
-      "oblique_bbox": [
-        1291,
-        368,
-        1314,
-        593
-      ],
-      "ortho_pixel": [
-        5346,
-        4330
-      ],
-      "lat": 41.248784,
-      "lon": -95.998383,
-      "num_views": 4,
-      "cluster_size": 7
-    },
-    {
-      "cell": "r2_c3",
+      "lat": 41.247743,
+      "lon": -95.99908,
+      "score": 0.168,
       "direction": "east",
-      "score": 0.146,
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:22250",
       "oblique_bbox": [
-        1747,
-        1075,
-        1773,
-        1296
+        2817,
+        1638,
+        2920,
+        1903
       ],
-      "ortho_pixel": [
-        5243,
-        5461
+      "ortho_pixel_local": [
+        3050,
+        1798
       ],
-      "lat": 41.248214,
-      "lon": -95.998452,
       "num_views": 1,
       "cluster_size": 2
     },
     {
-      "cell": "r3_c3",
-      "direction": "west",
-      "score": 0.77,
-      "oblique_bbox": [
-        422,
-        498,
-        495,
-        739
-      ],
-      "ortho_pixel": [
-        4852,
-        4745
-      ],
-      "lat": 41.248575,
-      "lon": -95.998714,
-      "num_views": 3,
-      "cluster_size": 6
-    },
-    {
-      "cell": "r2_c3",
-      "direction": "south",
-      "score": 0.324,
-      "oblique_bbox": [
-        2633,
-        786,
-        2655,
-        1013
-      ],
-      "ortho_pixel": [
-        4596,
-        5532
-      ],
-      "lat": 41.248178,
-      "lon": -95.998886,
-      "num_views": 2,
-      "cluster_size": 3
-    },
-    {
-      "cell": "r2_c3",
-      "direction": "south",
-      "score": 0.104,
-      "oblique_bbox": [
-        455,
-        744,
-        490,
-        806
-      ],
-      "ortho_pixel": [
-        5840,
-        5498
-      ],
-      "lat": 41.248195,
-      "lon": -95.998052,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r2_c4",
-      "direction": "south",
-      "score": 0.707,
-      "oblique_bbox": [
-        2458,
-        1233,
-        2530,
-        1496
-      ],
-      "ortho_pixel": [
-        6096,
-        5180
-      ],
-      "lat": 41.248355,
-      "lon": -95.99788,
-      "num_views": 1,
-      "cluster_size": 8
-    },
-    {
-      "cell": "r2_c3",
-      "direction": "south",
-      "score": 0.432,
-      "oblique_bbox": [
-        363,
-        -8,
-        392,
-        145
-      ],
-      "ortho_pixel": [
-        5998,
-        6187
-      ],
-      "lat": 41.247848,
-      "lon": -95.997946,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c3",
-      "direction": "south",
-      "score": 0.609,
-      "oblique_bbox": [
-        331,
-        44,
-        406,
-        318
-      ],
-      "ortho_pixel": [
-        5999,
-        4578
-      ],
-      "lat": 41.248659,
-      "lon": -95.997945,
-      "num_views": 4,
-      "cluster_size": 16
-    },
-    {
-      "cell": "r2_c3",
-      "direction": "west",
-      "score": 0.128,
-      "oblique_bbox": [
-        0,
-        72,
-        157,
-        333
-      ],
-      "ortho_pixel": [
-        4672,
-        6354
-      ],
-      "lat": 41.247764,
-      "lon": -95.998835,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r2_c3",
-      "direction": "west",
-      "score": 0.131,
-      "oblique_bbox": [
-        137,
-        1744,
-        163,
-        1818
-      ],
-      "ortho_pixel": [
-        5671,
-        6345
-      ],
-      "lat": 41.247768,
-      "lon": -95.998165,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r2_c4",
-      "direction": "north",
-      "score": 0.566,
-      "oblique_bbox": [
-        1702,
-        653,
-        1734,
-        875
-      ],
-      "ortho_pixel": [
-        7046,
-        5521
-      ],
-      "lat": 41.248184,
-      "lon": -95.997243,
-      "num_views": 4,
-      "cluster_size": 10
-    },
-    {
-      "cell": "r2_c4",
-      "direction": "north",
-      "score": 0.617,
-      "oblique_bbox": [
-        472,
-        -5,
-        498,
-        112
-      ],
-      "ortho_pixel": [
-        6474,
-        4805
-      ],
-      "lat": 41.248544,
-      "lon": -95.997626,
-      "num_views": 3,
-      "cluster_size": 7
-    },
-    {
-      "cell": "r2_c4",
-      "direction": "north",
-      "score": 0.213,
-      "oblique_bbox": [
-        1106,
-        754,
-        1147,
-        968
-      ],
-      "ortho_pixel": [
-        6759,
-        5446
-      ],
-      "lat": 41.248222,
-      "lon": -95.997436,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c4",
+      "lat": 41.24806,
+      "lon": -95.999299,
+      "score": 0.111,
       "direction": "east",
-      "score": 0.179,
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:22250",
       "oblique_bbox": [
-        1902,
-        815,
-        1932,
-        1415
+        2036,
+        1664,
+        2137,
+        1849
       ],
-      "ortho_pixel": [
-        6590,
-        4274
+      "ortho_pixel_local": [
+        2701,
+        1159
       ],
-      "lat": 41.248812,
-      "lon": -95.997549,
-      "num_views": 2,
-      "cluster_size": 3
+      "num_views": 1,
+      "cluster_size": 1
     },
     {
-      "cell": "r2_c4",
+      "lat": 41.247866,
+      "lon": -95.999108,
+      "score": 0.156,
       "direction": "east",
-      "score": 0.123,
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:22250",
       "oblique_bbox": [
-        1553,
-        -2,
-        1578,
-        52
+        2600,
+        1737,
+        2622,
+        1800
       ],
-      "ortho_pixel": [
-        7426,
-        5370
+      "ortho_pixel_local": [
+        2986,
+        1543
       ],
-      "lat": 41.24826,
-      "lon": -95.996988,
       "num_views": 1,
       "cluster_size": 1
     },
     {
-      "cell": "r3_c4",
-      "direction": "north",
-      "score": 0.5,
-      "oblique_bbox": [
-        2271,
-        1771,
-        2352,
-        2014
-      ],
-      "ortho_pixel": [
-        7167,
-        4546
-      ],
-      "lat": 41.248675,
-      "lon": -95.997161,
-      "num_views": 2,
-      "cluster_size": 7
-    },
-    {
-      "cell": "r2_c4",
-      "direction": "south",
-      "score": 0.625,
-      "oblique_bbox": [
-        283,
-        1291,
-        313,
-        1493
-      ],
-      "ortho_pixel": [
-        7421,
-        4830
-      ],
-      "lat": 41.248532,
-      "lon": -95.996991,
-      "num_views": 2,
-      "cluster_size": 6
-    },
-    {
-      "cell": "r2_c4",
-      "direction": "south",
-      "score": 0.516,
-      "oblique_bbox": [
-        681,
-        1295,
-        713,
-        1557
-      ],
-      "ortho_pixel": [
-        7008,
-        4794
-      ],
-      "lat": 41.24855,
-      "lon": -95.997268,
-      "num_views": 3,
-      "cluster_size": 11
-    },
-    {
-      "cell": "r2_c4",
+      "lat": 41.247333,
+      "lon": -95.996867,
+      "score": 0.18,
       "direction": "east",
-      "score": 0.104,
-      "oblique_bbox": [
-        1610,
-        1826,
-        1660,
-        2034
-      ],
-      "ortho_pixel": [
-        6222,
-        5474
-      ],
-      "lat": 41.248207,
-      "lon": -95.997796,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r2_c4",
-      "direction": "south",
-      "score": 0.14,
-      "oblique_bbox": [
-        779,
-        131,
-        826,
-        346
-      ],
-      "ortho_pixel": [
-        7118,
-        5732
-      ],
-      "lat": 41.248077,
-      "lon": -95.997195,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r2_c4",
-      "direction": "south",
-      "score": 0.102,
-      "oblique_bbox": [
-        1052,
-        1143,
-        1075,
-        1201
-      ],
-      "ortho_pixel": [
-        6858,
-        5023
-      ],
-      "lat": 41.248435,
-      "lon": -95.997369,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r2_c4",
-      "direction": "south",
-      "score": 0.562,
-      "oblique_bbox": [
-        1795,
-        1267,
-        1856,
-        1714
-      ],
-      "ortho_pixel": [
-        6433,
-        5058
-      ],
-      "lat": 41.248417,
-      "lon": -95.997654,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r3_c4",
-      "direction": "north",
-      "score": 0.402,
-      "oblique_bbox": [
-        454,
-        1564,
-        527,
-        1817
-      ],
-      "ortho_pixel": [
-        6166,
-        4400
-      ],
-      "lat": 41.248749,
-      "lon": -95.997833,
-      "num_views": 2,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r2_c5",
-      "direction": "south",
-      "score": 0.105,
-      "oblique_bbox": [
-        1550,
-        1253,
-        1580,
-        1348
-      ],
-      "ortho_pixel": [
-        8149,
-        5087
-      ],
-      "lat": 41.248403,
-      "lon": -95.996504,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c0",
-      "direction": "east",
-      "score": 0.715,
-      "oblique_bbox": [
-        964,
-        740,
-        1017,
-        996
-      ],
-      "ortho_pixel": [
-        1053,
-        3556
-      ],
-      "lat": 41.249174,
-      "lon": -96.001261,
-      "num_views": 4,
-      "cluster_size": 25
-    },
-    {
-      "cell": "r3_c0",
-      "direction": "north",
-      "score": 0.719,
-      "oblique_bbox": [
-        1644,
-        993,
-        1718,
-        1253
-      ],
-      "ortho_pixel": [
-        1067,
-        4091
-      ],
-      "lat": 41.248905,
-      "lon": -96.001252,
-      "num_views": 3,
-      "cluster_size": 12
-    },
-    {
-      "cell": "r4_c0",
-      "direction": "east",
-      "score": 0.609,
-      "oblique_bbox": [
-        2604,
-        363,
-        2637,
-        743
-      ],
-      "ortho_pixel": [
-        1154,
-        3269
-      ],
-      "lat": 41.249319,
-      "lon": -96.001194,
-      "num_views": 2,
-      "cluster_size": 6
-    },
-    {
-      "cell": "r3_c0",
-      "direction": "north",
-      "score": 0.59,
-      "oblique_bbox": [
-        2892,
-        1284,
-        2919,
-        1530
-      ],
-      "ortho_pixel": [
-        1627,
-        4009
-      ],
-      "lat": 41.248946,
-      "lon": -96.000877,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r3_c0",
-      "direction": "north",
-      "score": 0.516,
-      "oblique_bbox": [
-        2115,
-        -5,
-        2149,
-        253
-      ],
-      "ortho_pixel": [
-        1305,
-        3384
-      ],
-      "lat": 41.249261,
-      "lon": -96.001093,
-      "num_views": 2,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r3_c1",
-      "direction": "east",
-      "score": 0.535,
-      "oblique_bbox": [
-        1036,
-        1386,
-        1070,
-        1631
-      ],
-      "ortho_pixel": [
-        1819,
-        3355
-      ],
-      "lat": 41.249275,
-      "lon": -96.000748,
-      "num_views": 4,
-      "cluster_size": 19
-    },
-    {
-      "cell": "r3_c0",
-      "direction": "west",
-      "score": 0.73,
-      "oblique_bbox": [
-        628,
-        1547,
-        701,
-        1735
-      ],
-      "ortho_pixel": [
-        1229,
-        4486
-      ],
-      "lat": 41.248705,
-      "lon": -96.001143,
-      "num_views": 3,
-      "cluster_size": 10
-    },
-    {
-      "cell": "r3_c0",
-      "direction": "west",
-      "score": 0.27,
-      "oblique_bbox": [
-        2251,
-        1521,
-        2285,
-        1657
-      ],
-      "ortho_pixel": [
-        1505,
-        3558
-      ],
-      "lat": 41.249173,
-      "lon": -96.000959,
-      "num_views": 2,
-      "cluster_size": 3
-    },
-    {
-      "cell": "r3_c1",
-      "direction": "north",
-      "score": 0.299,
-      "oblique_bbox": [
-        2350,
-        317,
-        2376,
-        535
-      ],
-      "ortho_pixel": [
-        2906,
-        3486
-      ],
-      "lat": 41.24921,
-      "lon": -96.000019,
-      "num_views": 2,
-      "cluster_size": 8
-    },
-    {
-      "cell": "r3_c1",
-      "direction": "north",
-      "score": 0.367,
-      "oblique_bbox": [
-        1438,
-        370,
-        1457,
-        536
-      ],
-      "ortho_pixel": [
-        2426,
-        3331
-      ],
-      "lat": 41.249288,
-      "lon": -96.000341,
-      "num_views": 3,
-      "cluster_size": 5
-    },
-    {
-      "cell": "r3_c1",
-      "direction": "north",
-      "score": 0.115,
-      "oblique_bbox": [
-        2677,
-        -8,
-        2689,
-        29
-      ],
-      "ortho_pixel": [
-        3295,
-        2887
-      ],
-      "lat": 41.249511,
-      "lon": -95.999758,
-      "num_views": 2,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r3_c1",
-      "direction": "north",
-      "score": 0.139,
-      "oblique_bbox": [
-        907,
-        -3,
-        922,
-        73
-      ],
-      "ortho_pixel": [
-        2020,
-        2926
-      ],
-      "lat": 41.249492,
-      "lon": -96.000614,
-      "num_views": 2,
-      "cluster_size": 3
-    },
-    {
-      "cell": "r3_c1",
-      "direction": "north",
-      "score": 0.109,
-      "oblique_bbox": [
-        1810,
-        1432,
-        2348,
-        1645
-      ],
-      "ortho_pixel": [
-        2749,
-        4341
-      ],
-      "lat": 41.248779,
-      "lon": -96.000125,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c1",
-      "direction": "east",
-      "score": 0.177,
-      "oblique_bbox": [
-        1425,
-        764,
-        1444,
-        846
-      ],
-      "ortho_pixel": [
-        2521,
-        3939
-      ],
-      "lat": 41.248981,
-      "lon": -96.000278,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c1",
-      "direction": "west",
-      "score": 0.198,
-      "oblique_bbox": [
-        1342,
-        1758,
-        1366,
-        1835
-      ],
-      "ortho_pixel": [
-        3040,
-        4114
-      ],
-      "lat": 41.248893,
-      "lon": -95.99993,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r3_c1",
-      "direction": "west",
-      "score": 0.193,
-      "oblique_bbox": [
-        2024,
-        347,
-        2040,
-        437
-      ],
-      "ortho_pixel": [
-        2111,
-        3317
-      ],
-      "lat": 41.249295,
-      "lon": -96.000553,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c2",
-      "direction": "north",
-      "score": 0.21,
-      "oblique_bbox": [
-        2322,
-        125,
-        2339,
-        223
-      ],
-      "ortho_pixel": [
-        4502,
-        3062
-      ],
-      "lat": 41.249423,
-      "lon": -95.998949,
-      "num_views": 1,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r3_c2",
-      "direction": "west",
-      "score": 0.539,
-      "oblique_bbox": [
-        1827,
-        1290,
-        1856,
-        1521
-      ],
-      "ortho_pixel": [
-        3976,
-        3410
-      ],
-      "lat": 41.249248,
-      "lon": -95.999301,
-      "num_views": 2,
-      "cluster_size": 9
-    },
-    {
-      "cell": "r3_c2",
-      "direction": "north",
-      "score": 0.508,
-      "oblique_bbox": [
-        2363,
-        457,
-        2395,
-        682
-      ],
-      "ortho_pixel": [
-        4503,
-        3331
-      ],
-      "lat": 41.249288,
-      "lon": -95.998948,
-      "num_views": 3,
-      "cluster_size": 6
-    },
-    {
-      "cell": "r3_c2",
-      "direction": "north",
-      "score": 0.193,
-      "oblique_bbox": [
-        2371,
-        664,
-        2474,
-        1525
-      ],
-      "ortho_pixel": [
-        4478,
-        3776
-      ],
-      "lat": 41.249063,
-      "lon": -95.998965,
-      "num_views": 2,
-      "cluster_size": 6
-    },
-    {
-      "cell": "r3_c2",
-      "direction": "west",
-      "score": 0.249,
-      "oblique_bbox": [
-        1644,
-        172,
-        1669,
-        367
-      ],
-      "ortho_pixel": [
-        3513,
-        3375
-      ],
-      "lat": 41.249265,
-      "lon": -95.999612,
-      "num_views": 2,
-      "cluster_size": 8
-    },
-    {
-      "cell": "r3_c2",
-      "direction": "north",
-      "score": 0.125,
-      "oblique_bbox": [
-        869,
-        821,
-        907,
-        1097
-      ],
-      "ortho_pixel": [
-        3503,
-        3789
-      ],
-      "lat": 41.249057,
-      "lon": -95.999619,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c3",
-      "direction": "north",
-      "score": 0.195,
-      "oblique_bbox": [
-        543,
-        573,
-        566,
-        687
-      ],
-      "ortho_pixel": [
-        4792,
-        3356
-      ],
-      "lat": 41.249275,
-      "lon": -95.998754,
-      "num_views": 2,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r3_c2",
-      "direction": "west",
-      "score": 0.148,
-      "oblique_bbox": [
-        1994,
-        1344,
-        2130,
-        1378
-      ],
-      "ortho_pixel": [
-        4152,
-        3080
-      ],
-      "lat": 41.249414,
-      "lon": -95.999183,
-      "num_views": 2,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r3_c2",
-      "direction": "north",
-      "score": 0.115,
-      "oblique_bbox": [
-        1437,
-        1554,
-        1456,
-        1585
-      ],
-      "ortho_pixel": [
-        3817,
-        4347
-      ],
-      "lat": 41.248776,
-      "lon": -95.999408,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c2",
-      "direction": "west",
-      "score": 0.109,
-      "oblique_bbox": [
-        1330,
-        1203,
-        1348,
-        1262
-      ],
-      "ortho_pixel": [
-        4106,
-        3711
-      ],
-      "lat": 41.249096,
-      "lon": -95.999214,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c2",
-      "direction": "west",
-      "score": 0.205,
-      "oblique_bbox": [
-        642,
-        -3,
-        663,
-        61
-      ],
-      "ortho_pixel": [
-        3342,
-        4148
-      ],
-      "lat": 41.248876,
-      "lon": -95.999727,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c3",
-      "direction": "north",
-      "score": 0.107,
-      "oblique_bbox": [
-        -9,
-        660,
-        75,
-        1493
-      ],
-      "ortho_pixel": [
-        4425,
-        3972
-      ],
-      "lat": 41.248965,
-      "lon": -95.999001,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c3",
-      "direction": "south",
-      "score": 0.562,
-      "oblique_bbox": [
-        149,
-        808,
-        218,
-        1046
-      ],
-      "ortho_pixel": [
-        6105,
-        3803
-      ],
-      "lat": 41.249049,
-      "lon": -95.997874,
-      "num_views": 4,
-      "cluster_size": 14
-    },
-    {
-      "cell": "r3_c3",
-      "direction": "north",
-      "score": 0.132,
-      "oblique_bbox": [
-        730,
-        1005,
-        789,
-        1073
-      ],
-      "ortho_pixel": [
-        4990,
-        3844
-      ],
-      "lat": 41.249029,
-      "lon": -95.998621,
-      "num_views": 2,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r4_c4",
-      "direction": "north",
-      "score": 0.574,
-      "oblique_bbox": [
-        512,
-        1666,
-        568,
-        1934
-      ],
-      "ortho_pixel": [
-        6121,
-        3195
-      ],
-      "lat": 41.249356,
-      "lon": -95.997863,
-      "num_views": 3,
-      "cluster_size": 17
-    },
-    {
-      "cell": "r3_c3",
-      "direction": "north",
-      "score": 0.116,
-      "oblique_bbox": [
-        1415,
-        855,
-        1438,
-        1021
-      ],
-      "ortho_pixel": [
-        5284,
-        3773
-      ],
-      "lat": 41.249065,
-      "lon": -95.998425,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c3",
-      "direction": "south",
-      "score": 0.551,
-      "oblique_bbox": [
-        1068,
-        67,
-        1096,
-        346
-      ],
-      "ortho_pixel": [
-        5609,
-        4424
-      ],
-      "lat": 41.248737,
-      "lon": -95.998207,
-      "num_views": 3,
-      "cluster_size": 7
-    },
-    {
-      "cell": "r3_c3",
-      "direction": "south",
-      "score": 0.107,
-      "oblique_bbox": [
-        531,
-        595,
-        578,
-        661
-      ],
-      "ortho_pixel": [
-        5866,
-        4136
-      ],
-      "lat": 41.248882,
-      "lon": -95.998034,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c3",
-      "direction": "west",
-      "score": 0.116,
-      "oblique_bbox": [
-        375,
-        65,
-        392,
-        165
-      ],
-      "ortho_pixel": [
-        4492,
-        4813
-      ],
-      "lat": 41.248541,
-      "lon": -95.998956,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c3",
-      "direction": "west",
-      "score": 0.734,
-      "oblique_bbox": [
-        2637,
-        1587,
-        2665,
-        1837
-      ],
-      "ortho_pixel": [
-        5802,
-        2867
-      ],
-      "lat": 41.249521,
-      "lon": -95.998077,
-      "num_views": 3,
-      "cluster_size": 10
-    },
-    {
-      "cell": "r4_c3",
-      "direction": "west",
-      "score": 0.734,
-      "oblique_bbox": [
-        322,
-        1826,
-        350,
-        2074
-      ],
-      "ortho_pixel": [
-        5833,
-        3460
-      ],
-      "lat": 41.249223,
-      "lon": -95.998057,
-      "num_views": 2,
-      "cluster_size": 6
-    },
-    {
-      "cell": "r3_c3",
-      "direction": "west",
-      "score": 0.145,
-      "oblique_bbox": [
-        672,
-        265,
-        705,
-        328
-      ],
-      "ortho_pixel": [
-        4687,
-        4507
-      ],
-      "lat": 41.248695,
-      "lon": -95.998825,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r3_c3",
-      "direction": "west",
-      "score": 0.672,
-      "oblique_bbox": [
-        1672,
-        1692,
-        1695,
-        1906
-      ],
-      "ortho_pixel": [
-        5799,
-        3747
-      ],
-      "lat": 41.249078,
-      "lon": -95.998079,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r4_c4",
-      "direction": "north",
-      "score": 0.719,
-      "oblique_bbox": [
-        2141,
-        1607,
-        2181,
-        1858
-      ],
-      "ortho_pixel": [
-        7026,
-        3310
-      ],
-      "lat": 41.249298,
-      "lon": -95.997256,
-      "num_views": 4,
-      "cluster_size": 15
-    },
-    {
-      "cell": "r3_c4",
-      "direction": "north",
-      "score": 0.158,
-      "oblique_bbox": [
-        2915,
-        969,
-        2938,
-        1060
-      ],
-      "ortho_pixel": [
-        7502,
-        4029
-      ],
-      "lat": 41.248936,
-      "lon": -95.996937,
-      "num_views": 2,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r4_c4",
-      "direction": "north",
-      "score": 0.205,
-      "oblique_bbox": [
-        2679,
-        1828,
-        2709,
-        2003
-      ],
-      "ortho_pixel": [
-        7342,
-        3202
-      ],
-      "lat": 41.249353,
-      "lon": -95.997045,
-      "num_views": 1,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r3_c4",
-      "direction": "north",
-      "score": 0.586,
-      "oblique_bbox": [
-        2091,
-        1030,
-        2125,
-        1273
-      ],
-      "ortho_pixel": [
-        7065,
-        3839
-      ],
-      "lat": 41.249032,
-      "lon": -95.99723,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r3_c4",
-      "direction": "west",
-      "score": 0.243,
-      "oblique_bbox": [
-        1055,
-        1042,
-        1075,
-        1166
-      ],
-      "ortho_pixel": [
-        6908,
-        4216
-      ],
-      "lat": 41.248841,
-      "lon": -95.997335,
-      "num_views": 3,
-      "cluster_size": 6
-    },
-    {
-      "cell": "r4_c4",
-      "direction": "west",
-      "score": 0.742,
-      "oblique_bbox": [
-        790,
-        1112,
-        807,
-        1357
-      ],
-      "ortho_pixel": [
-        7012,
-        2919
-      ],
-      "lat": 41.249496,
-      "lon": -95.997265,
-      "num_views": 4,
-      "cluster_size": 7
-    },
-    {
-      "cell": "r3_c4",
-      "direction": "east",
-      "score": 0.535,
-      "oblique_bbox": [
-        347,
-        1683,
-        390,
-        1941
-      ],
-      "ortho_pixel": [
-        6207,
-        2825
-      ],
-      "lat": 41.249543,
-      "lon": -95.997805,
-      "num_views": 1,
-      "cluster_size": 3
-    },
-    {
-      "cell": "r3_c4",
-      "direction": "west",
-      "score": 0.148,
-      "oblique_bbox": [
-        1473,
-        623,
-        1501,
-        886
-      ],
-      "ortho_pixel": [
-        6616,
-        3804
-      ],
-      "lat": 41.249049,
-      "lon": -95.997532,
-      "num_views": 2,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r3_c4",
-      "direction": "east",
-      "score": 0.12,
-      "oblique_bbox": [
-        920,
-        849,
-        958,
-        1418
-      ],
-      "ortho_pixel": [
-        6791,
-        3453
-      ],
-      "lat": 41.249226,
-      "lon": -95.997414,
-      "num_views": 2,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r3_c4",
-      "direction": "east",
-      "score": 0.127,
-      "oblique_bbox": [
-        398,
-        43,
-        433,
-        237
-      ],
-      "ortho_pixel": [
-        7429,
-        2857
-      ],
-      "lat": 41.249527,
-      "lon": -95.996986,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r4_c0",
-      "direction": "south",
-      "score": 0.233,
-      "oblique_bbox": [
-        7,
-        464,
-        55,
-        693
-      ],
-      "ortho_pixel": [
-        1387,
-        2430
-      ],
-      "lat": 41.249742,
-      "lon": -96.001038,
-      "num_views": 3,
-      "cluster_size": 3
-    },
-    {
-      "cell": "r5_c0",
-      "direction": "west",
-      "score": 0.385,
-      "oblique_bbox": [
-        375,
-        938,
-        448,
-        1078
-      ],
-      "ortho_pixel": [
-        1084,
-        1814
-      ],
-      "lat": 41.250052,
-      "lon": -96.001241,
-      "num_views": 3,
-      "cluster_size": 19
-    },
-    {
-      "cell": "r4_c0",
-      "direction": "east",
-      "score": 0.617,
-      "oblique_bbox": [
-        1007,
-        731,
-        1056,
-        961
-      ],
-      "ortho_pixel": [
-        1179,
-        2208
-      ],
-      "lat": 41.249854,
-      "lon": -96.001178,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r5_c0",
-      "direction": "west",
-      "score": 0.688,
-      "oblique_bbox": [
-        500,
-        1482,
-        573,
-        1553
-      ],
-      "ortho_pixel": [
-        1360,
-        1673
-      ],
-      "lat": 41.250124,
-      "lon": -96.001056,
-      "num_views": 2,
-      "cluster_size": 6
-    },
-    {
-      "cell": "r4_c1",
-      "direction": "east",
-      "score": 0.574,
-      "oblique_bbox": [
-        100,
-        608,
-        156,
-        837
-      ],
-      "ortho_pixel": [
-        2771,
-        1715
-      ],
-      "lat": 41.250103,
-      "lon": -96.00011,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r5_c1",
-      "direction": "east",
-      "score": 0.189,
-      "oblique_bbox": [
-        2816,
-        1697,
-        2849,
-        1886
-      ],
-      "ortho_pixel": [
-        1835,
-        1723
-      ],
-      "lat": 41.250099,
-      "lon": -96.000737,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r4_c1",
-      "direction": "east",
-      "score": 0.16,
-      "oblique_bbox": [
-        2091,
-        963,
-        2110,
-        1086
-      ],
-      "ortho_pixel": [
-        2360,
-        2972
-      ],
-      "lat": 41.249469,
-      "lon": -96.000386,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r4_c1",
-      "direction": "west",
-      "score": 0.191,
-      "oblique_bbox": [
-        1462,
-        1072,
-        1540,
-        1227
-      ],
-      "ortho_pixel": [
-        2744,
-        2574
-      ],
-      "lat": 41.24967,
-      "lon": -96.000128,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r4_c1",
-      "direction": "west",
-      "score": 0.174,
-      "oblique_bbox": [
-        815,
-        646,
-        843,
-        747
-      ],
-      "ortho_pixel": [
-        2072,
-        2430
-      ],
-      "lat": 41.249742,
-      "lon": -96.000578,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r4_c2",
-      "direction": "west",
-      "score": 0.176,
-      "oblique_bbox": [
-        1402,
-        642,
-        1485,
-        795
-      ],
-      "ortho_pixel": [
-        3602,
-        2497
-      ],
-      "lat": 41.249708,
-      "lon": -95.999552,
-      "num_views": 2,
-      "cluster_size": 3
-    },
-    {
-      "cell": "r4_c2",
-      "direction": "west",
-      "score": 0.169,
-      "oblique_bbox": [
-        1605,
-        1712,
-        1686,
-        1886
-      ],
-      "ortho_pixel": [
-        4482,
-        2401
-      ],
-      "lat": 41.249756,
-      "lon": -95.998963,
-      "num_views": 2,
-      "cluster_size": 3
-    },
-    {
-      "cell": "r5_c1",
-      "direction": "west",
-      "score": 0.139,
-      "oblique_bbox": [
-        1933,
-        1322,
-        1973,
-        1561
-      ],
-      "ortho_pixel": [
-        3194,
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:19006",
+      "oblique_bbox": [
+        273,
+        2031,
+        312,
         2069
       ],
-      "lat": 41.249924,
-      "lon": -95.999826,
+      "ortho_pixel_local": [
+        1463,
+        1065
+      ],
       "num_views": 1,
-      "cluster_size": 3
+      "cluster_size": 1
     },
     {
-      "cell": "r4_c2",
-      "direction": "west",
-      "score": 0.48,
-      "oblique_bbox": [
-        2652,
-        46,
-        2721,
-        304
-      ],
-      "ortho_pixel": [
-        3500,
-        1503
-      ],
-      "lat": 41.250209,
-      "lon": -95.999621,
-      "num_views": 4,
-      "cluster_size": 8
-    },
-    {
-      "cell": "r5_c1",
-      "direction": "west",
-      "score": 0.221,
-      "oblique_bbox": [
-        2213,
-        1319,
-        2252,
-        1472
-      ],
-      "ortho_pixel": [
-        3619,
-        1736
-      ],
-      "lat": 41.250091,
-      "lon": -95.999541,
-      "num_views": 2,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r4_c4",
-      "direction": "east",
-      "score": 0.613,
-      "oblique_bbox": [
-        992,
-        1569,
-        1039,
-        1705
-      ],
-      "ortho_pixel": [
-        6123,
-        1941
-      ],
-      "lat": 41.249989,
-      "lon": -95.997862,
-      "num_views": 4,
-      "cluster_size": 37
-    },
-    {
-      "cell": "r4_c4",
-      "direction": "north",
-      "score": 0.551,
-      "oblique_bbox": [
-        423,
-        1004,
-        448,
-        1257
-      ],
-      "ortho_pixel": [
-        6063,
-        2546
-      ],
-      "lat": 41.249684,
-      "lon": -95.997902,
-      "num_views": 3,
-      "cluster_size": 18
-    },
-    {
-      "cell": "r4_c3",
-      "direction": "south",
-      "score": 0.138,
-      "oblique_bbox": [
-        2320,
-        1158,
-        2342,
-        1292
-      ],
-      "ortho_pixel": [
-        4806,
-        2077
-      ],
-      "lat": 41.24992,
-      "lon": -95.998745,
-      "num_views": 2,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r5_c4",
-      "direction": "east",
+      "lat": 41.247603,
+      "lon": -95.99686,
       "score": 0.801,
-      "oblique_bbox": [
-        2390,
-        1546,
-        2482,
-        1782
-      ],
-      "ortho_pixel": [
-        6144,
-        1421
-      ],
-      "lat": 41.25025,
-      "lon": -95.997847,
-      "num_views": 3,
-      "cluster_size": 14
-    },
-    {
-      "cell": "r4_c3",
-      "direction": "south",
-      "score": 0.381,
-      "oblique_bbox": [
-        1443,
-        856,
-        1465,
-        1087
-      ],
-      "ortho_pixel": [
-        5406,
-        2460
-      ],
-      "lat": 41.249727,
-      "lon": -95.998343,
-      "num_views": 4,
-      "cluster_size": 8
-    },
-    {
-      "cell": "r4_c3",
-      "direction": "west",
-      "score": 0.183,
-      "oblique_bbox": [
-        2055,
-        671,
-        2098,
-        777
-      ],
-      "ortho_pixel": [
-        5216,
-        1950
-      ],
-      "lat": 41.249984,
-      "lon": -95.99847,
-      "num_views": 3,
-      "cluster_size": 3
-    },
-    {
-      "cell": "r4_c3",
-      "direction": "west",
-      "score": 0.707,
-      "oblique_bbox": [
-        2216,
-        1681,
-        2254,
-        1924
-      ],
-      "ortho_pixel": [
-        5855,
-        1936
-      ],
-      "lat": 41.249991,
-      "lon": -95.998042,
-      "num_views": 4,
-      "cluster_size": 19
-    },
-    {
-      "cell": "r4_c3",
-      "direction": "south",
-      "score": 0.22,
-      "oblique_bbox": [
-        2027,
-        2017,
-        2045,
-        2172
-      ],
-      "ortho_pixel": [
-        4884,
-        1539
-      ],
-      "lat": 41.250191,
-      "lon": -95.998693,
-      "num_views": 3,
-      "cluster_size": 5
-    },
-    {
-      "cell": "r4_c4",
-      "direction": "south",
-      "score": 0.216,
-      "oblique_bbox": [
-        2944,
-        1212,
-        2970,
-        1287
-      ],
-      "ortho_pixel": [
-        5841,
-        2411
-      ],
-      "lat": 41.249751,
-      "lon": -95.998051,
-      "num_views": 2,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r4_c3",
-      "direction": "west",
-      "score": 0.229,
-      "oblique_bbox": [
-        1290,
-        67,
-        1319,
-        150
-      ],
-      "ortho_pixel": [
-        4638,
-        2445
-      ],
-      "lat": 41.249735,
-      "lon": -95.998858,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r4_c3",
-      "direction": "west",
-      "score": 0.101,
-      "oblique_bbox": [
-        792,
-        1119,
-        817,
-        1226
-      ],
-      "ortho_pixel": [
-        5327,
-        3057
-      ],
-      "lat": 41.249426,
-      "lon": -95.998396,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r5_c4",
       "direction": "east",
-      "score": 0.773,
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:19006",
       "oblique_bbox": [
-        2699,
-        523,
-        2779,
-        748
-      ],
-      "ortho_pixel": [
-        7177,
-        2041
-      ],
-      "lat": 41.249938,
-      "lon": -95.997155,
-      "num_views": 4,
-      "cluster_size": 13
-    },
-    {
-      "cell": "r4_c4",
-      "direction": "north",
-      "score": 0.773,
-      "oblique_bbox": [
-        1857,
-        50,
-        1890,
-        299
-      ],
-      "ortho_pixel": [
-        7157,
-        1504
-      ],
-      "lat": 41.250209,
-      "lon": -95.997168,
-      "num_views": 3,
-      "cluster_size": 12
-    },
-    {
-      "cell": "r5_c4",
-      "direction": "west",
-      "score": 0.238,
-      "oblique_bbox": [
-        150,
-        1187,
-        171,
-        1397
-      ],
-      "ortho_pixel": [
-        6873,
-        1959
-      ],
-      "lat": 41.249979,
-      "lon": -95.997359,
-      "num_views": 3,
-      "cluster_size": 5
-    },
-    {
-      "cell": "r4_c4",
-      "direction": "north",
-      "score": 0.711,
-      "oblique_bbox": [
-        1371,
-        583,
-        1405,
-        827
-      ],
-      "ortho_pixel": [
-        6663,
-        2315
-      ],
-      "lat": 41.2498,
-      "lon": -95.9975,
-      "num_views": 4,
-      "cluster_size": 8
-    },
-    {
-      "cell": "r4_c4",
-      "direction": "north",
-      "score": 0.174,
-      "oblique_bbox": [
+        38,
         1265,
-        1478,
-        1284,
-        1557
+        103,
+        1505
       ],
-      "ortho_pixel": [
-        6656,
-        2860
+      "ortho_pixel_local": [
+        1486,
+        478
       ],
-      "lat": 41.249526,
-      "lon": -95.997505,
-      "num_views": 2,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r4_c4",
-      "direction": "west",
-      "score": 0.73,
-      "oblique_bbox": [
-        1532,
-        1016,
-        1554,
-        1256
-      ],
-      "ortho_pixel": [
-        7002,
-        2392
-      ],
-      "lat": 41.249761,
-      "lon": -95.997272,
-      "num_views": 3,
-      "cluster_size": 8
-    },
-    {
-      "cell": "r4_c4",
-      "direction": "east",
-      "score": 0.742,
-      "oblique_bbox": [
-        969,
-        1441,
-        1048,
-        1700
-      ],
-      "ortho_pixel": [
-        6269,
-        2211
-      ],
-      "lat": 41.249852,
-      "lon": -95.997764,
-      "num_views": 2,
-      "cluster_size": 4
-    },
-    {
-      "cell": "r4_c4",
-      "direction": "east",
-      "score": 0.149,
-      "oblique_bbox": [
-        1346,
-        220,
-        1365,
-        301
-      ],
-      "ortho_pixel": [
-        7299,
-        2450
-      ],
-      "lat": 41.249732,
-      "lon": -95.997073,
       "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r4_c4",
-      "direction": "east",
-      "score": 0.128,
-      "oblique_bbox": [
-        1387,
-        1349,
-        1457,
-        1520
-      ],
-      "ortho_pixel": [
-        6404,
-        2437
-      ],
-      "lat": 41.249739,
-      "lon": -95.997674,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r4_c4",
-      "direction": "west",
-      "score": 0.668,
-      "oblique_bbox": [
-        2370,
-        957,
-        2388,
-        1192
-      ],
-      "ortho_pixel": [
-        6860,
-        1713
-      ],
-      "lat": 41.250104,
-      "lon": -95.997368,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r4_c5",
-      "direction": "north",
-      "score": 0.143,
-      "oblique_bbox": [
-        995,
-        712,
-        1031,
-        909
-      ],
-      "ortho_pixel": [
-        8030,
-        2312
-      ],
-      "lat": 41.249802,
-      "lon": -95.996584,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r5_c0",
-      "direction": "east",
-      "score": 0.77,
-      "oblique_bbox": [
-        1897,
-        589,
-        1934,
-        849
-      ],
-      "ortho_pixel": [
-        1209,
-        1438
-      ],
-      "lat": 41.250242,
-      "lon": -96.001157,
-      "num_views": 3,
       "cluster_size": 5
     },
     {
-      "cell": "r5_c2",
+      "lat": 41.247471,
+      "lon": -95.996485,
+      "score": 0.156,
       "direction": "east",
-      "score": 0.142,
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:19006",
       "oblique_bbox": [
-        887,
-        797,
-        925,
-        821
+        868,
+        1356,
+        905,
+        1454
       ],
-      "ortho_pixel": [
-        3938,
-        1047
+      "ortho_pixel_local": [
+        2038,
+        785
       ],
-      "lat": 41.250439,
-      "lon": -95.999327,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r5_c2",
-      "direction": "east",
-      "score": 0.107,
-      "oblique_bbox": [
-        1351,
-        1110,
-        1372,
-        1154
-      ],
-      "ortho_pixel": [
-        3668,
-        1163
-      ],
-      "lat": 41.250381,
-      "lon": -95.999508,
-      "num_views": 1,
-      "cluster_size": 1
-    },
-    {
-      "cell": "r5_c2",
-      "direction": "east",
-      "score": 0.551,
-      "oblique_bbox": [
-        2024,
-        931,
-        2125,
-        1146
-      ],
-      "ortho_pixel": [
-        3719,
-        1566
-      ],
-      "lat": 41.250177,
-      "lon": -95.999473,
-      "num_views": 1,
-      "cluster_size": 2
-    },
-    {
-      "cell": "r5_c2",
-      "direction": "west",
-      "score": 0.361,
-      "oblique_bbox": [
-        232,
-        164,
-        305,
-        383
-      ],
-      "ortho_pixel": [
-        3297,
-        1822
-      ],
-      "lat": 41.250048,
-      "lon": -95.999757,
       "num_views": 1,
       "cluster_size": 3
     },
     {
-      "cell": "r5_c3",
+      "lat": 41.247505,
+      "lon": -95.996613,
+      "score": 0.324,
       "direction": "east",
-      "score": 0.22,
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:19006",
       "oblique_bbox": [
-        1759,
-        1782,
-        1809,
-        1936
+        604,
+        1367,
+        644,
+        1486
       ],
-      "ortho_pixel": [
-        4868,
-        1126
+      "ortho_pixel_local": [
+        1846,
+        704
       ],
-      "lat": 41.250399,
-      "lon": -95.998703,
-      "num_views": 4,
+      "num_views": 1,
       "cluster_size": 6
     },
     {
-      "cell": "r5_c3",
-      "direction": "west",
-      "score": 0.484,
+      "lat": 41.247911,
+      "lon": -96.000292,
+      "score": 0.385,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
       "oblique_bbox": [
-        767,
-        1803,
-        803,
-        2060
+        1053,
+        1385,
+        1091,
+        1671
       ],
-      "ortho_pixel": [
-        5820,
-        1545
+      "ortho_pixel_local": [
+        904,
+        2689
       ],
-      "lat": 41.250188,
-      "lon": -95.998065,
-      "num_views": 2,
-      "cluster_size": 3
+      "num_views": 1,
+      "cluster_size": 6
     },
     {
-      "cell": "r5_c4",
+      "lat": 41.248232,
+      "lon": -96.000908,
+      "score": 0.134,
       "direction": "north",
-      "score": 0.131,
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
       "oblique_bbox": [
-        1396,
-        1587,
-        1448,
-        1837
+        398,
+        997,
+        423,
+        1302
       ],
-      "ortho_pixel": [
-        6737,
-        1409
+      "ortho_pixel_local": [
+        50,
+        2100
       ],
-      "lat": 41.250257,
-      "lon": -95.99745,
-      "num_views": 2,
+      "num_views": 1,
       "cluster_size": 2
     },
     {
-      "cell": "r5_c5",
+      "lat": 41.248566,
+      "lon": -95.999353,
+      "score": 0.562,
       "direction": "west",
-      "score": 0.222,
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:15230",
       "oblique_bbox": [
-        1228,
-        62,
-        1258,
-        134
+        417,
+        944,
+        478,
+        1187
       ],
-      "ortho_pixel": [
-        7554,
-        1130
+      "ortho_pixel_local": [
+        549,
+        807
       ],
-      "lat": 41.250398,
-      "lon": -95.996903,
       "num_views": 2,
-      "cluster_size": 11
+      "cluster_size": 7
     },
     {
-      "cell": "r5_c4",
+      "lat": 41.247704,
+      "lon": -96.000494,
+      "score": 0.441,
       "direction": "north",
-      "score": 0.249,
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
       "oblique_bbox": [
-        1960,
+        968,
+        1984,
+        1005,
+        2058
+      ],
+      "ortho_pixel_local": [
+        719,
+        3192
+      ],
+      "num_views": 1,
+      "cluster_size": 5
+    },
+    {
+      "lat": 41.247615,
+      "lon": -95.999559,
+      "score": 0.621,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
+      "oblique_bbox": [
+        1942,
+        1678,
+        2004,
+        2062
+      ],
+      "ortho_pixel_local": [
+        2062,
+        3322
+      ],
+      "num_views": 1,
+      "cluster_size": 2
+    },
+    {
+      "lat": 41.247736,
+      "lon": -96.000743,
+      "score": 0.17,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
+      "oblique_bbox": [
+        698,
+        1957,
+        730,
+        2051
+      ],
+      "ortho_pixel_local": [
+        339,
+        3125
+      ],
+      "num_views": 1,
+      "cluster_size": 3
+    },
+    {
+      "lat": 41.248205,
+      "lon": -95.999163,
+      "score": 0.428,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
+      "oblique_bbox": [
+        2231,
+        415,
+        2331,
+        1104
+      ],
+      "ortho_pixel_local": [
+        2618,
+        2133
+      ],
+      "num_views": 1,
+      "cluster_size": 10
+    },
+    {
+      "lat": 41.248461,
+      "lon": -96.000532,
+      "score": 0.143,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
+      "oblique_bbox": [
+        748,
+        834,
+        775,
+        910
+      ],
+      "ortho_pixel_local": [
+        606,
+        1644
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.247698,
+      "lon": -96.000308,
+      "score": 0.162,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
+      "oblique_bbox": [
+        1049,
+        1361,
+        1128,
+        2014
+      ],
+      "ortho_pixel_local": [
+        871,
+        3149
+      ],
+      "num_views": 1,
+      "cluster_size": 2
+    },
+    {
+      "lat": 41.248339,
+      "lon": -95.999479,
+      "score": 0.676,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Vlkc4VTuFkmF8UZkjghPzQ:3459902866854644272",
+      "oblique_bbox": [
+        132,
+        729,
+        154,
+        921
+      ],
+      "ortho_pixel_local": [
+        935,
+        1749
+      ],
+      "num_views": 1,
+      "cluster_size": 10
+    },
+    {
+      "lat": 41.248649,
+      "lon": -95.999155,
+      "score": 0.863,
+      "direction": "west",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:15230",
+      "oblique_bbox": [
+        416,
+        945,
+        493,
+        1394
+      ],
+      "ortho_pixel_local": [
+        779,
+        804
+      ],
+      "num_views": 2,
+      "cluster_size": 8
+    },
+    {
+      "lat": 41.248385,
+      "lon": -96.000371,
+      "score": 0.26,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
+      "oblique_bbox": [
+        968,
+        772,
+        994,
+        1001
+      ],
+      "ortho_pixel_local": [
+        883,
+        1801
+      ],
+      "num_views": 1,
+      "cluster_size": 2
+    },
+    {
+      "lat": 41.24853,
+      "lon": -95.999014,
+      "score": 0.116,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Vlkc4VTuFkmF8UZkjghPzQ:3459902866854644272",
+      "oblique_bbox": [
+        1420,
+        373,
+        1441,
+        436
+      ],
+      "ortho_pixel_local": [
+        1643,
+        1306
+      ],
+      "num_views": 1,
+      "cluster_size": 2
+    },
+    {
+      "lat": 41.248572,
+      "lon": -96.000826,
+      "score": 0.21,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
+      "oblique_bbox": [
+        418,
+        558,
+        449,
+        778
+      ],
+      "ortho_pixel_local": [
+        168,
+        1423
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.248509,
+      "lon": -95.9995,
+      "score": 0.152,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
+      "oblique_bbox": [
+        1849,
+        658,
+        1875,
+        736
+      ],
+      "ortho_pixel_local": [
+        2117,
+        1598
+      ],
+      "num_views": 1,
+      "cluster_size": 3
+    },
+    {
+      "lat": 41.248048,
+      "lon": -95.999781,
+      "score": 0.122,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
+      "oblique_bbox": [
+        1623,
+        1198,
+        1671,
+        1435
+      ],
+      "ortho_pixel_local": [
+        1726,
+        2463
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.248882,
+      "lon": -96.000562,
+      "score": 0.559,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
+      "oblique_bbox": [
+        640,
+        164,
+        668,
+        277
+      ],
+      "ortho_pixel_local": [
+        561,
+        811
+      ],
+      "num_views": 1,
+      "cluster_size": 2
+    },
+    {
+      "lat": 41.247754,
+      "lon": -95.999528,
+      "score": 0.137,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
+      "oblique_bbox": [
+        1956,
+        1668,
+        1996,
+        1854
+      ],
+      "ortho_pixel_local": [
+        2103,
+        3047
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.248532,
+      "lon": -95.999904,
+      "score": 0.381,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
+      "oblique_bbox": [
+        1377,
+        458,
+        1485,
+        716
+      ],
+      "ortho_pixel_local": [
+        1543,
+        1503
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.247998,
+      "lon": -95.999477,
+      "score": 0.289,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
+      "oblique_bbox": [
+        1978,
+        1368,
+        2011,
+        1470
+      ],
+      "ortho_pixel_local": [
+        2179,
+        2562
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.247903,
+      "lon": -95.999373,
+      "score": 0.127,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
+      "oblique_bbox": [
+        2108,
+        1499,
+        2145,
+        1600
+      ],
+      "ortho_pixel_local": [
+        2335,
+        2750
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.248957,
+      "lon": -96.000411,
+      "score": 0.102,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:4381",
+      "oblique_bbox": [
+        783,
+        0,
+        831,
+        133
+      ],
+      "ortho_pixel_local": [
+        787,
+        660
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.249286,
+      "lon": -95.998817,
+      "score": 0.711,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Tk_5yxIfqkyLAzjM_boYsA:9483",
+      "oblique_bbox": [
+        1430,
+        1043,
+        1474,
+        1320
+      ],
+      "ortho_pixel_local": [
+        2392,
+        1285
+      ],
+      "num_views": 1,
+      "cluster_size": 5
+    },
+    {
+      "lat": 41.249019,
+      "lon": -95.998388,
+      "score": 0.332,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        1254,
+        286,
+        1292,
+        449
+      ],
+      "ortho_pixel_local": [
+        1051,
+        1148
+      ],
+      "num_views": 2,
+      "cluster_size": 9
+    },
+    {
+      "lat": 41.249412,
+      "lon": -95.999435,
+      "score": 0.14,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Tk_5yxIfqkyLAzjM_boYsA:9483",
+      "oblique_bbox": [
+        916,
+        1599,
         1044,
-        1987,
-        1232
+        1663
       ],
-      "ortho_pixel": [
-        7126,
-        1078
+      "ortho_pixel_local": [
+        1499,
+        1065
       ],
-      "lat": 41.250423,
-      "lon": -95.99719,
-      "num_views": 3,
+      "num_views": 1,
+      "cluster_size": 2
+    },
+    {
+      "lat": 41.248726,
+      "lon": -95.998614,
+      "score": 0.438,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Tk_5yxIfqkyLAzjM_boYsA:9483",
+      "oblique_bbox": [
+        2104,
+        1565,
+        2145,
+        1664
+      ],
+      "ortho_pixel_local": [
+        2707,
+        2424
+      ],
+      "num_views": 2,
+      "cluster_size": 6
+    },
+    {
+      "lat": 41.249811,
+      "lon": -95.999428,
+      "score": 0.324,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Tk_5yxIfqkyLAzjM_boYsA:9483",
+      "oblique_bbox": [
+        612,
+        1130,
+        638,
+        1315
+      ],
+      "ortho_pixel_local": [
+        1489,
+        261
+      ],
+      "num_views": 1,
       "cluster_size": 4
     },
     {
-      "cell": "r5_c4",
-      "direction": "north",
-      "score": 0.161,
+      "lat": 41.248892,
+      "lon": -95.998219,
+      "score": 0.181,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
       "oblique_bbox": [
-        2546,
-        1891,
-        2571,
-        1950
+        974,
+        -1,
+        1034,
+        185
       ],
-      "ortho_pixel": [
-        7306,
-        1753
+      "ortho_pixel_local": [
+        1266,
+        1185
       ],
-      "lat": 41.250083,
-      "lon": -95.997069,
+      "num_views": 2,
+      "cluster_size": 3
+    },
+    {
+      "lat": 41.249419,
+      "lon": -95.998891,
+      "score": 0.117,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Tk_5yxIfqkyLAzjM_boYsA:9483",
+      "oblique_bbox": [
+        1280,
+        1078,
+        1302,
+        1262
+      ],
+      "ortho_pixel_local": [
+        2285,
+        1023
+      ],
       "num_views": 1,
       "cluster_size": 1
     },
     {
-      "cell": "r5_c4",
+      "lat": 41.249475,
+      "lon": -95.998536,
+      "score": 0.137,
       "direction": "north",
-      "score": 0.179,
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Tk_5yxIfqkyLAzjM_boYsA:9483",
       "oblique_bbox": [
-        1139,
-        1093,
-        1159,
-        1205
+        1446,
+        604,
+        1473,
+        967
       ],
-      "ortho_pixel": [
-        6478,
-        1086
+      "ortho_pixel_local": [
+        2814,
+        913
       ],
-      "lat": 41.250419,
-      "lon": -95.997624,
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.249093,
+      "lon": -95.998512,
+      "score": 0.11,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Tk_5yxIfqkyLAzjM_boYsA:9483",
+      "oblique_bbox": [
+        1790,
+        1167,
+        1853,
+        1266
+      ],
+      "ortho_pixel_local": [
+        2850,
+        1671
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.249283,
+      "lon": -95.998316,
+      "score": 0.316,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        345,
+        985,
+        458,
+        1376
+      ],
+      "ortho_pixel_local": [
+        1100,
+        517
+      ],
+      "num_views": 2,
+      "cluster_size": 4
+    },
+    {
+      "lat": 41.248823,
+      "lon": -95.998747,
+      "score": 0.357,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        2780,
+        225,
+        2872,
+        692
+      ],
+      "ortho_pixel_local": [
+        374,
+        1549
+      ],
+      "num_views": 2,
+      "cluster_size": 5
+    },
+    {
+      "lat": 41.250212,
+      "lon": -95.998005,
+      "score": 0.111,
+      "direction": "east",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Tk_5yxIfqkyLAzjM_boYsA:24384",
+      "oblique_bbox": [
+        2181,
+        767,
+        2233,
+        1114
+      ],
+      "ortho_pixel_local": [
+        23,
+        2011
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.250433,
+      "lon": -95.996715,
+      "score": 0.102,
+      "direction": "east",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Tk_5yxIfqkyLAzjM_boYsA:24384",
+      "oblique_bbox": [
+        1526,
+        857,
+        1551,
+        986
+      ],
+      "ortho_pixel_local": [
+        1946,
+        1572
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.248364,
+      "lon": -95.999227,
+      "score": 0.801,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Vlkc4VTuFkmF8UZkjghPzQ:3459902866854644272",
+      "oblique_bbox": [
+        856,
+        760,
+        879,
+        965
+      ],
+      "ortho_pixel_local": [
+        1335,
+        1628
+      ],
+      "num_views": 2,
+      "cluster_size": 13
+    },
+    {
+      "lat": 41.248726,
+      "lon": -95.999505,
+      "score": 0.25,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Vlkc4VTuFkmF8UZkjghPzQ:3459902866854644272",
+      "oblique_bbox": [
+        56,
+        -1,
+        76,
+        25
+      ],
+      "ortho_pixel_local": [
+        884,
+        890
+      ],
       "num_views": 2,
       "cluster_size": 2
     },
     {
-      "cell": "r5_c4",
-      "direction": "east",
-      "score": 0.119,
+      "lat": 41.248835,
+      "lon": -95.999139,
+      "score": 0.633,
+      "direction": "west",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:15230",
       "oblique_bbox": [
-        2794,
-        1125,
-        2890,
-        1214
+        702,
+        1431,
+        738,
+        1524
       ],
-      "ortho_pixel": [
-        6642,
-        1893
+      "ortho_pixel_local": [
+        919,
+        418
       ],
-      "lat": 41.250013,
-      "lon": -95.997514,
+      "num_views": 1,
+      "cluster_size": 2
+    },
+    {
+      "lat": 41.248776,
+      "lon": -95.999365,
+      "score": 0.176,
+      "direction": "west",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:15230",
+      "oblique_bbox": [
+        504,
+        1124,
+        795,
+        1196
+      ],
+      "ortho_pixel_local": [
+        555,
+        506
+      ],
       "num_views": 1,
       "cluster_size": 1
     },
     {
-      "cell": "r5_c5",
+      "lat": 41.248759,
+      "lon": -95.999125,
+      "score": 0.367,
       "direction": "west",
-      "score": 0.216,
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:15230",
       "oblique_bbox": [
-        532,
-        561,
-        560,
-        708
+        482,
+        1129,
+        791,
+        1517
       ],
-      "ortho_pixel": [
-        7781,
-        1642
+      "ortho_pixel_local": [
+        913,
+        541
       ],
-      "lat": 41.250139,
-      "lon": -95.996751,
       "num_views": 1,
-      "cluster_size": 3
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.248342,
+      "lon": -95.996643,
+      "score": 0.129,
+      "direction": "west",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:15200",
+      "oblique_bbox": [
+        570,
+        731,
+        588,
+        768
+      ],
+      "ortho_pixel_local": [
+        262,
+        2391
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.248917,
+      "lon": -95.99676,
+      "score": 0.283,
+      "direction": "west",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:15200",
+      "oblique_bbox": [
+        1066,
+        -4,
+        1107,
+        79
+      ],
+      "ortho_pixel_local": [
+        88,
+        1252
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.248575,
+      "lon": -95.996584,
+      "score": 0.805,
+      "direction": "west",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:15200",
+      "oblique_bbox": [
+        856,
+        110,
+        958,
+        589
+      ],
+      "ortho_pixel_local": [
+        367,
+        1883
+      ],
+      "num_views": 1,
+      "cluster_size": 4
+    },
+    {
+      "lat": 41.248684,
+      "lon": -95.9967,
+      "score": 0.237,
+      "direction": "west",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:15200",
+      "oblique_bbox": [
+        858,
+        112,
+        913,
+        365
+      ],
+      "ortho_pixel_local": [
+        177,
+        1713
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.24816,
+      "lon": -95.996609,
+      "score": 0.59,
+      "direction": "west",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:15200",
+      "oblique_bbox": [
+        385,
+        591,
+        439,
+        972
+      ],
+      "ortho_pixel_local": [
+        304,
+        2755
+      ],
+      "num_views": 1,
+      "cluster_size": 2
+    },
+    {
+      "lat": 41.248436,
+      "lon": -95.996772,
+      "score": 0.183,
+      "direction": "west",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:15200",
+      "oblique_bbox": [
+        554,
+        430,
+        586,
+        539
+      ],
+      "ortho_pixel_local": [
+        70,
+        2206
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.248814,
+      "lon": -95.996802,
+      "score": 0.131,
+      "direction": "west",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:15200",
+      "oblique_bbox": [
+        921,
+        0,
+        957,
+        131
+      ],
+      "ortho_pixel_local": [
+        24,
+        1455
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.249243,
+      "lon": -95.998507,
+      "score": 0.205,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        925,
+        1033,
+        975,
+        1482
+      ],
+      "ortho_pixel_local": [
+        848,
+        647
+      ],
+      "num_views": 1,
+      "cluster_size": 6
+    },
+    {
+      "lat": 41.249166,
+      "lon": -95.998781,
+      "score": 0.551,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        1727,
+        927,
+        1831,
+        1919
+      ],
+      "ortho_pixel_local": [
+        382,
+        735
+      ],
+      "num_views": 1,
+      "cluster_size": 12
+    },
+    {
+      "lat": 41.249041,
+      "lon": -95.999033,
+      "score": 0.547,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        2706,
+        1751,
+        2741,
+        1917
+      ],
+      "ortho_pixel_local": [
+        16,
+        1017
+      ],
+      "num_views": 1,
+      "cluster_size": 5
+    },
+    {
+      "lat": 41.249043,
+      "lon": -95.998652,
+      "score": 0.416,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        1748,
+        930,
+        1822,
+        1229
+      ],
+      "ortho_pixel_local": [
+        598,
+        1004
+      ],
+      "num_views": 1,
+      "cluster_size": 5
+    },
+    {
+      "lat": 41.249307,
+      "lon": -95.998581,
+      "score": 0.441,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        885,
+        1449,
+        951,
+        1925
+      ],
+      "ortho_pixel_local": [
+        713,
+        464
+      ],
+      "num_views": 1,
+      "cluster_size": 8
+    },
+    {
+      "lat": 41.248695,
+      "lon": -95.998771,
+      "score": 0.354,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        2797,
+        225,
+        2872,
+        416
+      ],
+      "ortho_pixel_local": [
+        449,
+        1664
+      ],
+      "num_views": 2,
+      "cluster_size": 2
+    },
+    {
+      "lat": 41.249081,
+      "lon": -95.998124,
+      "score": 0.183,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        505,
+        96,
+        550,
+        521
+      ],
+      "ortho_pixel_local": [
+        1346,
+        897
+      ],
+      "num_views": 1,
+      "cluster_size": 5
+    },
+    {
+      "lat": 41.248902,
+      "lon": -95.998964,
+      "score": 0.107,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        2850,
+        1223,
+        2902,
+        1379
+      ],
+      "ortho_pixel_local": [
+        129,
+        1282
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.249072,
+      "lon": -95.998328,
+      "score": 0.508,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        964,
+        1,
+        1046,
+        575
+      ],
+      "ortho_pixel_local": [
+        1133,
+        1025
+      ],
+      "num_views": 1,
+      "cluster_size": 5
+    },
+    {
+      "lat": 41.248988,
+      "lon": -95.998237,
+      "score": 0.22,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        968,
+        -3,
+        1017,
+        367
+      ],
+      "ortho_pixel_local": [
+        1212,
+        1104
+      ],
+      "num_views": 1,
+      "cluster_size": 6
+    },
+    {
+      "lat": 41.249398,
+      "lon": -95.998302,
+      "score": 0.264,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        2,
+        1154,
+        48,
+        1815
+      ],
+      "ortho_pixel_local": [
+        1089,
+        228
+      ],
+      "num_views": 1,
+      "cluster_size": 5
+    },
+    {
+      "lat": 41.249257,
+      "lon": -95.998103,
+      "score": 0.252,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        12,
+        639,
+        55,
+        917
+      ],
+      "ortho_pixel_local": [
+        1412,
+        577
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.249369,
+      "lon": -95.99842,
+      "score": 0.233,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        451,
+        1586,
+        489,
+        1861
+      ],
+      "ortho_pixel_local": [
+        903,
+        347
+      ],
+      "num_views": 1,
+      "cluster_size": 2
+    },
+    {
+      "lat": 41.249138,
+      "lon": -95.998198,
+      "score": 0.154,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        503,
+        6,
+        553,
+        745
+      ],
+      "ortho_pixel_local": [
+        1271,
+        812
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.249104,
+      "lon": -95.998921,
+      "score": 0.157,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        2265,
+        1864,
+        2285,
+        1923
+      ],
+      "ortho_pixel_local": [
+        193,
+        881
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.248939,
+      "lon": -95.998579,
+      "score": 0.221,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        1737,
+        49,
+        1829,
+        898
+      ],
+      "ortho_pixel_local": [
+        717,
+        1140
+      ],
+      "num_views": 1,
+      "cluster_size": 2
+    },
+    {
+      "lat": 41.248824,
+      "lon": -95.998421,
+      "score": 0.22,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        1772,
+        67,
+        1825,
+        319
+      ],
+      "ortho_pixel_local": [
+        903,
+        1379
+      ],
+      "num_views": 1,
+      "cluster_size": 2
+    },
+    {
+      "lat": 41.249196,
+      "lon": -95.998609,
+      "score": 0.459,
+      "direction": "south",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:aXDBlA_Z_k6oErMRyN3epA:5421",
+      "oblique_bbox": [
+        1273,
+        1237,
+        1318,
+        1661
+      ],
+      "ortho_pixel_local": [
+        643,
+        676
+      ],
+      "num_views": 1,
+      "cluster_size": 2
+    },
+    {
+      "lat": 41.248189,
+      "lon": -95.999305,
+      "score": 0.645,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Vlkc4VTuFkmF8UZkjghPzQ:3459902866854644272",
+      "oblique_bbox": [
+        527,
+        962,
+        589,
+        1337
+      ],
+      "ortho_pixel_local": [
+        1160,
+        2004
+      ],
+      "num_views": 1,
+      "cluster_size": 7
+    },
+    {
+      "lat": 41.248548,
+      "lon": -95.998776,
+      "score": 0.359,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Vlkc4VTuFkmF8UZkjghPzQ:3459902866854644272",
+      "oblique_bbox": [
+        1970,
+        154,
+        2002,
+        285
+      ],
+      "ortho_pixel_local": [
+        1977,
+        1104
+      ],
+      "num_views": 1,
+      "cluster_size": 5
+    },
+    {
+      "lat": 41.248114,
+      "lon": -95.999438,
+      "score": 0.738,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Vlkc4VTuFkmF8UZkjghPzQ:3459902866854644272",
+      "oblique_bbox": [
+        162,
+        950,
+        213,
+        1381
+      ],
+      "ortho_pixel_local": [
+        967,
+        2094
+      ],
+      "num_views": 1,
+      "cluster_size": 8
+    },
+    {
+      "lat": 41.248303,
+      "lon": -95.99887,
+      "score": 0.816,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Vlkc4VTuFkmF8UZkjghPzQ:3459902866854644272",
+      "oblique_bbox": [
+        1684,
+        803,
+        1709,
+        1006
+      ],
+      "ortho_pixel_local": [
+        1772,
+        1686
+      ],
+      "num_views": 1,
+      "cluster_size": 5
+    },
+    {
+      "lat": 41.248574,
+      "lon": -95.998889,
+      "score": 0.291,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Vlkc4VTuFkmF8UZkjghPzQ:3459902866854644272",
+      "oblique_bbox": [
+        1620,
+        160,
+        1672,
+        368
+      ],
+      "ortho_pixel_local": [
+        1777,
+        1164
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.248427,
+      "lon": -95.998857,
+      "score": 0.393,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Vlkc4VTuFkmF8UZkjghPzQ:3459902866854644272",
+      "oblique_bbox": [
+        1587,
+        446,
+        1632,
+        685
+      ],
+      "ortho_pixel_local": [
+        1745,
+        1401
+      ],
+      "num_views": 1,
+      "cluster_size": 10
+    },
+    {
+      "lat": 41.248506,
+      "lon": -95.999229,
+      "score": 0.428,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Vlkc4VTuFkmF8UZkjghPzQ:3459902866854644272",
+      "oblique_bbox": [
+        704,
+        456,
+        731,
+        587
+      ],
+      "ortho_pixel_local": [
+        1260,
+        1314
+      ],
+      "num_views": 1,
+      "cluster_size": 4
+    },
+    {
+      "lat": 41.248442,
+      "lon": -95.998747,
+      "score": 0.146,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Vlkc4VTuFkmF8UZkjghPzQ:3459902866854644272",
+      "oblique_bbox": [
+        2054,
+        509,
+        2073,
+        598
+      ],
+      "ortho_pixel_local": [
+        1988,
+        1426
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.248254,
+      "lon": -95.998811,
+      "score": 0.139,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Vlkc4VTuFkmF8UZkjghPzQ:3459902866854644272",
+      "oblique_bbox": [
+        1932,
+        1088,
+        1953,
+        1166
+      ],
+      "ortho_pixel_local": [
+        1892,
+        1798
+      ],
+      "num_views": 1,
+      "cluster_size": 2
+    },
+    {
+      "lat": 41.248078,
+      "lon": -95.998793,
+      "score": 0.103,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Vlkc4VTuFkmF8UZkjghPzQ:3459902866854644272",
+      "oblique_bbox": [
+        2030,
+        1096,
+        2101,
+        1481
+      ],
+      "ortho_pixel_local": [
+        1920,
+        2148
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.248354,
+      "lon": -95.99906,
+      "score": 0.227,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Vlkc4VTuFkmF8UZkjghPzQ:3459902866854644272",
+      "oblique_bbox": [
+        1254,
+        815,
+        1288,
+        920
+      ],
+      "ortho_pixel_local": [
+        1550,
+        1600
+      ],
+      "num_views": 1,
+      "cluster_size": 4
+    },
+    {
+      "lat": 41.248198,
+      "lon": -95.999013,
+      "score": 0.13,
+      "direction": "north",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Vlkc4VTuFkmF8UZkjghPzQ:3459902866854644272",
+      "oblique_bbox": [
+        1364,
+        1184,
+        1395,
+        1327
+      ],
+      "ortho_pixel_local": [
+        1592,
+        1909
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.25038,
+      "lon": -95.998759,
+      "score": 0.318,
+      "direction": "east",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Tk_5yxIfqkyLAzjM_boYsA:23192",
+      "oblique_bbox": [
+        2674,
+        17,
+        2722,
+        233
+      ],
+      "ortho_pixel_local": [
+        2226,
+        1933
+      ],
+      "num_views": 1,
+      "cluster_size": 1
+    },
+    {
+      "lat": 41.250417,
+      "lon": -95.999054,
+      "score": 0.41,
+      "direction": "east",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Tk_5yxIfqkyLAzjM_boYsA:23192",
+      "oblique_bbox": [
+        2494,
+        614,
+        2546,
+        863
+      ],
+      "ortho_pixel_local": [
+        1803,
+        1861
+      ],
+      "num_views": 1,
+      "cluster_size": 2
+    },
+    {
+      "lat": 41.250372,
+      "lon": -95.999359,
+      "score": 0.105,
+      "direction": "east",
+      "urn": "urn:eagleview.com:v4:spatial-data:raster:visual:ated:Tk_5yxIfqkyLAzjM_boYsA:23192",
+      "oblique_bbox": [
+        2572,
+        1578,
+        2629,
+        1727
+      ],
+      "ortho_pixel_local": [
+        1332,
+        1950
+      ],
+      "num_views": 1,
+      "cluster_size": 1
     }
   ],
-  "ortho_meta": {
-    "zoom": 21,
-    "m_per_px": 0.05612290650299738,
-    "tl_lat": 41.2509675141624,
-    "tl_lon": -96.00196838378906,
-    "br_lat": 41.246321190921456,
-    "br_lon": -95.99578857421875,
-    "width": 9216,
-    "height": 9216,
-    "tiles_loaded": 1224,
-    "x1": 489324,
-    "y1": 784336,
-    "x2": 489359,
-    "y2": 784371
-  },
   "evaluation": {
-    "tp": 75,
-    "fp": 145,
-    "fn": 13,
-    "precision": 0.341,
-    "recall": 0.852,
-    "f1": 0.487
+    "3": {
+      "tp": 3,
+      "fp": 86,
+      "fn": 85,
+      "precision": 0.034,
+      "recall": 0.034,
+      "f1": 0.034,
+      "rmse": 1.8,
+      "gt_poles": 88
+    },
+    "5": {
+      "tp": 5,
+      "fp": 84,
+      "fn": 83,
+      "precision": 0.056,
+      "recall": 0.057,
+      "f1": 0.056,
+      "rmse": 3.1,
+      "gt_poles": 88
+    },
+    "7": {
+      "tp": 6,
+      "fp": 83,
+      "fn": 82,
+      "precision": 0.067,
+      "recall": 0.068,
+      "f1": 0.068,
+      "rmse": 3.6,
+      "gt_poles": 88
+    },
+    "10": {
+      "tp": 8,
+      "fp": 81,
+      "fn": 80,
+      "precision": 0.09,
+      "recall": 0.091,
+      "f1": 0.09,
+      "rmse": 5.3,
+      "gt_poles": 88
+    },
+    "15": {
+      "tp": 13,
+      "fp": 76,
+      "fn": 75,
+      "precision": 0.146,
+      "recall": 0.148,
+      "f1": 0.147,
+      "rmse": 9.4,
+      "gt_poles": 88
+    }
   },
-  "total_time": 257.7
+  "stats": {
+    "images_processed": 43,
+    "detections_raw": 505,
+    "detections_deduped": 179,
+    "detections_in_area": 89,
+    "mast3r_failures": 0
+  },
+  "config": {
+    "sam3_prompt": "telephone pole",
+    "sam3_threshold": 0.1,
+    "mast3r_checkpoint": "kvuong2711/checkpoint-aerial-mast3r"
+  },
+  "total_time": 82.2
 }
