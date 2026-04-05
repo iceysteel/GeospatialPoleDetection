@@ -30,14 +30,14 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 # Detection
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
-SAM3_THRESHOLD = 0.45
+SAM3_THRESHOLD = 0.48
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
     "cba430d22f6fdc3f06ad3841274ec7bb55885f2f/sam3.pt")
 
 # MASt3R
 MAST3R_CHECKPOINT = 'kvuong2711/checkpoint-aerial-mast3r'
-ORTHO_CROP_RADIUS_M = 60  # Best at 60m
+ORTHO_CROP_RADIUS_M = 60
 ORTHO_ZOOM = 21
 
 # Projection
@@ -151,42 +151,32 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
     pv = pts3d[0]
     hm, wm = pv.shape[:2]
 
-    pi = torch.inverse(poses[1])
-    th, tw = pts3d[1].shape[:2]
+    results = []
+    for det in detections:
+        x1, y1, x2, y2 = det['bbox']
+        if PROJECT_POLE_BASE:
+            px, py = (x1 + x2) // 2, y2
+        else:
+            px, py = (x1 + x2) // 2, (y1 + y2) // 2
 
-    def project_point(px, py):
-        """Project a single oblique pixel to ortho pixel coords."""
         sx, sy = wm / ow, hm / oh
         mx = min(max(int(round(px * sx)), 0), wm - 1)
         my = min(max(int(round(py * sy)), 0), hm - 1)
         p3d = pv[my, mx]
-        if torch.isnan(p3d).any(): return None
+        if torch.isnan(p3d).any(): continue
+
+        pi = torch.inverse(poses[1])
         pc = pi[:3, :3] @ p3d + pi[:3, 3]
-        if pc[2] <= 0: return None
+        if pc[2] <= 0: continue
+
+        th, tw = pts3d[1].shape[:2]
         u = focals[1] * pc[0] / pc[2] + tw / 2
         v = focals[1] * pc[1] / pc[2] + th / 2
-        if not (0 <= u.item() < tw and 0 <= v.item() < th): return None
+        if not (0 <= u.item() < tw and 0 <= v.item() < th): continue
+
         uo = u.item() / (tw / ortho_w)
         vo = v.item() / (th / ortho_h)
-        return (uo, vo)
-
-    results = []
-    for det in detections:
-        x1, y1, x2, y2 = det['bbox']
-        cx = (x1 + x2) // 2
-        # Project 3 points along pole: base, lower-mid, upper-mid
-        points_to_project = [
-            (cx, y2),                          # base
-            (cx, y1 + int(0.7 * (y2 - y1))),  # lower-mid (70%)
-            (cx, y1 + int(0.4 * (y2 - y1))),  # upper-mid (40%)
-        ]
-        projected = [project_point(px, py) for px, py in points_to_project]
-        valid = [p for p in projected if p is not None]
-        if not valid: continue
-        # Take median of valid projections for robustness
-        med_u = sorted([p[0] for p in valid])[len(valid) // 2]
-        med_v = sorted([p[1] for p in valid])[len(valid) // 2]
-        results.append({'ortho_px': (int(round(med_u)), int(round(med_v))), 'score': det['score']})
+        results.append({'ortho_px': (int(round(uo)), int(round(vo))), 'score': det['score']})
 
     return results
 
