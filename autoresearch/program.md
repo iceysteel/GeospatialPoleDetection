@@ -2,7 +2,7 @@
 
 ## Objective
 Maximize F1@10m for detecting utility poles in aerial imagery.
-Current best: **F1@10m = 0.592** (SAM3 threshold=0.40, ortho_crop=60m)
+Current best: **F1@10m = 0.598** (SAM3 threshold=0.45, ortho_crop=60m)
 
 ## Progress So Far
 - Baseline: F1=0.335 (SAM3 thresh=0.10, ortho=80m)
@@ -14,6 +14,12 @@ Current best: **F1@10m = 0.592** (SAM3 threshold=0.40, ortho_crop=60m)
 - Iteration 6: ortho_crop 80m→60m → F1=0.559 ✅
 - Iteration 7: ortho_crop 60m→50m → F1=0.558 ❌ (marginal)
 - Iteration 8: thresh→0.40 → F1=0.592 ✅
+- Iteration 9: VLM post-filter (strict) → F1=0.567 ❌ (lost too many TPs)
+- Iteration 10: thresh→0.45 → F1=0.598 ✅ (new best)
+- Iteration 11: thresh 0.35 + soft VLM → F1=0.559 ❌ (VLM barely filtered)
+- Iteration 12: SAM3-LoRA v2 → F1=0.086 ❌ (catastrophic failure)
+- Iteration 13: aspect ratio filter → F1=0.592 ❌ (no effect, filter too loose)
+- Iteration 14: ortho crop 55m → F1=0.586 ❌ (smaller crop hurt recall)
 
 ## Hard Constraints
 - MUST use SAM3 (or SAM3-LoRA) for detection in oblique views
@@ -36,6 +42,10 @@ Current best: **F1@10m = 0.592** (SAM3 threshold=0.40, ortho_crop=60m)
 - Prompt "utility pole" vs "telephone pole": utility pole was worse
 - Ortho crop < 50m: too little context for MASt3R
 - 3D shape features at 512px MASt3R: too coarse
+- VLM post-filtering: strict prompt loses TPs, soft prompt doesn't filter
+- SAM3-LoRA v2: catastrophically worse than base SAM3
+- Aspect ratio filtering: SAM3 detections already have reasonable ratios
+- Ortho crop 55m: too little context, hurt recall
 
 ## Promising Directions (DEEP CHANGES)
 1. **VLM post-filtering**: After SAM3+MASt3R, classify each detection crop with
