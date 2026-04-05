@@ -30,7 +30,7 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 # Detection
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
-SAM3_THRESHOLD = 0.45
+SAM3_THRESHOLD = 0.40
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
     "cba430d22f6fdc3f06ad3841274ec7bb55885f2f/sam3.pt")
@@ -45,6 +45,9 @@ PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 
 # Dedup
 DEDUP_RADIUS_M = 12
+
+# Two-tier confidence: single-view detections need higher score
+SINGLE_VIEW_MIN_SCORE = 0.55
 
 # ============================================================================
 # PIPELINE FUNCTIONS
@@ -250,7 +253,7 @@ def run_pipeline():
                     'score': proj['score'],
                 })
 
-    # Dedup
+    # Dedup with two-tier confidence filtering
     m = 111320 * math.cos(math.radians(41.249))
     used = [False] * len(all_points)
     deduped = []
@@ -266,6 +269,8 @@ def run_pipeline():
         best = max(cluster, key=lambda x: x['score'])
         best['lat'] = round(sum(c['lat'] for c in cluster) / len(cluster), 6)
         best['lon'] = round(sum(c['lon'] for c in cluster) / len(cluster), 6)
-        deduped.append(best)
+        # Two-tier: single-view detections need higher confidence
+        if len(cluster) >= 2 or best['score'] >= SINGLE_VIEW_MIN_SCORE:
+            deduped.append(best)
 
     return deduped
