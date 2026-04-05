@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pole Detection Dashboard</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, sans-serif; background: #0a0a1a; color: #eee; }
+#header { padding: 12px 20px; background: #111; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+#header h1 { font-size: 18px; }
+#metrics { display: flex; gap: 20px; }
+.metric { text-align: center; }
+.metric .value { font-size: 28px; font-weight: bold; }
+.metric .label { font-size: 11px; color: #888; }
+.metric.best .value { color: #00ff88; }
+.metric.holdout .value { color: #ffd60a; }
+#content { display: flex; height: calc(100vh - 60px); }
+#map { flex: 1; }
+#sidebar { width: 380px; overflow-y: auto; background: #111; border-left: 1px solid #333; padding: 12px; }
+.section { margin-bottom: 16px; }
+.section h3 { font-size: 13px; color: #888; margin-bottom: 6px; border-bottom: 1px solid #222; padding-bottom: 4px; }
+.section table { width: 100%; font-size: 12px; border-collapse: collapse; }
+.section td, .section th { padding: 3px 6px; text-align: right; }
+.section th { color: #888; text-align: left; }
+.section tr.best { color: #00ff88; }
+.legend { margin-top: 12px; font-size: 11px; }
+.legend div { margin: 3px 0; display: flex; align-items: center; gap: 6px; }
+.legend .dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #fff; }
+.progress-bar { height: 20px; background: #222; border-radius: 4px; margin: 4px 0; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding: 0 8px; font-size: 11px; font-weight: bold; }
+</style>
+</head>
+<body>
+<div id="header">
+  <h1>Pole Detection Pipeline Dashboard</h1>
+  <div id="metrics">
+    <div class="metric best"><div class="value" id="best-f1">—</div><div class="label">Best F1@10m (Test)</div></div>
+    <div class="metric holdout"><div class="value" id="holdout-f1">—</div><div class="label">F1@10m (Holdout)</div></div>
+    <div class="metric"><div class="value" id="total-exp">—</div><div class="label">Experiments</div></div>
+  </div>
+</div>
+<div id="content">
+  <div id="map"></div>
+  <div id="sidebar">
+    <div class="section">
+      <h3>F1@10m Progress</h3>
+      <div id="progress-bars"></div>
+    </div>
+    <div class="section">
+      <h3>Test Area Results (Verified GT)</h3>
+      <table id="test-results"><tr><td>Loading...</td></tr></table>
+    </div>
+    <div class="section">
+      <h3>Holdout Area Results (No GT — visual check)</h3>
+      <table id="holdout-results"><tr><td>Loading...</td></tr></table>
+    </div>
+    <div class="section">
+      <h3>AutoResearch Improvements</h3>
+      <div id="improvements"></div>
+    </div>
+    <div class="section legend">
+      <h3>Legend</h3>
+      <div><span class="dot" style="background:#00ff88;"></span> GT Pole (test area)</div>
+      <div><span class="dot" style="background:#00aaff;"></span> Detection — Test Area</div>
+      <div><span class="dot" style="background:#ffd60a;"></span> Detection — Holdout Area</div>
+      <div style="margin-top:4px; color:#666;">Green dashed = test area, Yellow dashed = holdout area</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const map = L.map('map', {maxZoom: 23});
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 22}).addTo(map);
+[19,20,21,22,23].forEach(z => {
+  L.tileLayer(`data/wmts/${z}_{x}_{y}.png`, {
+    minZoom: z, maxZoom: 23, maxNativeZoom: z, minNativeZoom: z,
+    tileSize: 256, errorTileUrl: ''
+  }).addTo(map);
+});
+
+const TEST = {lat: 41.248644, lon: -95.998878, rLat: 0.0018, rLon: 0.0024};
+const HOLD = {lat: 41.2486, lon: -95.9929, rLat: 0.0018, rLon: 0.0024};
+
+// Draw areas
+L.rectangle([[TEST.lat-TEST.rLat, TEST.lon-TEST.rLon],[TEST.lat+TEST.rLat, TEST.lon+TEST.rLon]],
+  {color:'#00ff88', weight:2, fill:false, dashArray:'8,4'}).addTo(map).bindTooltip('Test Area');
+L.rectangle([[HOLD.lat-HOLD.rLat, HOLD.lon-HOLD.rLon],[HOLD.lat+HOLD.rLat, HOLD.lon+HOLD.rLon]],
+  {color:'#ffd60a', weight:2, fill:false, dashArray:'8,4'}).addTo(map).bindTooltip('Holdout Area');
+
+map.fitBounds([[41.244, -96.004],[41.254, -95.990]]);
+
+async function load() {
+  // Load test area GT + detections
+  const [gtResp, evalResp, holdResp, expResp] = await Promise.all([
+    fetch('data/ground_truth_testarea.json?t='+Date.now()),
+    fetch('data/eval_testarea/oblique_to_ortho_results.json?t='+Date.now()).catch(()=>null),
+    fetch('data/eval_testarea/holdout_results.json?t='+Date.now()).catch(()=>null),
+    fetch('autoresearch/autoresearch.jsonl?t='+Date.now()).catch(()=>null),
+  ]);
+
+  const gt = await gtResp.json();
+  const gtPoles = gt.labels.filter(l => l.label === 'pole');
+
+  // Draw GT poles
+  gtPoles.forEach((p, i) => {
+    L.circleMarker([p.lat, p.lon], {
+      radius: 6, fillColor: '#00ff88', color: '#fff', weight: 1.5, fillOpacity: 0.8
+    }).addTo(map).bindTooltip(`GT #${i+1}`);
+  });
+
+  // Load test area detections
+  let testDets = [];
+  if (evalResp) {
+    const evalData = await evalResp.json();
+    testDets = evalData.poles || evalData.detections || [];
+    testDets.forEach((d, i) => {
+      const lat = d.lat || d.approx_lat;
+      const lon = d.lon || d.approx_lon;
+      if (!lat) return;
+      L.circleMarker([lat, lon], {
+        radius: 4, fillColor: '#00aaff', color: '#fff', weight: 1, fillOpacity: 0.7
+      }).addTo(map).bindTooltip(`Det #${i+1} score=${d.score||'?'}`);
+    });
+  }
+
+  // Load holdout detections
+  let holdDets = [];
+  if (holdResp) {
+    const holdData = await holdResp.json();
+    holdDets = holdData.detections || [];
+    holdDets.forEach((d, i) => {
+      const lat = d.lat || d.approx_lat;
+      const lon = d.lon || d.approx_lon;
+      if (!lat) return;
+      L.circleMarker([lat, lon], {
+        radius: 4, fillColor: '#ffd60a', color: '#fff', weight: 1, fillOpacity: 0.7
+      }).addTo(map).bindTooltip(`Holdout #${i+1} score=${d.score||'?'}`);
+    });
+    document.getElementById('holdout-results').innerHTML = `
+      <tr><th>Detections</th><td>${holdDets.length}</td></tr>
+      <tr><td colspan=2 style="color:#888;text-align:left;">No GT for holdout — visually verify poles on ortho</td></tr>`;
+    document.getElementById('holdout-f1').textContent = `${holdDets.length} dets`;
+  }
+
+  // Load experiment history
+  if (expResp) {
+    const text = await expResp.text();
+    const lines = text.trim().split('\n').map(l => JSON.parse(l));
+    let best = 0;
+    const improvements = [];
+    lines.forEach((d, i) => {
+      if (d.f1 > best) {
+        best = d.f1;
+        improvements.push({exp: i, f1: d.f1, p: d.precision, r: d.recall, change: d.change||''});
+      }
+    });
+
+    document.getElementById('best-f1').textContent = best.toFixed(3);
+    document.getElementById('total-exp').textContent = lines.length;
+
+    // Progress bars
+    const barsHtml = improvements.map(imp =>
+      `<div class="progress-bar"><div class="progress-fill" style="width:${imp.f1*100}%;background:${imp.f1>0.6?'#00ff88':imp.f1>0.5?'#ffd60a':'#ff6b6b'};">
+        ${imp.f1.toFixed(3)} (exp ${imp.exp})
+      </div></div>`
+    ).join('');
+    document.getElementById('progress-bars').innerHTML = barsHtml;
+
+    // Improvements list
+    document.getElementById('improvements').innerHTML = improvements.map(imp =>
+      `<div style="font-size:11px;margin:2px 0;padding:2px 4px;background:#1a1a2e;border-radius:3px;">
+        <strong>F1=${imp.f1.toFixed(3)}</strong> P=${(imp.p*100).toFixed(0)}% R=${(imp.r*100).toFixed(0)}%
+        <span style="color:#888;">${imp.change.substring(0,50)}</span>
+      </div>`
+    ).join('');
+
+    // Test results table
+    const latest = lines[lines.length-1];
+    document.getElementById('test-results').innerHTML = `
+      <tr class="best"><th>F1@10m</th><td>${best.toFixed(4)}</td></tr>
+      <tr><th>Precision</th><td>${(latest.precision*100).toFixed(1)}%</td></tr>
+      <tr><th>Recall</th><td>${(latest.recall*100).toFixed(1)}%</td></tr>
+      <tr><th>TP / FP / FN</th><td>${latest.tp} / ${latest.fp} / ${latest.fn}</td></tr>
+      <tr><th>RMSE</th><td>${latest.rmse}m</td></tr>
+      <tr><th>GT Poles</th><td>${gtPoles.length}</td></tr>
+      <tr><th>Experiments</th><td>${lines.length}</td></tr>`;
+  }
+}
+
+load();
+// Auto-refresh every 60s
+setInterval(load, 60000);
+</script>
+</body>
+</html>

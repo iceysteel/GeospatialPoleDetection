@@ -32,6 +32,9 @@ DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
 SAM3_PROMPTS_EXTRA = [('wooden pole', 0.40), ('power pole', 0.65)]  # (prompt, threshold)
 SAM3_THRESHOLD = 0.40
+SAM3_MODEL_THRESHOLD = 0.20  # Lower floor for model to return rescue candidates
+RESCUE_THRESHOLD = 0.25  # Min score for rescue candidates
+RESCUE_MIN_DIRECTIONS = 2  # Rescue clusters need 2+ unique viewing directions
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
     "cba430d22f6fdc3f06ad3841274ec7bb55885f2f/sam3.pt")
@@ -79,7 +82,7 @@ def load_sam3(device='cuda'):
         load_lora_weights(model, lora_path)
         model = model.cuda()
 
-    return Sam3Processor(model, confidence_threshold=SAM3_THRESHOLD)
+    return Sam3Processor(model, confidence_threshold=SAM3_MODEL_THRESHOLD)
 
 
 def load_mast3r(device='cuda'):
@@ -180,7 +183,8 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
 
         uo = u.item() / (tw / ortho_w)
         vo = v.item() / (th / ortho_h)
-        results.append({'ortho_px': (int(round(uo)), int(round(vo))), 'score': det['score']})
+        results.append({'ortho_px': (int(round(uo)), int(round(vo))), 'score': det['score'],
+                        'rescue': det.get('rescue', False)})
 
     return results
 
@@ -227,7 +231,7 @@ def run_pipeline():
             oblique = Image.open(img_path).convert('RGB')
             w, h = oblique.size
 
-            # SAM3 detection — multi-prompt with per-prompt thresholds
+            # SAM3 detection — multi-prompt with per-prompt thresholds + rescue
             state = sam3_proc.set_image(oblique)
             prompt_configs = [(SAM3_PROMPT, SAM3_THRESHOLD)] + SAM3_PROMPTS_EXTRA
             dets = []
@@ -240,10 +244,12 @@ def run_pipeline():
                 for i in range(len(state['boxes'])):
                     box = state['boxes'][i].tolist()
                     score = state['scores'][i].item()
-                    if score >= thresh:
+                    # Collect at rescue threshold; mark if below prompt threshold
+                    if score >= RESCUE_THRESHOLD:
                         dets.append({
                             'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
                             'score': score,
+                            'rescue': score < thresh,
                         })
             # Dedup overlapping boxes from different prompts (IoU > 0.5)
             if len(dets) > 1:
@@ -277,9 +283,11 @@ def run_pipeline():
                     'lat': round(pt_lat, 6),
                     'lon': round(pt_lon, 6),
                     'score': proj['score'],
+                    'rescue': proj.get('rescue', False),
+                    'direction': d,
                 })
 
-    # Dedup with two-tier confidence filtering
+    # Dedup with two-tier confidence + multi-view rescue
     m = 111320 * math.cos(math.radians(41.249))
     used = [False] * len(all_points)
     deduped = []
@@ -293,10 +301,20 @@ def run_pipeline():
             if dist < DEDUP_RADIUS_M:
                 cluster.append(all_points[j]); used[j] = True
         best = max(cluster, key=lambda x: x['score'])
-        best['lat'] = round(sum(c['lat'] for c in cluster) / len(cluster), 6)
-        best['lon'] = round(sum(c['lon'] for c in cluster) / len(cluster), 6)
-        # Two-tier: single-view detections need higher confidence
-        if len(cluster) >= 2 or best['score'] >= SINGLE_VIEW_MIN_SCORE:
-            deduped.append(best)
+        # Use mean position from non-rescue points if available, else all
+        main_pts = [c for c in cluster if not c.get('rescue', False)]
+        pos_pts = main_pts if main_pts else cluster
+        best['lat'] = round(sum(c['lat'] for c in pos_pts) / len(pos_pts), 6)
+        best['lon'] = round(sum(c['lon'] for c in pos_pts) / len(pos_pts), 6)
+        has_main = len(main_pts) > 0
+        if has_main:
+            # Normal two-tier: single-view detections need higher confidence
+            if len(cluster) >= 2 or best['score'] >= SINGLE_VIEW_MIN_SCORE:
+                deduped.append(best)
+        else:
+            # Rescue-only cluster: need multi-direction confirmation
+            unique_dirs = set(c.get('direction') for c in cluster)
+            if len(unique_dirs) >= RESCUE_MIN_DIRECTIONS:
+                deduped.append(best)
 
     return deduped
