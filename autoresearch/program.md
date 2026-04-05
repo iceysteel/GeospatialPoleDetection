@@ -2,7 +2,7 @@
 
 ## Objective
 Maximize F1@10m for detecting utility poles in aerial imagery.
-Current best: **F1@10m = 0.4876** (SAM3 threshold=0.20)
+Current best: **F1@10m = 0.5182** (SAM3 threshold=0.30)
 Previous best: F1@10m = 0.3348 (SAM3 threshold=0.10)
 SAM3+MASt3R baseline: **F1@10m = 0.165**
 
@@ -21,7 +21,8 @@ SAM3+MASt3R baseline: **F1@10m = 0.165**
 - GPS dedup at 10m removes duplicate detections across views
 
 ## What Worked
-- **SAM3 threshold 0.10→0.20**: F1 0.3348→0.4876. Precision nearly doubled (0.21→0.37) with modest recall drop (0.82→0.73). Many FPs were low-confidence — threshold is a high-leverage knob. Further threshold tuning likely still beneficial.
+- **SAM3 threshold 0.10→0.20**: F1 0.3348→0.4876. Precision nearly doubled (0.21→0.37) with modest recall drop (0.82→0.73). Many FPs were low-confidence — threshold is a high-leverage knob.
+- **SAM3 threshold 0.20→0.30**: F1 0.4876→0.5182. Precision 36.5%→45.2%, recall 73.4%→60.6%. Still net positive — FP count halved (120→69) while losing 12 TPs (69→57). Threshold tuning may still have room but recall is getting thin.
 
 ## What We've Tried and Failed
 - AerialMegaDepth vs standard MASt3R for oblique↔oblique: identical performance

@@ -3,3 +3,21 @@
 AutoResearch Iteration 1
 Sun Apr  5 04:22:02 AM PDT 2026
 ========================================
+**Iteration 1 complete. Result: F1@10m = 0.4876 (was 0.3348, +45.6% improvement)**
+
+Key stats:
+| Metric | Before | After |
+|--------|--------|-------|
+| F1@10m | 0.335 | **0.488** |
+| Precision | 21.0% | **36.5%** |
+| Recall | 81.9% | 73.4% |
+| FP | 289 | **120** |
+| TP | 77 | 69 |
+
+The single change — raising `SAM3_THRESHOLD` from 0.10 to 0.20 — cut false positives by 58% while only losing 8 true positives. This suggests many FPs had low confidence scores. Further threshold tuning (0.25? 0.30?) or combining with score-based filtering could push F1 higher.
+Iteration 1 complete
+
+========================================
+AutoResearch Iteration 2
+Sun Apr  5 04:29:05 AM PDT 2026
+========================================
