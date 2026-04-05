@@ -7,7 +7,8 @@ file to improve F1@10m. Must use SAM3 + MASt3R as core components.
 
 Current best F1@10m: 0.448 (GDino-ft + VLM, oblique consensus)
 """
-import sys, os, json, math, time, tempfile
+import sys, os, json, math, time, tempfile, base64, requests
+from io import BytesIO
 
 PROJECT_ROOT = os.path.join(os.path.dirname(__file__), '..')
 sys.path.insert(0, os.path.join(PROJECT_ROOT, 'src'))
@@ -30,14 +31,15 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 # Detection
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
-SAM3_THRESHOLD = 0.45
+SAM3_THRESHOLD = 0.35  # Lower threshold for more recall; VLM filters borderline
+SAM3_HIGH_CONF = 0.45  # Above this: keep without VLM check
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
     "cba430d22f6fdc3f06ad3841274ec7bb55885f2f/sam3.pt")
 
 # MASt3R
 MAST3R_CHECKPOINT = 'kvuong2711/checkpoint-aerial-mast3r'
-ORTHO_CROP_RADIUS_M = 55
+ORTHO_CROP_RADIUS_M = 60  # Best at 60m (was 55 by mistake)
 ORTHO_ZOOM = 21
 
 # Projection
@@ -45,6 +47,95 @@ PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 
 # Dedup
 DEDUP_RADIUS_M = 10
+
+# VLM post-filter for borderline detections (score between THRESHOLD and HIGH_CONF)
+VLM_ENABLED = True
+VLM_MODEL = 'qwen3.5:27b'
+VLM_REJECT_CONF = 0.7  # Only reject if VLM is this confident it's NOT a pole
+OLLAMA_URL = 'http://localhost:11434/api/chat'
+
+# ============================================================================
+# VLM CLASSIFICATION
+# ============================================================================
+
+VLM_PROMPT = """Look at this cropped oblique aerial image. What is the main vertical object in the center?
+
+Classify it as ONE of:
+- POLE: A tall, narrow, vertical wooden or metal utility/telephone pole. Brown/grey, may have crossarms, insulators, or wires. Cylindrical shape, stands near roads.
+- NOT_POLE: Anything else — tree, streetlight, building edge, fence post, sign, antenna, chimney, shadow, etc.
+
+If uncertain, classify as POLE (err on side of keeping detections).
+
+Reply ONLY with JSON: {"class": "POLE" or "NOT_POLE", "confidence": 0.0-1.0}"""
+
+
+def vlm_classify_crop(img_crop):
+    """Classify a single detection crop using Qwen VLM via ollama. Returns (class, confidence)."""
+    buf = BytesIO()
+    img_crop.save(buf, format='JPEG', quality=90)
+    crop_b64 = base64.b64encode(buf.getvalue()).decode()
+
+    try:
+        resp = requests.post(OLLAMA_URL, json={
+            'model': VLM_MODEL,
+            'messages': [
+                {'role': 'system', 'content': 'You are an aerial imagery classifier. Reply ONLY with JSON.'},
+                {'role': 'user', 'content': VLM_PROMPT, 'images': [crop_b64]},
+            ],
+            'stream': False,
+            'think': False,
+            'options': {'num_predict': 60, 'temperature': 0.0},
+        }, timeout=60)
+        if resp.status_code != 200:
+            return 'POLE', 0.0  # On error, keep detection
+        text = resp.json()['message']['content'].strip()
+        if text.startswith('```'):
+            text = text.split('\n', 1)[-1].rsplit('```', 1)[0].strip()
+        result = json.loads(text)
+        cls = result.get('class', 'POLE').upper().strip()
+        conf = float(result.get('confidence', 0.5))
+        return cls, min(max(conf, 0.0), 1.0)
+    except Exception:
+        return 'POLE', 0.0  # On error, keep detection
+
+
+def vlm_filter_detections(detections, oblique_img):
+    """Filter borderline detections using VLM. Only removes confident non-poles."""
+    if not VLM_ENABLED:
+        return detections
+
+    kept = []
+    vlm_checked = 0
+    vlm_removed = 0
+    for det in detections:
+        # High-confidence detections: keep without VLM
+        if det['score'] >= SAM3_HIGH_CONF:
+            kept.append(det)
+            continue
+
+        # Borderline detections: check with VLM
+        x1, y1, x2, y2 = det['bbox']
+        w, h = x2 - x1, y2 - y1
+        pad_x, pad_y = int(w * 0.3), int(h * 0.3)
+        cx1 = max(0, x1 - pad_x)
+        cy1 = max(0, y1 - pad_y)
+        cx2 = min(oblique_img.width, x2 + pad_x)
+        cy2 = min(oblique_img.height, y2 + pad_y)
+        crop = oblique_img.crop((cx1, cy1, cx2, cy2))
+        crop = crop.resize((384, 384))
+
+        cls, conf = vlm_classify_crop(crop)
+        vlm_checked += 1
+
+        if cls == 'NOT_POLE' and conf >= VLM_REJECT_CONF:
+            vlm_removed += 1
+            continue  # Remove this detection
+        kept.append(det)
+
+    if vlm_checked > 0:
+        print(f"  VLM: checked {vlm_checked} borderline, removed {vlm_removed}")
+    return kept
+
 
 # ============================================================================
 # PIPELINE FUNCTIONS
@@ -237,6 +328,9 @@ def run_pipeline():
                     'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
                     'score': score,
                 })
+
+            # VLM filter borderline detections (score < SAM3_HIGH_CONF)
+            dets = vlm_filter_detections(dets, oblique)
 
             # MASt3R project to ortho
             projected = match_and_project(img_path, ortho, mast3r, device, dets, (h, w))
