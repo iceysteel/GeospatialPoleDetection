@@ -30,7 +30,7 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 # Detection
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
-SAM3_THRESHOLD = 0.40  # Lower for recall; cross-validate with GDino
+SAM3_THRESHOLD = 0.45
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
     "cba430d22f6fdc3f06ad3841274ec7bb55885f2f/sam3.pt")
@@ -45,13 +45,6 @@ PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 
 # Dedup
 DEDUP_RADIUS_M = 10
-
-# GDino ensemble
-GDINO_ENABLED = True
-GDINO_MODEL_PATH = os.path.join(PROJECT_ROOT, 'models', 'gdino_finetuned', 'best')
-GDINO_TEXT = "utility pole. power pole. telephone pole."
-GDINO_THRESHOLD = 0.30  # Moderate threshold for validation
-SAM3_CROSSVAL_MIN = 0.45  # SAM3-only needs baseline score; GDino validates 0.40-0.45 band
 
 # ============================================================================
 # PIPELINE FUNCTIONS
@@ -83,60 +76,6 @@ def load_sam3(device='cuda'):
         model = model.cuda()
 
     return Sam3Processor(model, confidence_threshold=SAM3_THRESHOLD)
-
-
-def load_gdino(device='cuda:1'):
-    """Load fine-tuned GDino detector on second GPU."""
-    from transformers import AutoProcessor, AutoModelForZeroShotObjectDetection
-    proc = AutoProcessor.from_pretrained(GDINO_MODEL_PATH)
-    model = AutoModelForZeroShotObjectDetection.from_pretrained(GDINO_MODEL_PATH).to(device)
-    return proc, model
-
-
-def run_gdino(proc, model, image, device='cuda:1'):
-    """Run GDino on a single image, return detections."""
-    w, h = image.size
-    inputs = proc(images=image, text=GDINO_TEXT, return_tensors='pt').to(device)
-    with torch.no_grad():
-        outputs = model(**inputs)
-    out = proc.post_process_grounded_object_detection(
-        outputs, inputs['input_ids'],
-        target_sizes=torch.tensor([[h, w]]).to(device),
-        threshold=GDINO_THRESHOLD, text_threshold=GDINO_THRESHOLD
-    )[0]
-    dets = []
-    for i in range(len(out['boxes'])):
-        box = out['boxes'][i].cpu().tolist()
-        score = out['scores'][i].cpu().item()
-        dets.append({
-            'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
-            'score': score,
-        })
-    return dets
-
-
-def crossval_detections(sam3_dets, gdino_dets, iou_threshold=0.3):
-    """Cross-validate: keep SAM3 detections confirmed by GDino + high-conf SAM3-only."""
-    if not gdino_dets:
-        # No GDino results: fall back to high-conf SAM3 only
-        return [d for d in sam3_dets if d['score'] >= SAM3_CROSSVAL_MIN]
-    kept = []
-    for sd in sam3_dets:
-        sx1, sy1, sx2, sy2 = sd['bbox']
-        # Check if GDino confirms this detection
-        confirmed = False
-        for gd in gdino_dets:
-            gx1, gy1, gx2, gy2 = gd['bbox']
-            ix1, iy1 = max(gx1, sx1), max(gy1, sy1)
-            ix2, iy2 = min(gx2, sx2), min(gy2, sy2)
-            inter = max(0, ix2 - ix1) * max(0, iy2 - iy1)
-            union = (gx2-gx1)*(gy2-gy1) + (sx2-sx1)*(sy2-sy1) - inter
-            if union > 0 and inter / union > iou_threshold:
-                confirmed = True
-                break
-        if confirmed or sd['score'] >= SAM3_CROSSVAL_MIN:
-            kept.append(sd)
-    return kept
 
 
 def load_mast3r(device='cuda'):
@@ -212,32 +151,42 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
     pv = pts3d[0]
     hm, wm = pv.shape[:2]
 
-    results = []
-    for det in detections:
-        x1, y1, x2, y2 = det['bbox']
-        if PROJECT_POLE_BASE:
-            px, py = (x1 + x2) // 2, y2
-        else:
-            px, py = (x1 + x2) // 2, (y1 + y2) // 2
+    pi = torch.inverse(poses[1])
+    th, tw = pts3d[1].shape[:2]
 
+    def project_point(px, py):
+        """Project a single oblique pixel to ortho pixel coords."""
         sx, sy = wm / ow, hm / oh
         mx = min(max(int(round(px * sx)), 0), wm - 1)
         my = min(max(int(round(py * sy)), 0), hm - 1)
         p3d = pv[my, mx]
-        if torch.isnan(p3d).any(): continue
-
-        pi = torch.inverse(poses[1])
+        if torch.isnan(p3d).any(): return None
         pc = pi[:3, :3] @ p3d + pi[:3, 3]
-        if pc[2] <= 0: continue
-
-        th, tw = pts3d[1].shape[:2]
+        if pc[2] <= 0: return None
         u = focals[1] * pc[0] / pc[2] + tw / 2
         v = focals[1] * pc[1] / pc[2] + th / 2
-        if not (0 <= u.item() < tw and 0 <= v.item() < th): continue
-
+        if not (0 <= u.item() < tw and 0 <= v.item() < th): return None
         uo = u.item() / (tw / ortho_w)
         vo = v.item() / (th / ortho_h)
-        results.append({'ortho_px': (int(round(uo)), int(round(vo))), 'score': det['score']})
+        return (uo, vo)
+
+    results = []
+    for det in detections:
+        x1, y1, x2, y2 = det['bbox']
+        cx = (x1 + x2) // 2
+        # Project 3 points along pole: base, lower-mid, upper-mid
+        points_to_project = [
+            (cx, y2),                          # base
+            (cx, y1 + int(0.7 * (y2 - y1))),  # lower-mid (70%)
+            (cx, y1 + int(0.4 * (y2 - y1))),  # upper-mid (40%)
+        ]
+        projected = [project_point(px, py) for px, py in points_to_project]
+        valid = [p for p in projected if p is not None]
+        if not valid: continue
+        # Take median of valid projections for robustness
+        med_u = sorted([p[0] for p in valid])[len(valid) // 2]
+        med_v = sorted([p[1] for p in valid])[len(valid) // 2]
+        results.append({'ortho_px': (int(round(med_u)), int(round(med_v))), 'score': det['score']})
 
     return results
 
@@ -258,9 +207,6 @@ def run_pipeline():
     # Load models
     sam3_proc = load_sam3(device)
     mast3r = load_mast3r(device)
-    gdino_proc, gdino_model = (None, None)
-    if GDINO_ENABLED:
-        gdino_proc, gdino_model = load_gdino('cuda:1')
 
     # Load grid
     with open(os.path.join(GRID_DIR, 'index.json')) as f:
@@ -292,7 +238,7 @@ def run_pipeline():
             state = sam3_proc.set_text_prompt(state=state, prompt=SAM3_PROMPT)
             if len(state['boxes']) == 0: continue
 
-            # Extract SAM3 detections
+            # Extract detections
             dets = []
             for i in range(len(state['boxes'])):
                 box = state['boxes'][i].tolist()
@@ -301,11 +247,6 @@ def run_pipeline():
                     'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
                     'score': score,
                 })
-
-            # GDino cross-validation: filter SAM3 detections
-            if GDINO_ENABLED and gdino_proc is not None:
-                gdino_dets = run_gdino(gdino_proc, gdino_model, oblique, 'cuda:1')
-                dets = crossval_detections(dets, gdino_dets)
 
             # MASt3R project to ortho
             projected = match_and_project(img_path, ortho, mast3r, device, dets, (h, w))
