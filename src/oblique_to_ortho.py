@@ -291,7 +291,7 @@ def run_pipeline(args):
                 area[1] - 0.004 <= fc_lon <= area[3] + 0.004):
             continue
 
-        # SAM3 detection
+        # SAM3 detection on full oblique image
         oblique_img = Image.open(img_path).convert('RGB')
         state = sam3_proc.set_image(oblique_img)
         state = sam3_proc.set_text_prompt(state=state, prompt=SAM3_PROMPT)
@@ -300,8 +300,8 @@ def run_pipeline(args):
             n_processed += 1
             continue
 
-        # Stitch ortho crop centered on this image's footprint
-        ortho_crop, ortho_meta = stitch_ortho_for_footprint(fc_lat, fc_lon, radius_m=200, zoom=21)
+        # MASt3R ONCE on full oblique + 80m ortho crop (validated: 2.6m accuracy)
+        ortho_crop, ortho_meta = stitch_ortho_for_footprint(fc_lat, fc_lon, radius_m=80, zoom=21)
         if ortho_meta['tiles'] < 4:
             n_processed += 1
             continue
@@ -314,19 +314,17 @@ def run_pipeline(args):
             continue
 
         pts3d, poses, focals = result
-        oblique_size = (oblique_img.size[1], oblique_img.size[0])  # (h, w)
+        w, h = oblique_img.size
+        oblique_size = (h, w)
         ortho_size = (ortho_crop.size[1], ortho_crop.size[0])
 
-        # Project each detection to ortho
-        w, h = oblique_img.size
+        # Project each detection's base pixel to ortho
         for i in range(len(state['boxes'])):
             box = state['boxes'][i].tolist()
             score = state['scores'][i].item()
             x1, y1, x2, y2 = int(box[0]), int(box[1]), int(box[2]), int(box[3])
-
-            # Pole base = bottom-center of bbox
             base_x = (x1 + x2) // 2
-            base_y = y2  # bottom of bbox = ground contact
+            base_y = y2  # pole base
 
             ortho_pt = project_to_ortho(base_x, base_y, oblique_size, ortho_size,
                                         pts3d, poses, focals)
@@ -334,7 +332,6 @@ def run_pipeline(args):
                 continue
 
             ox, oy = ortho_pt
-            # Convert ortho crop pixel → GPS via tile math
             pt_lat, pt_lon = ortho_pixel_to_gps(ox, oy, ortho_meta)
 
             all_points.append({
