@@ -2,7 +2,8 @@
 
 ## Objective
 Maximize F1@10m for detecting utility poles in aerial imagery.
-Current best: **F1@10m = 0.448** (GDino pipeline, not yet reproduced with SAM3+MASt3R)
+Current best: **F1@10m = 0.4876** (SAM3 threshold=0.20)
+Previous best: F1@10m = 0.3348 (SAM3 threshold=0.10)
 SAM3+MASt3R baseline: **F1@10m = 0.165**
 
 ## Hard Constraints
@@ -18,6 +19,9 @@ SAM3+MASt3R baseline: **F1@10m = 0.165**
 - MASt3R AerialMegaDepth at 80m ortho crop radius gives 2.6m RMSE on known points
 - Pole base projection (bottom of bbox) is more accurate than bbox center
 - GPS dedup at 10m removes duplicate detections across views
+
+## What Worked
+- **SAM3 threshold 0.10→0.20**: F1 0.3348→0.4876. Precision nearly doubled (0.21→0.37) with modest recall drop (0.82→0.73). Many FPs were low-confidence — threshold is a high-leverage knob. Further threshold tuning likely still beneficial.
 
 ## What We've Tried and Failed
 - AerialMegaDepth vs standard MASt3R for oblique↔oblique: identical performance

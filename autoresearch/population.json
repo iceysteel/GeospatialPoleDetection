@@ -1,6 +1,20 @@
 {
   "configs": [
     {
+      "id": "threshold_020",
+      "f1_10m": 0.4876,
+      "params": {
+        "detector": "sam3",
+        "prompt": "telephone pole",
+        "threshold": 0.20,
+        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
+        "ortho_radius": 80,
+        "project_base": true,
+        "dedup_radius": 10
+      },
+      "description": "SAM3 threshold 0.20 — best so far, big precision gain"
+    },
+    {
       "id": "baseline_sam3",
       "f1_10m": 0.098,
       "params": {
@@ -30,6 +44,6 @@
     }
   ],
   "max_population": 5,
-  "generation": 0,
-  "total_experiments": 2
+  "generation": 1,
+  "total_experiments": 3
 }
