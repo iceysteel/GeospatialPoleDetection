@@ -37,7 +37,7 @@ SAM3_CKPT = os.path.join(os.path.expanduser("~"),
 
 # MASt3R
 MAST3R_CHECKPOINT = 'kvuong2711/checkpoint-aerial-mast3r'
-ORTHO_CROP_RADIUS_M = 55
+ORTHO_CROP_RADIUS_M = 60  # Best at 60m
 ORTHO_ZOOM = 21
 
 # Projection
@@ -45,6 +45,12 @@ PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 
 # Dedup
 DEDUP_RADIUS_M = 10
+
+# GDino ensemble
+GDINO_ENABLED = True
+GDINO_MODEL_PATH = os.path.join(PROJECT_ROOT, 'models', 'gdino_finetuned', 'best')
+GDINO_TEXT = "utility pole. power pole. telephone pole."
+GDINO_THRESHOLD = 0.30  # Higher than training (0.15) for precision
 
 # ============================================================================
 # PIPELINE FUNCTIONS
@@ -76,6 +82,60 @@ def load_sam3(device='cuda'):
         model = model.cuda()
 
     return Sam3Processor(model, confidence_threshold=SAM3_THRESHOLD)
+
+
+def load_gdino(device='cuda:1'):
+    """Load fine-tuned GDino detector on second GPU."""
+    from transformers import AutoProcessor, AutoModelForZeroShotObjectDetection
+    proc = AutoProcessor.from_pretrained(GDINO_MODEL_PATH)
+    model = AutoModelForZeroShotObjectDetection.from_pretrained(GDINO_MODEL_PATH).to(device)
+    return proc, model
+
+
+def run_gdino(proc, model, image, device='cuda:1'):
+    """Run GDino on a single image, return detections."""
+    w, h = image.size
+    inputs = proc(images=image, text=GDINO_TEXT, return_tensors='pt').to(device)
+    with torch.no_grad():
+        outputs = model(**inputs)
+    out = proc.post_process_grounded_object_detection(
+        outputs, inputs['input_ids'],
+        target_sizes=torch.tensor([[h, w]]).to(device),
+        threshold=GDINO_THRESHOLD, text_threshold=GDINO_THRESHOLD
+    )[0]
+    dets = []
+    for i in range(len(out['boxes'])):
+        box = out['boxes'][i].cpu().tolist()
+        score = out['scores'][i].cpu().item()
+        dets.append({
+            'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
+            'score': score,
+        })
+    return dets
+
+
+def merge_detections(sam3_dets, gdino_dets, iou_threshold=0.5):
+    """Merge SAM3 and GDino detections, removing GDino dups via IoU."""
+    if not gdino_dets:
+        return sam3_dets
+    merged = list(sam3_dets)
+    for gd in gdino_dets:
+        # Check if GDino detection overlaps with any SAM3 detection
+        is_dup = False
+        gx1, gy1, gx2, gy2 = gd['bbox']
+        for sd in sam3_dets:
+            sx1, sy1, sx2, sy2 = sd['bbox']
+            # IoU
+            ix1, iy1 = max(gx1, sx1), max(gy1, sy1)
+            ix2, iy2 = min(gx2, sx2), min(gy2, sy2)
+            inter = max(0, ix2 - ix1) * max(0, iy2 - iy1)
+            union = (gx2-gx1)*(gy2-gy1) + (sx2-sx1)*(sy2-sy1) - inter
+            if union > 0 and inter / union > iou_threshold:
+                is_dup = True
+                break
+        if not is_dup:
+            merged.append(gd)
+    return merged
 
 
 def load_mast3r(device='cuda'):
@@ -197,6 +257,9 @@ def run_pipeline():
     # Load models
     sam3_proc = load_sam3(device)
     mast3r = load_mast3r(device)
+    gdino_proc, gdino_model = (None, None)
+    if GDINO_ENABLED:
+        gdino_proc, gdino_model = load_gdino('cuda:1')
 
     # Load grid
     with open(os.path.join(GRID_DIR, 'index.json')) as f:
@@ -228,7 +291,7 @@ def run_pipeline():
             state = sam3_proc.set_text_prompt(state=state, prompt=SAM3_PROMPT)
             if len(state['boxes']) == 0: continue
 
-            # Extract detections
+            # Extract SAM3 detections
             dets = []
             for i in range(len(state['boxes'])):
                 box = state['boxes'][i].tolist()
@@ -237,6 +300,11 @@ def run_pipeline():
                     'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
                     'score': score,
                 })
+
+            # GDino ensemble: add non-overlapping GDino detections
+            if GDINO_ENABLED and gdino_proc is not None:
+                gdino_dets = run_gdino(gdino_proc, gdino_model, oblique, 'cuda:1')
+                dets = merge_detections(dets, gdino_dets)
 
             # MASt3R project to ortho
             projected = match_and_project(img_path, ortho, mast3r, device, dets, (h, w))
