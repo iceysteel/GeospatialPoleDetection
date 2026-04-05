@@ -21,3 +21,16 @@ Iteration 1 complete
 AutoResearch Iteration 2
 Sun Apr  5 04:29:05 AM PDT 2026
 ========================================
+**Iteration 2 complete. F1@10m improved: 0.4876 → 0.5182 (+6.3%)**
+
+Summary:
+- **Change**: SAM3 confidence threshold 0.20 → 0.30
+- **Result**: Precision 36.5% → 45.2%, Recall 73.4% → 60.6%
+- FPs cut nearly in half (120 → 69), lost 12 TPs (69 → 57)
+- Threshold tuning continues to be the highest-leverage knob, but recall is getting thin at 60.6% — next iteration should consider approaches that recover recall (multi-view consensus, prompt engineering, or ensemble) rather than pushing threshold higher.
+Iteration 2 complete
+
+========================================
+AutoResearch Iteration 3
+Sun Apr  5 04:35:34 AM PDT 2026
+========================================
