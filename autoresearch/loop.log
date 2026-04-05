@@ -99,3 +99,15 @@ Iteration 6 complete
 AutoResearch Iteration 7
 Sun Apr  5 05:06:31 AM PDT 2026
 ========================================
+**Iteration 7 complete. NEW BEST: F1@10m = 0.5918** (up from 0.5592)
+
+| Metric | Before (0.35) | After (0.40) | Delta |
+|--------|--------------|--------------|-------|
+| F1@10m | 0.5592 | **0.5918** | +0.0326 |
+| Precision | 50.4% | 56.9% | +6.5% |
+| Recall | 62.8% | 61.7% | -1.1% |
+| TP | 59 | 58 | -1 |
+| FP | 58 | 44 | -14 |
+| RMSE | 4.9m | 4.8m | -0.1m |
+
+The threshold knob still has juice — lost only 1 true positive while eliminating 14 false positives. The precision/recall tradeoff remains favorable.
