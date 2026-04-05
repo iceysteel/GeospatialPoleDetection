@@ -263,6 +263,9 @@ def run_pipeline():
                            ((p['lon'] - all_points[j]['lon']) * m) ** 2)
             if dist < DEDUP_RADIUS_M:
                 cluster.append(all_points[j]); used[j] = True
+        # Multi-view consensus: require pole seen in 2+ detections
+        if len(cluster) < 2:
+            continue
         best = max(cluster, key=lambda x: x['score'])
         best['lat'] = round(sum(c['lat'] for c in cluster) / len(cluster), 6)
         best['lon'] = round(sum(c['lon'] for c in cluster) / len(cluster), 6)
