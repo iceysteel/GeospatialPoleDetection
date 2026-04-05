@@ -30,7 +30,7 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 # Detection
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
-SAM3_THRESHOLD = 0.45
+SAM3_THRESHOLD = 0.40  # Lower for recall; cross-validate with GDino
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
     "cba430d22f6fdc3f06ad3841274ec7bb55885f2f/sam3.pt")
@@ -50,7 +50,8 @@ DEDUP_RADIUS_M = 10
 GDINO_ENABLED = True
 GDINO_MODEL_PATH = os.path.join(PROJECT_ROOT, 'models', 'gdino_finetuned', 'best')
 GDINO_TEXT = "utility pole. power pole. telephone pole."
-GDINO_THRESHOLD = 0.50  # Much higher for precision; only high-conf GDino additions
+GDINO_THRESHOLD = 0.15  # Low threshold; GDino used for VALIDATION not addition
+SAM3_CROSSVAL_MIN = 0.50  # SAM3-only detections need this min score to survive
 
 # ============================================================================
 # PIPELINE FUNCTIONS
@@ -114,28 +115,28 @@ def run_gdino(proc, model, image, device='cuda:1'):
     return dets
 
 
-def merge_detections(sam3_dets, gdino_dets, iou_threshold=0.5):
-    """Merge SAM3 and GDino detections, removing GDino dups via IoU."""
+def crossval_detections(sam3_dets, gdino_dets, iou_threshold=0.3):
+    """Cross-validate: keep SAM3 detections confirmed by GDino + high-conf SAM3-only."""
     if not gdino_dets:
-        return sam3_dets
-    merged = list(sam3_dets)
-    for gd in gdino_dets:
-        # Check if GDino detection overlaps with any SAM3 detection
-        is_dup = False
-        gx1, gy1, gx2, gy2 = gd['bbox']
-        for sd in sam3_dets:
-            sx1, sy1, sx2, sy2 = sd['bbox']
-            # IoU
+        # No GDino results: fall back to high-conf SAM3 only
+        return [d for d in sam3_dets if d['score'] >= SAM3_CROSSVAL_MIN]
+    kept = []
+    for sd in sam3_dets:
+        sx1, sy1, sx2, sy2 = sd['bbox']
+        # Check if GDino confirms this detection
+        confirmed = False
+        for gd in gdino_dets:
+            gx1, gy1, gx2, gy2 = gd['bbox']
             ix1, iy1 = max(gx1, sx1), max(gy1, sy1)
             ix2, iy2 = min(gx2, sx2), min(gy2, sy2)
             inter = max(0, ix2 - ix1) * max(0, iy2 - iy1)
             union = (gx2-gx1)*(gy2-gy1) + (sx2-sx1)*(sy2-sy1) - inter
             if union > 0 and inter / union > iou_threshold:
-                is_dup = True
+                confirmed = True
                 break
-        if not is_dup:
-            merged.append(gd)
-    return merged
+        if confirmed or sd['score'] >= SAM3_CROSSVAL_MIN:
+            kept.append(sd)
+    return kept
 
 
 def load_mast3r(device='cuda'):
@@ -301,10 +302,10 @@ def run_pipeline():
                     'score': score,
                 })
 
-            # GDino ensemble: add non-overlapping GDino detections
+            # GDino cross-validation: filter SAM3 detections
             if GDINO_ENABLED and gdino_proc is not None:
                 gdino_dets = run_gdino(gdino_proc, gdino_model, oblique, 'cuda:1')
-                dets = merge_detections(dets, gdino_dets)
+                dets = crossval_detections(dets, gdino_dets)
 
             # MASt3R project to ortho
             projected = match_and_project(img_path, ortho, mast3r, device, dets, (h, w))
