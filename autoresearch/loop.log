@@ -64,3 +64,25 @@ Iteration 4 complete
 AutoResearch Iteration 5
 Sun Apr  5 04:47:36 AM PDT 2026
 ========================================
+## Iteration 5 Results
+
+**F1@10m: 0.5268 → 0.5592 (+6.1%) — NEW BEST**
+
+| Metric | Before (80m) | After (60m) | Change |
+|--------|-------------|-------------|--------|
+| F1@10m | 0.5268 | **0.5592** | +0.0324 |
+| Precision | 48.6% | 50.4% | +1.8pp |
+| Recall | 57.5% | 62.8% | +5.3pp |
+| TP | 54 | 59 | +5 |
+| FP | 57 | 58 | +1 |
+| RMSE | 5.8m | 4.9m | -0.9m |
+
+**Why it worked**: Reducing the ortho crop from 80m to 60m gives MASt3R higher effective resolution on the ortho tile. This improved projection accuracy (RMSE 5.8→4.9m), which brought 5 more poles within the 10m match radius without adding FPs.
+
+Also tried "utility pole" prompt — catastrophic failure (F1=0.165), reverted.
+Iteration 5 complete
+
+========================================
+AutoResearch Iteration 6
+Sun Apr  5 05:01:17 AM PDT 2026
+========================================

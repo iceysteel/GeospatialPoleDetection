@@ -29,6 +29,7 @@ SAM3+MASt3R baseline: **F1@10m = 0.165**
 ## What We've Tried and Failed
 - **SAM3 prompt "utility pole" instead of "telephone pole"**: F1 0.5268→0.165. Catastrophic regression — SAM3 detects very different objects with "utility pole". The prompt "telephone pole" is critical and should not be changed.
 - **Multi-view consensus (min 2 detections per cluster)**: F1 0.5268→0.4865. Precision soared (48.6%→66.7%) but recall cratered (57.5%→38.3%). Lost 18 TPs (54→36) — too many real poles are only visible from one direction. The filter is too aggressive at cluster_size>=2; could revisit with a softer version (e.g., boost score for multi-view but don't hard-filter).
+- **Ortho crop radius 60m→50m**: F1 0.5592→0.5577. Marginal regression — 50m slightly too small, losing 1 TP and minor recall drop (62.8%→61.7%). 60m appears to be near optimal; 50m is past the sweet spot.
 - AerialMegaDepth vs standard MASt3R for oblique↔oblique: identical performance
 - Large ortho crops (200m): poles invisible at 512px MASt3R resolution
 - Small ortho crops (30m): not enough context for MASt3R matching
