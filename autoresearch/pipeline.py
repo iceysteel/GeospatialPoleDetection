@@ -30,7 +30,7 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 # Detection
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
-SAM3_THRESHOLD = 0.45
+SAM3_THRESHOLD = 0.40
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
     "cba430d22f6fdc3f06ad3841274ec7bb55885f2f/sam3.pt")
@@ -228,11 +228,17 @@ def run_pipeline():
             state = sam3_proc.set_text_prompt(state=state, prompt=SAM3_PROMPT)
             if len(state['boxes']) == 0: continue
 
-            # Extract detections
+            # Extract detections with aspect ratio filter
             dets = []
             for i in range(len(state['boxes'])):
                 box = state['boxes'][i].tolist()
                 score = state['scores'][i].item()
+                bw = box[2] - box[0]
+                bh = box[3] - box[1]
+                # Poles should be taller than wide (aspect ratio > 1.2)
+                # Skip very wide/squat detections (likely not poles)
+                if bh > 0 and bw / bh > 2.0:
+                    continue
                 dets.append({
                     'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
                     'score': score,
