@@ -37,7 +37,7 @@ SAM3_CKPT = os.path.join(os.path.expanduser("~"),
 
 # MASt3R
 MAST3R_CHECKPOINT = 'kvuong2711/checkpoint-aerial-mast3r'
-ORTHO_CROP_RADIUS_M = 80
+ORTHO_CROP_RADIUS_M = 60
 ORTHO_ZOOM = 21
 
 # Projection
