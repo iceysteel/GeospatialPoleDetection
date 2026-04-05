@@ -31,7 +31,7 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
 SAM3_PROMPTS_EXTRA = ['wooden pole']  # Additional prompts to boost recall
-SAM3_THRESHOLD = 0.40
+SAM3_THRESHOLD = 0.35
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
     "cba430d22f6fdc3f06ad3841274ec7bb55885f2f/sam3.pt")
@@ -47,8 +47,9 @@ PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 # Dedup
 DEDUP_RADIUS_M = 15
 
-# Two-tier confidence: single-view detections need higher score
-SINGLE_VIEW_MIN_SCORE = 0.45
+# Multi-view filtering: use direction diversity for confidence
+SINGLE_VIEW_MIN_SCORE = 0.50  # Single-direction detections need this score
+MULTI_DIR_MIN_SCORE = 0.35    # Multi-direction detections (2+ dirs) can have lower score
 
 # ============================================================================
 # PIPELINE FUNCTIONS
@@ -272,6 +273,7 @@ def run_pipeline():
                     'lat': round(pt_lat, 6),
                     'lon': round(pt_lon, 6),
                     'score': proj['score'],
+                    'direction': d,
                 })
 
     # Dedup with two-tier confidence filtering
@@ -290,8 +292,9 @@ def run_pipeline():
         best = max(cluster, key=lambda x: x['score'])
         best['lat'] = round(sum(c['lat'] for c in cluster) / len(cluster), 6)
         best['lon'] = round(sum(c['lon'] for c in cluster) / len(cluster), 6)
-        # Two-tier: single-view detections need higher confidence
-        if len(cluster) >= 2 or best['score'] >= SINGLE_VIEW_MIN_SCORE:
+        # Direction-aware multi-view: count unique viewing directions
+        unique_dirs = len(set(c.get('direction', '') for c in cluster))
+        if unique_dirs >= 2 or best['score'] >= SINGLE_VIEW_MIN_SCORE:
             deduped.append(best)
 
     return deduped
