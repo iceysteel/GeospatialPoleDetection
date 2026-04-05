@@ -44,7 +44,7 @@ ORTHO_ZOOM = 21
 PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 
 # Dedup
-DEDUP_RADIUS_M = 8
+DEDUP_RADIUS_M = 10
 
 # ============================================================================
 # PIPELINE FUNCTIONS
