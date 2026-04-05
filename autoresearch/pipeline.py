@@ -50,8 +50,8 @@ DEDUP_RADIUS_M = 10
 GDINO_ENABLED = True
 GDINO_MODEL_PATH = os.path.join(PROJECT_ROOT, 'models', 'gdino_finetuned', 'best')
 GDINO_TEXT = "utility pole. power pole. telephone pole."
-GDINO_THRESHOLD = 0.30  # Moderate threshold for validation
-SAM3_CROSSVAL_MIN = 0.45  # SAM3-only needs baseline score; GDino validates 0.40-0.45 band
+GDINO_THRESHOLD = 0.15  # Low threshold; GDino used for VALIDATION not addition
+SAM3_CROSSVAL_MIN = 0.50  # SAM3-only detections need this min score to survive
 
 # ============================================================================
 # PIPELINE FUNCTIONS
