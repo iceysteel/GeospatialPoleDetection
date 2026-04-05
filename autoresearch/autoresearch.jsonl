@@ -26,3 +26,4 @@
 {"f1": 0.5856, "precision": 0.6092, "recall": 0.5638, "tp": 53, "fp": 34, "fn": 41, "rmse": 5.1, "detections": 87, "detections_raw": 109, "gt_poles": 94, "time": 179.7, "status": "ok", "timestamp": "2026-04-05T06:38:35.065674"}
 {"f1": 0.5355, "precision": 0.5506, "recall": 0.5213, "tp": 49, "fp": 40, "fn": 45, "rmse": 5.5, "detections": 89, "detections_raw": 116, "gt_poles": 94, "time": 223.9, "status": "ok", "timestamp": "2026-04-05T06:43:33.382717"}
 {"f1": 0.5355, "precision": 0.5506, "recall": 0.5213, "tp": 49, "fp": 40, "fn": 45, "rmse": 5.5, "detections": 89, "detections_raw": 116, "gt_poles": 94, "time": 225.2, "status": "ok", "timestamp": "2026-04-05T06:47:53.741274"}
+{"f1": 0.5856, "precision": 0.6092, "recall": 0.5638, "tp": 53, "fp": 34, "fn": 41, "rmse": 5.1, "detections": 87, "detections_raw": 109, "gt_poles": 94, "time": 178.1, "status": "ok", "timestamp": "2026-04-05T06:51:15.836277"}

@@ -264,11 +264,8 @@ def run_pipeline():
             if dist < DEDUP_RADIUS_M:
                 cluster.append(all_points[j]); used[j] = True
         best = max(cluster, key=lambda x: x['score'])
-        # Score-weighted centroid for better position accuracy
-        total_score = sum(c['score'] for c in cluster)
-        if total_score > 0:
-            best['lat'] = round(sum(c['lat'] * c['score'] for c in cluster) / total_score, 6)
-            best['lon'] = round(sum(c['lon'] * c['score'] for c in cluster) / total_score, 6)
+        best['lat'] = round(sum(c['lat'] for c in cluster) / len(cluster), 6)
+        best['lon'] = round(sum(c['lon'] for c in cluster) / len(cluster), 6)
         deduped.append(best)
 
     return deduped
