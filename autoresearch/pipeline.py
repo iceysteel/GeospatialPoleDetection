@@ -30,7 +30,7 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 # Detection
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
-SAM3_PROMPTS_EXTRA = ['wooden pole']  # Additional prompts to boost recall
+SAM3_PROMPTS_EXTRA = ['pole']  # Additional prompts to boost recall
 SAM3_THRESHOLD = 0.40
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
@@ -48,7 +48,7 @@ PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 DEDUP_RADIUS_M = 14
 
 # Two-tier confidence: single-view detections need higher score
-SINGLE_VIEW_MIN_SCORE = 0.50
+SINGLE_VIEW_MIN_SCORE = 0.45
 
 # ============================================================================
 # PIPELINE FUNCTIONS
