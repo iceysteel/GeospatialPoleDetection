@@ -87,6 +87,13 @@ Current best: **F1@10m = 0.707** (multi-prompt SAM3, thresh=0.40, ortho=60m, ded
 - Multi-point projection (3 points along pole, median GPS): hurts localization, RMSE +0.5m
 - Threshold 0.48: slightly worse than 0.45, recall drops faster than precision gains
 - Two-tier with single_view_min=0.55: too aggressive, removes legitimate single-view TPs
+- MASt3R 200/75 iters with ModularPCO: 300→100 optimal for Modular, 100 optimal for PCO
+- MASt3R lr=0.005/0.02: 0.01 is the sweet spot
+- Ortho crop 65m: much worse, 60m is optimal
+- Dual projection (base+center): center projection worsens RMSE
+- Prompt "pole" as 2nd/3rd prompt: adds massive FPs at any threshold (0.55/0.70)
+- PointCloudOptimizer 150 iters: overfits at 150, 100 is optimal
+- Dedup 16m: merges real TPs, 15m is the sweet spot
 
 ## Promising Directions (DEEP CHANGES)
 1. **VLM post-filtering**: After SAM3+MASt3R, classify each detection crop with
