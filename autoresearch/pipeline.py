@@ -50,7 +50,7 @@ DEDUP_RADIUS_M = 10
 GDINO_ENABLED = True
 GDINO_MODEL_PATH = os.path.join(PROJECT_ROOT, 'models', 'gdino_finetuned', 'best')
 GDINO_TEXT = "utility pole. power pole. telephone pole."
-GDINO_THRESHOLD = 0.30  # Higher than training (0.15) for precision
+GDINO_THRESHOLD = 0.50  # Much higher for precision; only high-conf GDino additions
 
 # ============================================================================
 # PIPELINE FUNCTIONS
