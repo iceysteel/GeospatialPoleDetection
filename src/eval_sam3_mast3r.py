@@ -28,7 +28,7 @@ GRID_DIR = os.path.join(DATA_DIR, 'testarea_grid')
 RESULTS_DIR = os.path.join(DATA_DIR, 'eval_testarea')
 DIRECTIONS = ['north', 'east', 'south', 'west']
 
-SAM3_PROMPT = "utility pole"
+SAM3_PROMPT = "telephone pole"
 SAM3_THRESHOLD = 0.10
 MIN_POLE_HEIGHT = 4.0
 MAX_POLE_HEIGHT = 50.0
@@ -211,7 +211,7 @@ def run_grid_cell_sam3(cell, sam3_proc, mast3r_model, device):
                         views.append(d2)
                         break
 
-            if len(views) >= 2:
+            if len(views) >= 1:
                 # Height estimation
                 sine = math.sin(math.radians(vm['elevation']))
                 hpx = det['bbox'][3] - det['bbox'][1]
