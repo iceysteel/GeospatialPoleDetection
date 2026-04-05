@@ -30,7 +30,7 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 # Detection
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
-SAM3_PROMPTS_EXTRA = [('wooden pole', 0.40), ('pole', 0.70)]  # (prompt, min_score)
+SAM3_PROMPTS_EXTRA = ['wooden pole']  # Additional prompts to boost recall
 SAM3_THRESHOLD = 0.40
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
@@ -45,7 +45,7 @@ ORTHO_ZOOM = 21
 PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 
 # Dedup
-DEDUP_RADIUS_M = 14
+DEDUP_RADIUS_M = 15
 
 # Two-tier confidence: single-view detections need higher score
 SINGLE_VIEW_MIN_SCORE = 0.45
@@ -229,24 +229,17 @@ def run_pipeline():
 
             # SAM3 detection — multi-prompt for recall
             state = sam3_proc.set_image(oblique)
-            # Build prompt list: primary + extras with per-prompt thresholds
-            prompt_configs = [(SAM3_PROMPT, SAM3_THRESHOLD)]
-            for extra in SAM3_PROMPTS_EXTRA:
-                if isinstance(extra, tuple):
-                    prompt_configs.append(extra)
-                else:
-                    prompt_configs.append((extra, SAM3_THRESHOLD))
+            all_prompts = [SAM3_PROMPT] + SAM3_PROMPTS_EXTRA
             dets = []
-            for prompt, min_score in prompt_configs:
+            for prompt in all_prompts:
                 state = sam3_proc.set_text_prompt(state=state, prompt=prompt)
                 for i in range(len(state['boxes'])):
                     box = state['boxes'][i].tolist()
                     score = state['scores'][i].item()
-                    if score >= min_score:
-                        dets.append({
-                            'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
-                            'score': score,
-                        })
+                    dets.append({
+                        'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
+                        'score': score,
+                    })
             # Dedup overlapping boxes from different prompts (IoU > 0.5)
             if len(dets) > 1:
                 keep = [True] * len(dets)
