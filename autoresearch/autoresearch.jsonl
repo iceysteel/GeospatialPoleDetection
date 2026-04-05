@@ -29,3 +29,4 @@
 {"f1": 0.5856, "precision": 0.6092, "recall": 0.5638, "tp": 53, "fp": 34, "fn": 41, "rmse": 5.1, "detections": 87, "detections_raw": 109, "gt_poles": 94, "time": 178.1, "status": "ok", "timestamp": "2026-04-05T06:51:15.836277"}
 {"f1": 0.5659, "precision": 0.5225, "recall": 0.617, "tp": 58, "fp": 53, "fn": 36, "rmse": 5.2, "detections": 111, "detections_raw": 142, "gt_poles": 94, "time": 194.9, "status": "ok", "timestamp": "2026-04-05T06:55:05.280539"}
 {"f1": 0.5641, "precision": 0.5446, "recall": 0.5851, "tp": 55, "fp": 46, "fn": 39, "rmse": 5.2, "detections": 101, "detections_raw": 127, "gt_poles": 94, "time": 178.9, "status": "ok", "timestamp": "2026-04-05T06:58:15.042930"}
+{"f1": 0.5957, "precision": 0.5957, "recall": 0.5957, "tp": 56, "fp": 38, "fn": 38, "rmse": 5.2, "detections": 94, "detections_raw": 118, "gt_poles": 94, "time": 190.1, "status": "ok", "timestamp": "2026-04-05T07:01:42.855581"}
