@@ -2,7 +2,7 @@
 
 ## Objective
 Maximize F1@10m for detecting utility poles in aerial imagery.
-Current best: **F1@10m = 0.707** (multi-prompt SAM3, thresh=0.40, ortho=60m, dedup=15m, two-tier sv_min=0.45, MASt3R PCO 100 iters)
+Current best: **F1@10m = 0.714** (3-prompt SAM3 [telephone/wooden/power pole], power@0.65, thresh=0.40, ortho=60m, dedup=15m, two-tier sv_min=0.45, MASt3R PCO 100 iters)
 
 ## Progress So Far
 - Baseline: F1=0.335 (SAM3 thresh=0.10, ortho=80m)
@@ -52,6 +52,10 @@ Current best: **F1@10m = 0.707** (multi-prompt SAM3, thresh=0.40, ortho=60m, ded
 - Iteration 56: PCO + dedup 15m → F1=0.707 ✅ NEW BEST!
 - Iteration 57: VLM post-filter (Qwen 3.5 27B, conservative) → F1=0.675 ❌ (removed 4 TPs, 0 FPs)
 - Iteration 58: direction-aware multi-view + thresh 0.35 + sv_min 0.50 → F1=0.675 ❌ (4 extra FPs)
+- Iteration 59: trimmed mean GPS → F1=0.695 ❌ (lost 1 TP)
+- Iteration 60: power pole prompt at 0.40 → F1=0.670 ❌ (8 more TPs but 25 more FPs)
+- Iteration 61: power pole at 0.55 → F1=0.681 ❌ (5 more TPs but 16 more FPs)
+- Iteration 62: power pole at 0.65 → F1=0.714 ✅ NEW BEST! (+1 TP, same FPs)
 
 ## Hard Constraints
 - MUST use SAM3 (or SAM3-LoRA) for detection in oblique views

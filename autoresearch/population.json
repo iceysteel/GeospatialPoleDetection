@@ -1,6 +1,23 @@
 {
   "configs": [
     {
+      "id": "3prompt_powerpole065_pco100",
+      "f1_10m": 0.7143,
+      "params": {
+        "detector": "sam3",
+        "prompts": [["telephone pole", 0.40], ["wooden pole", 0.40], ["power pole", 0.65]],
+        "threshold": 0.40,
+        "single_view_min_score": 0.45,
+        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
+        "mast3r_iters": 100,
+        "mast3r_mode": "PointCloudOptimizer",
+        "ortho_radius": 60,
+        "project_base": true,
+        "dedup_radius": 15
+      },
+      "description": "3-prompt (power pole@0.65) + two-tier + dedup 15m + PCO — NEW BEST F1 0.714"
+    },
+    {
       "id": "multiprompt_twotier_dedup15_pco100",
       "f1_10m": 0.7066,
       "params": {
@@ -15,7 +32,7 @@
         "project_base": true,
         "dedup_radius": 15
       },
-      "description": "Multi-prompt + two-tier + dedup 15m + PCO 100 iters — NEW BEST F1 0.707"
+      "description": "Multi-prompt + two-tier + dedup 15m + PCO 100 iters — F1 0.707"
     },
     {
       "id": "multiprompt_twotier_dedup14",
@@ -162,6 +179,6 @@
     }
   ],
   "max_population": 5,
-  "generation": 14,
-  "total_experiments": 56
+  "generation": 15,
+  "total_experiments": 62
 }
