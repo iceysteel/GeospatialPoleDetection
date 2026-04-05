@@ -155,6 +155,9 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
     pv = pts3d[0]
     hm, wm = pv.shape[:2]
 
+    pi = torch.inverse(poses[1])
+    th, tw = pts3d[1].shape[:2]
+
     results = []
     for det in detections:
         x1, y1, x2, y2 = det['bbox']
@@ -164,22 +167,28 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
             px, py = (x1 + x2) // 2, (y1 + y2) // 2
 
         sx, sy = wm / ow, hm / oh
-        mx = min(max(int(round(px * sx)), 0), wm - 1)
-        my = min(max(int(round(py * sy)), 0), hm - 1)
-        p3d = pv[my, mx]
-        if torch.isnan(p3d).any(): continue
 
-        pi = torch.inverse(poses[1])
-        pc = pi[:3, :3] @ p3d + pi[:3, 3]
-        if pc[2] <= 0: continue
+        # Project from 3x3 neighborhood and take median for robustness
+        uos, vos = [], []
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                mx = min(max(int(round(px * sx)) + dx, 0), wm - 1)
+                my = min(max(int(round(py * sy)) + dy, 0), hm - 1)
+                p3d = pv[my, mx]
+                if torch.isnan(p3d).any(): continue
+                pc = pi[:3, :3] @ p3d + pi[:3, 3]
+                if pc[2] <= 0: continue
+                u = focals[1] * pc[0] / pc[2] + tw / 2
+                v = focals[1] * pc[1] / pc[2] + th / 2
+                if not (0 <= u.item() < tw and 0 <= v.item() < th): continue
+                uos.append(u.item() / (tw / ortho_w))
+                vos.append(v.item() / (th / ortho_h))
 
-        th, tw = pts3d[1].shape[:2]
-        u = focals[1] * pc[0] / pc[2] + tw / 2
-        v = focals[1] * pc[1] / pc[2] + th / 2
-        if not (0 <= u.item() < tw and 0 <= v.item() < th): continue
-
-        uo = u.item() / (tw / ortho_w)
-        vo = v.item() / (th / ortho_h)
+        if not uos: continue
+        # Use median for robustness against outlier 3D points
+        uos.sort(); vos.sort()
+        mid = len(uos) // 2
+        uo, vo = uos[mid], vos[mid]
         results.append({'ortho_px': (int(round(uo)), int(round(vo))), 'score': det['score']})
 
     return results
