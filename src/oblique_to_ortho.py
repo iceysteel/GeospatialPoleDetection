@@ -85,7 +85,7 @@ def gps_to_ortho_pixel(lat, lon, ortho_meta):
     """Convert GPS to pixel in stitched ortho image."""
     x = (lon - ortho_meta['tl_lon']) / (ortho_meta['br_lon'] - ortho_meta['tl_lon']) * ortho_meta['width']
     y = (lat - ortho_meta['tl_lat']) / (ortho_meta['br_lat'] - ortho_meta['tl_lat']) * ortho_meta['height']
-    return int(x), int(y)
+    return int(round(x)), int(round(y))
 
 
 def ortho_pixel_to_gps(px, py, ortho_meta):
@@ -155,7 +155,7 @@ def project_oblique_point_to_ortho(cx, cy, oblique_size, ortho_size, pts3d, pose
     uo = u.item() / (tw / ow2)
     vo = v.item() / (th / oh2)
 
-    return int(uo), int(vo)
+    return int(round(uo)), int(round(vo))
 
 
 def run_pipeline(args):
@@ -193,7 +193,7 @@ def run_pipeline(args):
     print("Loading MASt3R...", flush=True)
     from mast3r.model import AsymmetricMASt3R
     mast3r_model = AsymmetricMASt3R.from_pretrained(
-        'naver/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric').to(device).eval()
+        'kvuong2711/checkpoint-aerial-mast3r').to(device).eval()
     gpu_memory_report()
 
     # Step 3: Process each grid cell
