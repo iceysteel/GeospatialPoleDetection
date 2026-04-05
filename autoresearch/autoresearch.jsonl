@@ -19,3 +19,4 @@
 {"f1": 0.5918, "precision": 0.5686, "recall": 0.617, "tp": 58, "fp": 44, "fn": 36, "rmse": 4.8, "detections": 102, "detections_raw": 126, "gt_poles": 94, "time": 202.2, "status": "ok", "timestamp": "2026-04-05T05:25:29.712414"}
 {"f1": 0.5918, "precision": 0.569, "recall": 0.617, "tp": 58, "fp": 44, "fn": 36, "rmse": 4.8, "detections": 102, "detections_raw": 126, "gt_poles": 94, "time": 202.2, "status": "ok", "timestamp": "2026-04-05T05:22:00-07:00", "change": "SAM3_THRESHOLD 0.35->0.40 — NEW BEST"}
 {"f1": 0.5665, "precision": 0.6203, "recall": 0.5213, "tp": 49, "fp": 30, "fn": 45, "rmse": 5.1, "detections": 79, "detections_raw": 97, "gt_poles": 94, "time": 993.4, "status": "ok", "timestamp": "2026-04-05T06:13:17.451150"}
+{"f1": 0.5978, "precision": 0.6111, "recall": 0.5851, "tp": 55, "fp": 35, "fn": 39, "rmse": 5.0, "detections": 90, "detections_raw": 111, "gt_poles": 94, "time": 184.9, "status": "ok", "timestamp": "2026-04-05T06:17:52.666175"}
