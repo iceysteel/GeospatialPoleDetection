@@ -7,7 +7,7 @@ file to improve F1@10m. Must use SAM3 + MASt3R as core components.
 
 Current best F1@10m: 0.448 (GDino-ft + VLM, oblique consensus)
 """
-import sys, os, json, math, time, tempfile
+import sys, os, json, math, time, tempfile, base64, io, requests
 
 PROJECT_ROOT = os.path.join(os.path.dirname(__file__), '..')
 sys.path.insert(0, os.path.join(PROJECT_ROOT, 'src'))
@@ -46,9 +46,72 @@ PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 # Dedup
 DEDUP_RADIUS_M = 10
 
+# VLM post-filtering
+VLM_ENABLED = True
+VLM_MODEL = 'qwen3.5:27b'
+VLM_URL = 'http://localhost:11434/api/chat'
+
 # ============================================================================
 # PIPELINE FUNCTIONS
 # ============================================================================
+
+
+def vlm_is_pole(image, bbox, pad_frac=0.3):
+    """Ask Qwen 3.5 27B whether a cropped detection is a telephone/utility pole.
+    Returns True if the VLM says yes, False otherwise."""
+    x1, y1, x2, y2 = bbox
+    w, h = image.size
+    bw, bh = x2 - x1, y2 - y1
+    pad_x, pad_y = int(bw * pad_frac), int(bh * pad_frac)
+    cx1 = max(0, x1 - pad_x)
+    cy1 = max(0, y1 - pad_y)
+    cx2 = min(w, x2 + pad_x)
+    cy2 = min(h, y2 + pad_y)
+    crop = image.crop((cx1, cy1, cx2, cy2))
+
+    # Resize crop to reasonable size for VLM
+    max_dim = 384
+    cw, ch = crop.size
+    if max(cw, ch) > max_dim:
+        scale = max_dim / max(cw, ch)
+        crop = crop.resize((int(cw * scale), int(ch * scale)))
+
+    buf = io.BytesIO()
+    crop.save(buf, format='JPEG', quality=85)
+    img_b64 = base64.b64encode(buf.getvalue()).decode()
+
+    try:
+        resp = requests.post(VLM_URL, json={
+            'model': VLM_MODEL,
+            'messages': [{
+                'role': 'user',
+                'content': (
+                    'Is the main object in this image a telephone pole, utility pole, '
+                    'or power pole? Answer ONLY "yes" or "no".'
+                ),
+                'images': [img_b64],
+            }],
+            'stream': False,
+            'think': False,
+            'options': {'temperature': 0.0, 'num_predict': 10},
+        }, timeout=30)
+        answer = resp.json()['message']['content'].strip().lower()
+        # Accept if answer starts with "yes"
+        return answer.startswith('yes')
+    except Exception as e:
+        # On error, keep the detection (fail open)
+        return True
+
+
+def vlm_filter_batch(image, detections):
+    """Filter a list of detections using VLM. Returns only those classified as poles."""
+    if not VLM_ENABLED or not detections:
+        return detections
+    filtered = []
+    for det in detections:
+        if vlm_is_pole(image, det['bbox']):
+            filtered.append(det)
+    return filtered
 
 def load_sam3(device='cuda'):
     """Load SAM3 detector."""
@@ -237,6 +300,10 @@ def run_pipeline():
                     'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
                     'score': score,
                 })
+
+            # VLM post-filter to remove false positives
+            dets = vlm_filter_batch(oblique, dets)
+            if not dets: continue
 
             # MASt3R project to ortho
             projected = match_and_project(img_path, ortho, mast3r, device, dets, (h, w))
