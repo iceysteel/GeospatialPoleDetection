@@ -1,20 +1,20 @@
 {
   "configs": [
     {
-      "id": "multiprompt_twotier_dedup14_mast3r150",
-      "f1_10m": 0.6860,
+      "id": "multiprompt_twotier_dedup14_mast3r100",
+      "f1_10m": 0.6901,
       "params": {
         "detector": "sam3",
         "prompts": ["telephone pole", "wooden pole"],
         "threshold": 0.40,
         "single_view_min_score": 0.45,
         "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
-        "mast3r_iters": 150,
+        "mast3r_iters": 100,
         "ortho_radius": 60,
         "project_base": true,
         "dedup_radius": 14
       },
-      "description": "Multi-prompt + two-tier + dedup 14m + MASt3R 150 iters — NEW BEST F1 0.686"
+      "description": "Multi-prompt + two-tier + dedup 14m + MASt3R 100 iters — NEW BEST F1 0.690"
     },
     {
       "id": "multiprompt_twotier_dedup14",
@@ -161,6 +161,6 @@
     }
   ],
   "max_population": 5,
-  "generation": 11,
-  "total_experiments": 40
+  "generation": 12,
+  "total_experiments": 41
 }
