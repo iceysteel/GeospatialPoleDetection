@@ -30,7 +30,7 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 # Detection
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
-SAM3_PROMPTS_EXTRA = ['pole']  # Additional prompts to boost recall
+SAM3_PROMPTS_EXTRA = [('wooden pole', 0.40), ('pole', 0.55)]  # (prompt, min_score)
 SAM3_THRESHOLD = 0.40
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
@@ -229,17 +229,24 @@ def run_pipeline():
 
             # SAM3 detection — multi-prompt for recall
             state = sam3_proc.set_image(oblique)
-            all_prompts = [SAM3_PROMPT] + SAM3_PROMPTS_EXTRA
+            # Build prompt list: primary + extras with per-prompt thresholds
+            prompt_configs = [(SAM3_PROMPT, SAM3_THRESHOLD)]
+            for extra in SAM3_PROMPTS_EXTRA:
+                if isinstance(extra, tuple):
+                    prompt_configs.append(extra)
+                else:
+                    prompt_configs.append((extra, SAM3_THRESHOLD))
             dets = []
-            for prompt in all_prompts:
+            for prompt, min_score in prompt_configs:
                 state = sam3_proc.set_text_prompt(state=state, prompt=prompt)
                 for i in range(len(state['boxes'])):
                     box = state['boxes'][i].tolist()
                     score = state['scores'][i].item()
-                    dets.append({
-                        'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
-                        'score': score,
-                    })
+                    if score >= min_score:
+                        dets.append({
+                            'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
+                            'score': score,
+                        })
             # Dedup overlapping boxes from different prompts (IoU > 0.5)
             if len(dets) > 1:
                 keep = [True] * len(dets)
