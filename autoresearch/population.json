@@ -1,8 +1,8 @@
 {
   "configs": [
     {
-      "id": "multiprompt_twotier_dedup14_pco100",
-      "f1_10m": 0.7024,
+      "id": "multiprompt_twotier_dedup15_pco100",
+      "f1_10m": 0.7066,
       "params": {
         "detector": "sam3",
         "prompts": ["telephone pole", "wooden pole"],
@@ -13,9 +13,9 @@
         "mast3r_mode": "PointCloudOptimizer",
         "ortho_radius": 60,
         "project_base": true,
-        "dedup_radius": 14
+        "dedup_radius": 15
       },
-      "description": "Multi-prompt + two-tier + dedup 14m + PointCloudOptimizer 100 iters — NEW BEST F1 0.702"
+      "description": "Multi-prompt + two-tier + dedup 15m + PCO 100 iters — NEW BEST F1 0.707"
     },
     {
       "id": "multiprompt_twotier_dedup14",
@@ -162,6 +162,6 @@
     }
   ],
   "max_population": 5,
-  "generation": 13,
-  "total_experiments": 49
+  "generation": 14,
+  "total_experiments": 56
 }

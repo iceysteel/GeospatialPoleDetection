@@ -2,7 +2,7 @@
 
 ## Objective
 Maximize F1@10m for detecting utility poles in aerial imagery.
-Current best: **F1@10m = 0.702** (multi-prompt SAM3, thresh=0.40, ortho=60m, dedup=14m, two-tier sv_min=0.45, MASt3R PointCloudOptimizer 100 iters)
+Current best: **F1@10m = 0.707** (multi-prompt SAM3, thresh=0.40, ortho=60m, dedup=15m, two-tier sv_min=0.45, MASt3R PCO 100 iters)
 
 ## Progress So Far
 - Baseline: F1=0.335 (SAM3 thresh=0.10, ortho=80m)
@@ -48,6 +48,8 @@ Current best: **F1@10m = 0.702** (multi-prompt SAM3, thresh=0.40, ortho=60m, ded
 - Iteration 41: MASt3R 100 iters → F1=0.690 ✅ NEW BEST!
 - Iteration 42-48: various (75 iters, median GPS, thresh 0.35, lr tuning, ortho 65m, dual proj) — all worse
 - Iteration 49: PointCloudOptimizer (was Modular) → F1=0.702 ✅ NEW BEST!
+- Iteration 50-55: PCO 150/50 iters, thresh tuning, sv_min tuning, pole prompt — all worse
+- Iteration 56: PCO + dedup 15m → F1=0.707 ✅ NEW BEST!
 
 ## Hard Constraints
 - MUST use SAM3 (or SAM3-LoRA) for detection in oblique views
