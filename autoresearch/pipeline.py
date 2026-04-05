@@ -30,14 +30,14 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 # Detection
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
-SAM3_THRESHOLD = 0.45
+SAM3_THRESHOLD = 0.40  # Lower for recall; cluster scoring filters single-view FPs
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
     "cba430d22f6fdc3f06ad3841274ec7bb55885f2f/sam3.pt")
 
 # MASt3R
 MAST3R_CHECKPOINT = 'kvuong2711/checkpoint-aerial-mast3r'
-ORTHO_CROP_RADIUS_M = 55
+ORTHO_CROP_RADIUS_M = 60  # Best at 60m
 ORTHO_ZOOM = 21
 
 # Projection
@@ -45,6 +45,11 @@ PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 
 # Dedup
 DEDUP_RADIUS_M = 10
+
+# Cluster scoring: filter by combined cluster_size * max_score
+# Single-view detections need score >= 0.55 to survive (1 * 0.55 = 0.55)
+# 2-view detections need score >= 0.275 each (always pass at thresh 0.40)
+CLUSTER_SCORE_THRESHOLD = 0.55
 
 # ============================================================================
 # PIPELINE FUNCTIONS
@@ -250,7 +255,7 @@ def run_pipeline():
                     'score': proj['score'],
                 })
 
-    # Dedup
+    # Dedup with cluster scoring
     m = 111320 * math.cos(math.radians(41.249))
     used = [False] * len(all_points)
     deduped = []
@@ -264,6 +269,10 @@ def run_pipeline():
             if dist < DEDUP_RADIUS_M:
                 cluster.append(all_points[j]); used[j] = True
         best = max(cluster, key=lambda x: x['score'])
+        # Cluster scoring: multi-view detections get boosted, single-view filtered
+        cluster_score = len(cluster) * best['score']
+        if cluster_score < CLUSTER_SCORE_THRESHOLD:
+            continue  # Skip low-confidence single-view detections
         best['lat'] = round(sum(c['lat'] for c in cluster) / len(cluster), 6)
         best['lon'] = round(sum(c['lon'] for c in cluster) / len(cluster), 6)
         deduped.append(best)

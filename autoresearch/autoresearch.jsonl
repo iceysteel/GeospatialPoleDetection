@@ -30,3 +30,4 @@
 {"f1": 0.5659, "precision": 0.5225, "recall": 0.617, "tp": 58, "fp": 53, "fn": 36, "rmse": 5.2, "detections": 111, "detections_raw": 142, "gt_poles": 94, "time": 194.9, "status": "ok", "timestamp": "2026-04-05T06:55:05.280539"}
 {"f1": 0.5641, "precision": 0.5446, "recall": 0.5851, "tp": 55, "fp": 46, "fn": 39, "rmse": 5.2, "detections": 101, "detections_raw": 127, "gt_poles": 94, "time": 178.9, "status": "ok", "timestamp": "2026-04-05T06:58:15.042930"}
 {"f1": 0.5957, "precision": 0.5957, "recall": 0.5957, "tp": 56, "fp": 38, "fn": 38, "rmse": 5.2, "detections": 94, "detections_raw": 118, "gt_poles": 94, "time": 190.1, "status": "ok", "timestamp": "2026-04-05T07:01:42.855581"}
+{"f1": 0.5592, "precision": 0.5043, "recall": 0.6277, "tp": 59, "fp": 58, "fn": 35, "rmse": 4.9, "detections": 117, "detections_raw": 147, "gt_poles": 94, "time": 2046.7, "status": "ok", "timestamp": "2026-04-05T07:42:01.936563"}
