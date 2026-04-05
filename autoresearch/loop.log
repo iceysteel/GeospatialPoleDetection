@@ -34,3 +34,20 @@ Iteration 2 complete
 AutoResearch Iteration 3
 Sun Apr  5 04:35:34 AM PDT 2026
 ========================================
+**Iteration 3 complete. F1@10m improved: 0.5182 → 0.5268** (+0.86%)
+
+| Metric | Before (0.30) | After (0.35) |
+|--------|--------------|--------------|
+| F1@10m | 0.5182 | **0.5268** |
+| Precision | 45.2% | 48.6% |
+| Recall | 60.6% | 57.5% |
+| FP | 69 | 57 |
+| TP | 57 | 54 |
+
+Gains are diminishing — threshold tuning is approaching its plateau. Next iteration should try a different lever (prompt engineering, dedup radius, multi-view consensus, etc.).
+Iteration 3 complete
+
+========================================
+AutoResearch Iteration 4
+Sun Apr  5 04:41:32 AM PDT 2026
+========================================

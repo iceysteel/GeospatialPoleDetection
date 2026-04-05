@@ -26,6 +26,7 @@ SAM3+MASt3R baseline: **F1@10m = 0.165**
 - **SAM3 threshold 0.30→0.35**: F1 0.5182→0.5268. Precision 45.2%→48.6%, recall 60.6%→57.5%. Diminishing gains — only 12 fewer FPs (69→57) with 3 fewer TPs (57→54). Threshold approaching plateau; next iteration should try a different lever.
 
 ## What We've Tried and Failed
+- **Multi-view consensus (min 2 detections per cluster)**: F1 0.5268→0.4865. Precision soared (48.6%→66.7%) but recall cratered (57.5%→38.3%). Lost 18 TPs (54→36) — too many real poles are only visible from one direction. The filter is too aggressive at cluster_size>=2; could revisit with a softer version (e.g., boost score for multi-view but don't hard-filter).
 - AerialMegaDepth vs standard MASt3R for oblique↔oblique: identical performance
 - Large ortho crops (200m): poles invisible at 512px MASt3R resolution
 - Small ortho crops (30m): not enough context for MASt3R matching
