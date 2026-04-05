@@ -7,7 +7,7 @@ file to improve F1@10m. Must use SAM3 + MASt3R as core components.
 
 Current best F1@10m: 0.448 (GDino-ft + VLM, oblique consensus)
 """
-import sys, os, json, math, time, tempfile, base64, io, requests
+import sys, os, json, math, time, tempfile
 
 PROJECT_ROOT = os.path.join(os.path.dirname(__file__), '..')
 sys.path.insert(0, os.path.join(PROJECT_ROOT, 'src'))
@@ -30,7 +30,7 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 # Detection
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
-SAM3_THRESHOLD = 0.35
+SAM3_THRESHOLD = 0.45
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
     "cba430d22f6fdc3f06ad3841274ec7bb55885f2f/sam3.pt")
@@ -46,68 +46,9 @@ PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 # Dedup
 DEDUP_RADIUS_M = 10
 
-# VLM filtering (soft mode — only reject obvious non-poles)
-VLM_ENABLED = True
-VLM_MODEL = 'qwen3.5:27b'
-VLM_URL = 'http://localhost:11434/api/chat'
-
 # ============================================================================
 # PIPELINE FUNCTIONS
 # ============================================================================
-
-
-def vlm_is_pole(image, bbox, pad_frac=0.5):
-    """Ask Qwen 3.5 27B whether a detection could be a pole.
-    Uses a soft prompt: only reject things that are clearly NOT poles."""
-    x1, y1, x2, y2 = bbox
-    w, h = image.size
-    bw, bh = x2 - x1, y2 - y1
-    pad_x, pad_y = int(bw * pad_frac), int(bh * pad_frac)
-    cx1 = max(0, x1 - pad_x)
-    cy1 = max(0, y1 - pad_y)
-    cx2 = min(w, x2 + pad_x)
-    cy2 = min(h, y2 + pad_y)
-    crop = image.crop((cx1, cy1, cx2, cy2))
-
-    max_dim = 384
-    cw, ch = crop.size
-    if max(cw, ch) > max_dim:
-        scale = max_dim / max(cw, ch)
-        crop = crop.resize((int(cw * scale), int(ch * scale)))
-
-    buf = io.BytesIO()
-    crop.save(buf, format='JPEG', quality=85)
-    img_b64 = base64.b64encode(buf.getvalue()).decode()
-
-    try:
-        resp = requests.post(VLM_URL, json={
-            'model': VLM_MODEL,
-            'messages': [{
-                'role': 'user',
-                'content': (
-                    'Could this image contain a pole (telephone pole, utility pole, '
-                    'power pole, light pole, or any tall vertical pole-like structure)? '
-                    'Answer "no" ONLY if you are very confident this is NOT any kind of pole. '
-                    'Otherwise answer "yes".'
-                ),
-                'images': [img_b64],
-            }],
-            'stream': False,
-            'think': False,
-            'options': {'temperature': 0.0, 'num_predict': 10},
-        }, timeout=30)
-        answer = resp.json()['message']['content'].strip().lower()
-        return not answer.startswith('no')
-    except:
-        return True
-
-
-def vlm_filter_batch(image, detections):
-    """Filter detections using VLM. Only reject obvious non-poles."""
-    if not VLM_ENABLED or not detections:
-        return detections
-    return [d for d in detections if vlm_is_pole(image, d['bbox'])]
-
 
 def load_sam3(device='cuda'):
     """Load SAM3 detector."""
@@ -296,10 +237,6 @@ def run_pipeline():
                     'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
                     'score': score,
                 })
-
-            # VLM soft filter — only reject obvious non-poles
-            dets = vlm_filter_batch(oblique, dets)
-            if not dets: continue
 
             # MASt3R project to ortho
             projected = match_and_project(img_path, ortho, mast3r, device, dets, (h, w))
