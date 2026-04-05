@@ -1,0 +1,2097 @@
+{
+  "detections": [
+    {
+      "approx_lat": 41.24697,
+      "approx_lon": -96.001268,
+      "source_view": "north",
+      "bbox": [
+        1158,
+        226,
+        1185,
+        551
+      ],
+      "conf": 0.423,
+      "est_height": 16.4,
+      "num_views": 4,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.24694,
+      "approx_lon": -96.000933,
+      "source_view": "east",
+      "bbox": [
+        823,
+        156,
+        888,
+        358
+      ],
+      "conf": 0.517,
+      "est_height": 16.1,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.24693,
+      "approx_lon": -96.000375,
+      "source_view": "east",
+      "bbox": [
+        985,
+        915,
+        1033,
+        1083
+      ],
+      "conf": 0.404,
+      "est_height": 23.2,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.24698,
+      "approx_lon": -96.000219,
+      "source_view": "west",
+      "bbox": [
+        2033,
+        1693,
+        2080,
+        1893
+      ],
+      "conf": 0.483,
+      "est_height": 11.7,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.246929,
+      "approx_lon": -96.000641,
+      "source_view": "east",
+      "bbox": [
+        827,
+        1470,
+        910,
+        1699
+      ],
+      "conf": 0.222,
+      "est_height": 13.0,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.247063,
+      "approx_lon": -95.998637,
+      "source_view": "north",
+      "bbox": [
+        510,
+        119,
+        565,
+        346
+      ],
+      "conf": 0.528,
+      "est_height": 12.7,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.246909,
+      "approx_lon": -95.998597,
+      "source_view": "east",
+      "bbox": [
+        1346,
+        1274,
+        1378,
+        1551
+      ],
+      "conf": 0.421,
+      "est_height": 15.7,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.247031,
+      "approx_lon": -95.998171,
+      "source_view": "south",
+      "bbox": [
+        47,
+        1054,
+        120,
+        1322
+      ],
+      "conf": 0.42,
+      "est_height": 15.2,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.246995,
+      "approx_lon": -95.997895,
+      "source_view": "north",
+      "bbox": [
+        300,
+        408,
+        382,
+        655
+      ],
+      "conf": 0.569,
+      "est_height": 13.8,
+      "num_views": 3,
+      "agreeing_views": [
+        "north",
+        "south",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.246973,
+      "approx_lon": -95.997186,
+      "source_view": "east",
+      "bbox": [
+        1325,
+        562,
+        1420,
+        847
+      ],
+      "conf": 0.617,
+      "est_height": 16.3,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.246916,
+      "approx_lon": -95.997673,
+      "source_view": "north",
+      "bbox": [
+        617,
+        418,
+        659,
+        648
+      ],
+      "conf": 0.559,
+      "est_height": 12.9,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.246845,
+      "approx_lon": -95.997719,
+      "source_view": "south",
+      "bbox": [
+        1992,
+        899,
+        2057,
+        1159
+      ],
+      "conf": 0.559,
+      "est_height": 14.8,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.247527,
+      "approx_lon": -95.998604,
+      "source_view": "north",
+      "bbox": [
+        740,
+        1423,
+        775,
+        1651
+      ],
+      "conf": 0.56,
+      "est_height": 12.7,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.247658,
+      "approx_lon": -95.998764,
+      "source_view": "north",
+      "bbox": [
+        239,
+        961,
+        316,
+        1505
+      ],
+      "conf": 0.241,
+      "est_height": 30.4,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.247788,
+      "approx_lon": -95.99853,
+      "source_view": "east",
+      "bbox": [
+        578,
+        1047,
+        612,
+        1355
+      ],
+      "conf": 0.41,
+      "est_height": 22.2,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.246931,
+      "approx_lon": -95.996593,
+      "source_view": "west",
+      "bbox": [
+        1711,
+        511,
+        1790,
+        745
+      ],
+      "conf": 0.6,
+      "est_height": 11.0,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.246998,
+      "approx_lon": -95.996796,
+      "source_view": "west",
+      "bbox": [
+        1782,
+        -1,
+        1846,
+        739
+      ],
+      "conf": 0.415,
+      "est_height": 42.5,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.24756,
+      "approx_lon": -96.000927,
+      "source_view": "east",
+      "bbox": [
+        919,
+        220,
+        965,
+        402
+      ],
+      "conf": 0.531,
+      "est_height": 10.0,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.247603,
+      "approx_lon": -96.000057,
+      "source_view": "west",
+      "bbox": [
+        1287,
+        1586,
+        1312,
+        1745
+      ],
+      "conf": 0.492,
+      "est_height": 9.3,
+      "num_views": 3,
+      "agreeing_views": [
+        "north",
+        "south",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.247574,
+      "approx_lon": -96.000504,
+      "source_view": "east",
+      "bbox": [
+        1444,
+        1216,
+        1498,
+        1298
+      ],
+      "conf": 0.178,
+      "est_height": 4.6,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.247516,
+      "approx_lon": -95.999588,
+      "source_view": "north",
+      "bbox": [
+        447,
+        761,
+        482,
+        1335
+      ],
+      "conf": 0.422,
+      "est_height": 34.5,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.247561,
+      "approx_lon": -95.99928,
+      "source_view": "west",
+      "bbox": [
+        821,
+        1028,
+        848,
+        1189
+      ],
+      "conf": 0.592,
+      "est_height": 9.4,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.24754,
+      "approx_lon": -95.999127,
+      "source_view": "west",
+      "bbox": [
+        791,
+        1161,
+        841,
+        1463
+      ],
+      "conf": 0.26,
+      "est_height": 15.1,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.247816,
+      "approx_lon": -95.999398,
+      "source_view": "north",
+      "bbox": [
+        977,
+        94,
+        1009,
+        201
+      ],
+      "conf": 0.178,
+      "est_height": 6.0,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.24739,
+      "approx_lon": -95.999339,
+      "source_view": "south",
+      "bbox": [
+        2085,
+        532,
+        2120,
+        711
+      ],
+      "conf": 0.445,
+      "est_height": 10.2,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.247629,
+      "approx_lon": -95.997988,
+      "source_view": "west",
+      "bbox": [
+        1164,
+        27,
+        1210,
+        257
+      ],
+      "conf": 0.539,
+      "est_height": 13.2,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.247332,
+      "approx_lon": -95.997194,
+      "source_view": "east",
+      "bbox": [
+        2358,
+        563,
+        2449,
+        853
+      ],
+      "conf": 0.506,
+      "est_height": 13.2,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.24777,
+      "approx_lon": -95.997316,
+      "source_view": "north",
+      "bbox": [
+        1196,
+        307,
+        1232,
+        457
+      ],
+      "conf": 0.25,
+      "est_height": 6.5,
+      "num_views": 3,
+      "agreeing_views": [
+        "north",
+        "south",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.247513,
+      "approx_lon": -95.997833,
+      "source_view": "north",
+      "bbox": [
+        183,
+        980,
+        217,
+        1110
+      ],
+      "conf": 0.165,
+      "est_height": 7.3,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.247934,
+      "approx_lon": -95.99718,
+      "source_view": "east",
+      "bbox": [
+        434,
+        404,
+        521,
+        692
+      ],
+      "conf": 0.487,
+      "est_height": 16.5,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.247852,
+      "approx_lon": -95.997815,
+      "source_view": "south",
+      "bbox": [
+        2731,
+        41,
+        2778,
+        306
+      ],
+      "conf": 0.48,
+      "est_height": 14.3,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248256,
+      "approx_lon": -95.997064,
+      "source_view": "north",
+      "bbox": [
+        1701,
+        634,
+        1738,
+        874
+      ],
+      "conf": 0.493,
+      "est_height": 13.4,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248513,
+      "approx_lon": -95.997609,
+      "source_view": "north",
+      "bbox": [
+        469,
+        0,
+        496,
+        112
+      ],
+      "conf": 0.485,
+      "est_height": 19.7,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248453,
+      "approx_lon": -95.997099,
+      "source_view": "south",
+      "bbox": [
+        673,
+        1289,
+        712,
+        1559
+      ],
+      "conf": 0.454,
+      "est_height": 15.3,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "south",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248594,
+      "approx_lon": -95.997135,
+      "source_view": "east",
+      "bbox": [
+        522,
+        208,
+        557,
+        731
+      ],
+      "conf": 0.274,
+      "est_height": 29.7,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "south",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248112,
+      "approx_lon": -95.997128,
+      "source_view": "south",
+      "bbox": [
+        920,
+        385,
+        978,
+        681
+      ],
+      "conf": 0.241,
+      "est_height": 16.8,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248409,
+      "approx_lon": -95.997635,
+      "source_view": "south",
+      "bbox": [
+        1787,
+        1252,
+        1864,
+        1709
+      ],
+      "conf": 0.421,
+      "est_height": 25.9,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248611,
+      "approx_lon": -95.997292,
+      "source_view": "west",
+      "bbox": [
+        2284,
+        915,
+        2338,
+        1153
+      ],
+      "conf": 0.348,
+      "est_height": 10.4,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248367,
+      "approx_lon": -96.000895,
+      "source_view": "east",
+      "bbox": [
+        947,
+        198,
+        1022,
+        404
+      ],
+      "conf": 0.522,
+      "est_height": 17.1,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248459,
+      "approx_lon": -96.000225,
+      "source_view": "south",
+      "bbox": [
+        442,
+        1713,
+        474,
+        1988
+      ],
+      "conf": 0.442,
+      "est_height": 15.6,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.24831,
+      "approx_lon": -96.000259,
+      "source_view": "north",
+      "bbox": [
+        2014,
+        1369,
+        2059,
+        1637
+      ],
+      "conf": 0.273,
+      "est_height": 12.2,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248207,
+      "approx_lon": -95.999962,
+      "source_view": "north",
+      "bbox": [
+        2877,
+        1529,
+        2914,
+        1816
+      ],
+      "conf": 0.26,
+      "est_height": 16.0,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248507,
+      "approx_lon": -96.000587,
+      "source_view": "east",
+      "bbox": [
+        334,
+        1565,
+        418,
+        1820
+      ],
+      "conf": 0.629,
+      "est_height": 18.6,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248344,
+      "approx_lon": -95.999269,
+      "source_view": "north",
+      "bbox": [
+        1935,
+        789,
+        1961,
+        1002
+      ],
+      "conf": 0.518,
+      "est_height": 11.4,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248314,
+      "approx_lon": -95.999023,
+      "source_view": "north",
+      "bbox": [
+        2764,
+        835,
+        2789,
+        1037
+      ],
+      "conf": 0.393,
+      "est_height": 11.3,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248047,
+      "approx_lon": -95.99945,
+      "source_view": "north",
+      "bbox": [
+        1317,
+        1728,
+        1344,
+        1925
+      ],
+      "conf": 0.385,
+      "est_height": 11.0,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248331,
+      "approx_lon": -95.999514,
+      "source_view": "west",
+      "bbox": [
+        1064,
+        350,
+        1096,
+        471
+      ],
+      "conf": 0.476,
+      "est_height": 10.8,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248654,
+      "approx_lon": -95.999478,
+      "source_view": "west",
+      "bbox": [
+        9,
+        405,
+        95,
+        653
+      ],
+      "conf": 0.569,
+      "est_height": 14.5,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248752,
+      "approx_lon": -95.999418,
+      "source_view": "north",
+      "bbox": [
+        1232,
+        1497,
+        1282,
+        1762
+      ],
+      "conf": 0.568,
+      "est_height": 14.8,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248805,
+      "approx_lon": -95.99908,
+      "source_view": "west",
+      "bbox": [
+        137,
+        1284,
+        208,
+        1643
+      ],
+      "conf": 0.459,
+      "est_height": 21.0,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.24929,
+      "approx_lon": -95.999825,
+      "source_view": "east",
+      "bbox": [
+        452,
+        2020,
+        477,
+        2135
+      ],
+      "conf": 0.206,
+      "est_height": 6.5,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249218,
+      "approx_lon": -95.99913,
+      "source_view": "east",
+      "bbox": [
+        895,
+        197,
+        930,
+        366
+      ],
+      "conf": 0.192,
+      "est_height": 9.6,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249023,
+      "approx_lon": -95.999031,
+      "source_view": "east",
+      "bbox": [
+        1613,
+        50,
+        1643,
+        140
+      ],
+      "conf": 0.176,
+      "est_height": 5.1,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248329,
+      "approx_lon": -95.998616,
+      "source_view": "west",
+      "bbox": [
+        1454,
+        549,
+        1489,
+        759
+      ],
+      "conf": 0.597,
+      "est_height": 15.9,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248417,
+      "approx_lon": -95.998821,
+      "source_view": "north",
+      "bbox": [
+        558,
+        550,
+        598,
+        874
+      ],
+      "conf": 0.396,
+      "est_height": 18.1,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248641,
+      "approx_lon": -95.998764,
+      "source_view": "west",
+      "bbox": [
+        2732,
+        410,
+        2803,
+        660
+      ],
+      "conf": 0.543,
+      "est_height": 14.5,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248068,
+      "approx_lon": -95.998535,
+      "source_view": "west",
+      "bbox": [
+        567,
+        626,
+        598,
+        834
+      ],
+      "conf": 0.363,
+      "est_height": 12.6,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248442,
+      "approx_lon": -95.998253,
+      "source_view": "east",
+      "bbox": [
+        1036,
+        388,
+        1070,
+        842
+      ],
+      "conf": 0.469,
+      "est_height": 16.7,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.24852,
+      "approx_lon": -95.998428,
+      "source_view": "west",
+      "bbox": [
+        2291,
+        1156,
+        2344,
+        1484
+      ],
+      "conf": 0.242,
+      "est_height": 19.0,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248281,
+      "approx_lon": -95.99882,
+      "source_view": "west",
+      "bbox": [
+        1376,
+        5,
+        1409,
+        265
+      ],
+      "conf": 0.266,
+      "est_height": 10.8,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248674,
+      "approx_lon": -95.99847,
+      "source_view": "west",
+      "bbox": [
+        2845,
+        1171,
+        2897,
+        1486
+      ],
+      "conf": 0.44,
+      "est_height": 18.3,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248657,
+      "approx_lon": -95.998241,
+      "source_view": "west",
+      "bbox": [
+        530,
+        1251,
+        602,
+        1588
+      ],
+      "conf": 0.49,
+      "est_height": 25.2,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248753,
+      "approx_lon": -95.998686,
+      "source_view": "west",
+      "bbox": [
+        422,
+        493,
+        492,
+        735
+      ],
+      "conf": 0.552,
+      "est_height": 14.0,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248783,
+      "approx_lon": -95.998189,
+      "source_view": "north",
+      "bbox": [
+        2116,
+        1521,
+        2167,
+        1794
+      ],
+      "conf": 0.497,
+      "est_height": 15.2,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249273,
+      "approx_lon": -95.998507,
+      "source_view": "west",
+      "bbox": [
+        2052,
+        606,
+        2095,
+        882
+      ],
+      "conf": 0.237,
+      "est_height": 16.0,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248722,
+      "approx_lon": -95.997963,
+      "source_view": "west",
+      "bbox": [
+        615,
+        1720,
+        654,
+        2026
+      ],
+      "conf": 0.289,
+      "est_height": 17.2,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249016,
+      "approx_lon": -95.997894,
+      "source_view": "east",
+      "bbox": [
+        1473,
+        0,
+        1502,
+        147
+      ],
+      "conf": 0.258,
+      "est_height": 8.3,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249306,
+      "approx_lon": -95.997894,
+      "source_view": "east",
+      "bbox": [
+        455,
+        0,
+        492,
+        136
+      ],
+      "conf": 0.235,
+      "est_height": 7.7,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248727,
+      "approx_lon": -95.997575,
+      "source_view": "south",
+      "bbox": [
+        2204,
+        0,
+        2235,
+        110
+      ],
+      "conf": 0.313,
+      "est_height": 9.2,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248861,
+      "approx_lon": -95.997665,
+      "source_view": "north",
+      "bbox": [
+        455,
+        1552,
+        516,
+        2024
+      ],
+      "conf": 0.546,
+      "est_height": 26.4,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248842,
+      "approx_lon": -95.997307,
+      "source_view": "north",
+      "bbox": [
+        2269,
+        1755,
+        2327,
+        2016
+      ],
+      "conf": 0.495,
+      "est_height": 14.6,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248871,
+      "approx_lon": -95.997463,
+      "source_view": "north",
+      "bbox": [
+        1156,
+        1867,
+        1197,
+        2118
+      ],
+      "conf": 0.448,
+      "est_height": 14.2,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249168,
+      "approx_lon": -95.99726,
+      "source_view": "east",
+      "bbox": [
+        724,
+        383,
+        757,
+        683
+      ],
+      "conf": 0.287,
+      "est_height": 23.6,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248981,
+      "approx_lon": -95.997253,
+      "source_view": "east",
+      "bbox": [
+        1860,
+        450,
+        1918,
+        695
+      ],
+      "conf": 0.528,
+      "est_height": 13.9,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249046,
+      "approx_lon": -95.997635,
+      "source_view": "east",
+      "bbox": [
+        1358,
+        1706,
+        1395,
+        1940
+      ],
+      "conf": 0.461,
+      "est_height": 13.3,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248933,
+      "approx_lon": -96.001207,
+      "source_view": "east",
+      "bbox": [
+        1745,
+        622,
+        1802,
+        890
+      ],
+      "conf": 0.578,
+      "est_height": 29.1,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249176,
+      "approx_lon": -96.001228,
+      "source_view": "east",
+      "bbox": [
+        963,
+        715,
+        1019,
+        991
+      ],
+      "conf": 0.585,
+      "est_height": 15.1,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249298,
+      "approx_lon": -96.001014,
+      "source_view": "east",
+      "bbox": [
+        675,
+        522,
+        706,
+        751
+      ],
+      "conf": 0.548,
+      "est_height": 12.5,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248758,
+      "approx_lon": -96.000577,
+      "source_view": "west",
+      "bbox": [
+        711,
+        510,
+        743,
+        661
+      ],
+      "conf": 0.422,
+      "est_height": 8.8,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249222,
+      "approx_lon": -96.000343,
+      "source_view": "north",
+      "bbox": [
+        1430,
+        367,
+        1455,
+        528
+      ],
+      "conf": 0.478,
+      "est_height": 9.0,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249044,
+      "approx_lon": -95.999958,
+      "source_view": "south",
+      "bbox": [
+        88,
+        607,
+        164,
+        1147
+      ],
+      "conf": 0.451,
+      "est_height": 30.6,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.2489,
+      "approx_lon": -95.996678,
+      "source_view": "north",
+      "bbox": [
+        1068,
+        1159,
+        1102,
+        1310
+      ],
+      "conf": 0.42,
+      "est_height": 8.4,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.248983,
+      "approx_lon": -95.996483,
+      "source_view": "east",
+      "bbox": [
+        1822,
+        1111,
+        1856,
+        1315
+      ],
+      "conf": 0.222,
+      "est_height": 11.6,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249373,
+      "approx_lon": -95.996631,
+      "source_view": "east",
+      "bbox": [
+        2679,
+        1387,
+        2717,
+        1932
+      ],
+      "conf": 0.437,
+      "est_height": 30.9,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249474,
+      "approx_lon": -95.996582,
+      "source_view": "east",
+      "bbox": [
+        2460,
+        1526,
+        2489,
+        1611
+      ],
+      "conf": 0.158,
+      "est_height": 4.8,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249573,
+      "approx_lon": -96.001221,
+      "source_view": "east",
+      "bbox": [
+        1968,
+        591,
+        2017,
+        835
+      ],
+      "conf": 0.607,
+      "est_height": 12.3,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.24978,
+      "approx_lon": -96.001218,
+      "source_view": "east",
+      "bbox": [
+        1005,
+        720,
+        1059,
+        957
+      ],
+      "conf": 0.57,
+      "est_height": 9.4,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.24999,
+      "approx_lon": -96.001019,
+      "source_view": "west",
+      "bbox": [
+        2800,
+        1307,
+        2881,
+        1388
+      ],
+      "conf": 0.305,
+      "est_height": 11.9,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.250124,
+      "approx_lon": -96.00024,
+      "source_view": "east",
+      "bbox": [
+        93,
+        604,
+        152,
+        836
+      ],
+      "conf": 0.527,
+      "est_height": 12.7,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249899,
+      "approx_lon": -95.997873,
+      "source_view": "west",
+      "bbox": [
+        2194,
+        1670,
+        2262,
+        1928
+      ],
+      "conf": 0.518,
+      "est_height": 11.3,
+      "num_views": 3,
+      "agreeing_views": [
+        "north",
+        "south",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249804,
+      "approx_lon": -95.998821,
+      "source_view": "north",
+      "bbox": [
+        547,
+        497,
+        573,
+        578
+      ],
+      "conf": 0.296,
+      "est_height": 6.3,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.250008,
+      "approx_lon": -95.998009,
+      "source_view": "east",
+      "bbox": [
+        363,
+        0,
+        410,
+        115
+      ],
+      "conf": 0.189,
+      "est_height": 6.5,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249807,
+      "approx_lon": -95.997462,
+      "source_view": "west",
+      "bbox": [
+        1522,
+        1007,
+        1554,
+        1251
+      ],
+      "conf": 0.584,
+      "est_height": 9.6,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "south",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.250005,
+      "approx_lon": -95.997174,
+      "source_view": "north",
+      "bbox": [
+        1857,
+        40,
+        1891,
+        291
+      ],
+      "conf": 0.572,
+      "est_height": 14.8,
+      "num_views": 3,
+      "agreeing_views": [
+        "north",
+        "south",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249731,
+      "approx_lon": -95.997153,
+      "source_view": "north",
+      "bbox": [
+        1980,
+        616,
+        2025,
+        874
+      ],
+      "conf": 0.551,
+      "est_height": 14.4,
+      "num_views": 3,
+      "agreeing_views": [
+        "east",
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249588,
+      "approx_lon": -95.997208,
+      "source_view": "north",
+      "bbox": [
+        2066,
+        1193,
+        2102,
+        1462
+      ],
+      "conf": 0.536,
+      "est_height": 15.0,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249504,
+      "approx_lon": -95.997368,
+      "source_view": "west",
+      "bbox": [
+        782,
+        1106,
+        807,
+        1354
+      ],
+      "conf": 0.578,
+      "est_height": 14.2,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.249336,
+      "approx_lon": -95.997398,
+      "source_view": "west",
+      "bbox": [
+        239,
+        1168,
+        269,
+        1406
+      ],
+      "conf": 0.526,
+      "est_height": 13.7,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.250047,
+      "approx_lon": -95.997426,
+      "source_view": "north",
+      "bbox": [
+        2067,
+        1616,
+        2105,
+        1869
+      ],
+      "conf": 0.55,
+      "est_height": 16.0,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.250299,
+      "approx_lon": -95.997229,
+      "source_view": "west",
+      "bbox": [
+        1010,
+        1068,
+        1046,
+        1290
+      ],
+      "conf": 0.524,
+      "est_height": 12.8,
+      "num_views": 2,
+      "agreeing_views": [
+        "south",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.250122,
+      "approx_lon": -95.997696,
+      "source_view": "east",
+      "bbox": [
+        2386,
+        1524,
+        2484,
+        1782
+      ],
+      "conf": 0.462,
+      "est_height": 14.7,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.250393,
+      "approx_lon": -95.99773,
+      "source_view": "east",
+      "bbox": [
+        1456,
+        1400,
+        1565,
+        1698
+      ],
+      "conf": 0.315,
+      "est_height": 17.0,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "south"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.250198,
+      "approx_lon": -95.999511,
+      "source_view": "north",
+      "bbox": [
+        913,
+        1428,
+        937,
+        1596
+      ],
+      "conf": 0.304,
+      "est_height": 9.4,
+      "num_views": 2,
+      "agreeing_views": [
+        "east",
+        "north"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.250208,
+      "approx_lon": -95.997944,
+      "source_view": "west",
+      "bbox": [
+        765,
+        1608,
+        878,
+        2055
+      ],
+      "conf": 0.386,
+      "est_height": 25.9,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "vlm_label": "pole"
+    },
+    {
+      "approx_lat": 41.250237,
+      "approx_lon": -95.998077,
+      "source_view": "west",
+      "bbox": [
+        836,
+        1610,
+        878,
+        1823
+      ],
+      "conf": 0.154,
+      "est_height": 12.3,
+      "num_views": 2,
+      "agreeing_views": [
+        "north",
+        "west"
+      ],
+      "vlm_label": "pole"
+    }
+  ],
+  "evaluation": {
+    "5": {
+      "tp": 20,
+      "fp": 85,
+      "fn": 68,
+      "fp_streetlight": 1,
+      "precision": 0.19,
+      "recall": 0.227,
+      "f1": 0.207,
+      "gt_poles": 88,
+      "gt_streetlights": 6,
+      "detections": 105
+    },
+    "10": {
+      "tp": 44,
+      "fp": 61,
+      "fn": 44,
+      "fp_streetlight": 2,
+      "precision": 0.419,
+      "recall": 0.5,
+      "f1": 0.456,
+      "gt_poles": 88,
+      "gt_streetlights": 6,
+      "detections": 105
+    },
+    "15": {
+      "tp": 53,
+      "fp": 52,
+      "fn": 35,
+      "fp_streetlight": 4,
+      "precision": 0.505,
+      "recall": 0.602,
+      "f1": 0.549,
+      "gt_poles": 88,
+      "gt_streetlights": 6,
+      "detections": 105
+    },
+    "20": {
+      "tp": 59,
+      "fp": 46,
+      "fn": 29,
+      "fp_streetlight": 4,
+      "precision": 0.562,
+      "recall": 0.67,
+      "f1": 0.611,
+      "gt_poles": 88,
+      "gt_streetlights": 6,
+      "detections": 105
+    },
+    "30": {
+      "tp": 63,
+      "fp": 42,
+      "fn": 25,
+      "fp_streetlight": 4,
+      "precision": 0.6,
+      "recall": 0.716,
+      "f1": 0.653,
+      "gt_poles": 88,
+      "gt_streetlights": 6,
+      "detections": 105
+    }
+  },
+  "gt_summary": {
+    "poles": 88,
+    "streetlights": 6
+  },
+  "pipeline": "fine-tuned GDino-Base + MASt3R consensus + height filter + multi-view VLM (Qwen 3.5 27B)",
+  "total_time": null
+}
