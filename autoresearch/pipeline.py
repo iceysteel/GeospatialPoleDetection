@@ -38,7 +38,7 @@ SAM3_CKPT = os.path.join(os.path.expanduser("~"),
 
 # MASt3R
 MAST3R_CHECKPOINT = 'kvuong2711/checkpoint-aerial-mast3r'
-ORTHO_CROP_RADIUS_M = 60
+ORTHO_CROP_RADIUS_M = 65
 ORTHO_ZOOM = 21
 
 # Projection
@@ -141,7 +141,7 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
         pairs = make_pairs(imgs, scene_graph='complete', symmetrize=True)
         output = inference(pairs, mast3r, device, batch_size=1)
         scene = global_aligner(output, device=device, mode=GlobalAlignerMode.ModularPointCloudOptimizer)
-        scene.compute_global_alignment(init='mst', niter=100, schedule='cosine', lr=0.02)
+        scene.compute_global_alignment(init='mst', niter=100, schedule='cosine', lr=0.01)
         pts3d = scene.get_pts3d()
         poses = scene.get_im_poses()
         focals = scene.get_focals()
