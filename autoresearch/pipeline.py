@@ -180,13 +180,7 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
 
         uo = u.item() / (tw / ortho_w)
         vo = v.item() / (th / ortho_h)
-        # Compute reprojection consistency: 3D distance between oblique and ortho point clouds
-        ui, vi = int(round(u.item())), int(round(v.item()))
-        ui = min(max(ui, 0), tw - 1)
-        vi = min(max(vi, 0), th - 1)
-        p3d_ortho = pts3d[1][vi, ui]
-        proj_err = torch.norm(p3d - p3d_ortho).item() if not torch.isnan(p3d_ortho).any() else 999.0
-        results.append({'ortho_px': (int(round(uo)), int(round(vo))), 'score': det['score'], 'proj_err': proj_err})
+        results.append({'ortho_px': (int(round(uo)), int(round(vo))), 'score': det['score']})
 
     return results
 
@@ -283,7 +277,6 @@ def run_pipeline():
                     'lat': round(pt_lat, 6),
                     'lon': round(pt_lon, 6),
                     'score': proj['score'],
-                    'proj_err': proj.get('proj_err', 999.0),
                 })
 
     # Dedup with two-tier confidence filtering
@@ -300,11 +293,8 @@ def run_pipeline():
             if dist < DEDUP_RADIUS_M:
                 cluster.append(all_points[j]); used[j] = True
         best = max(cluster, key=lambda x: x['score'])
-        # Quality-aware GPS: weight by inverse projection error
-        weights = [1.0 / (c.get('proj_err', 1.0) + 0.1) for c in cluster]
-        w_sum = sum(weights)
-        best['lat'] = round(sum(c['lat'] * w for c, w in zip(cluster, weights)) / w_sum, 6)
-        best['lon'] = round(sum(c['lon'] * w for c, w in zip(cluster, weights)) / w_sum, 6)
+        best['lat'] = round(sum(c['lat'] for c in cluster) / len(cluster), 6)
+        best['lon'] = round(sum(c['lon'] for c in cluster) / len(cluster), 6)
         # Two-tier: single-view detections need higher confidence
         if len(cluster) >= 2 or best['score'] >= SINGLE_VIEW_MIN_SCORE:
             deduped.append(best)
