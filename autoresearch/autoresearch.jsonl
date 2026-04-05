@@ -1,0 +1,1 @@
+{"f1": 0.3348, "precision": 0.2104, "recall": 0.8191, "tp": 77, "fp": 289, "fn": 17, "rmse": 5.5, "detections": 366, "detections_raw": 511, "gt_poles": 94, "time": 352.2, "status": "ok", "timestamp": "2026-04-05T04:17:43.918280"}

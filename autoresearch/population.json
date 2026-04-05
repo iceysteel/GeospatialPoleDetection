@@ -1,0 +1,35 @@
+{
+  "configs": [
+    {
+      "id": "baseline_sam3",
+      "f1_10m": 0.098,
+      "params": {
+        "detector": "sam3",
+        "prompt": "telephone pole",
+        "threshold": 0.10,
+        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
+        "ortho_radius": 80,
+        "project_base": true,
+        "dedup_radius": 10
+      },
+      "description": "Base SAM3 + AerialMegaDepth, 80m ortho"
+    },
+    {
+      "id": "lora_v2",
+      "f1_10m": 0.165,
+      "params": {
+        "detector": "sam3_lora_v2",
+        "prompt": "telephone pole",
+        "threshold": 0.10,
+        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
+        "ortho_radius": 80,
+        "project_base": true,
+        "dedup_radius": 10
+      },
+      "description": "SAM3-LoRA v2 (clean GT training) + AerialMegaDepth"
+    }
+  ],
+  "max_population": 5,
+  "generation": 0,
+  "total_experiments": 2
+}
