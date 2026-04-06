@@ -45,16 +45,15 @@ ORTHO_ZOOM = 21
 PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 
 # Dedup
-DEDUP_RADIUS_M = 15
+DEDUP_RADIUS_M = 12
 
 # Two-tier confidence: single-view detections need higher score
 SINGLE_VIEW_MIN_SCORE = 0.45
 
 # SAHI-style tiling: run SAM3 on overlapping crops to catch small/distant poles
-# Research: smaller tiles (640) magnify distant poles; higher overlap (0.4) catches boundary objects
-TILE_ENABLED = True
-TILE_SIZE = 640           # smaller tiles = poles appear larger (was 1024)
-TILE_OVERLAP = 0.40       # 40% overlap to catch boundary objects (was 0.25)
+TILE_ENABLED = False
+TILE_SIZE = 1024          # tile size in pixels
+TILE_OVERLAP = 0.25       # 25% overlap between tiles
 TILE_MIN_DIM = 800        # don't tile if image is smaller than this
 TILE_SCORE_PENALTY = 0.0  # no penalty — let two-tier handle filtering
 
@@ -327,9 +326,7 @@ def run_pipeline():
                     tile_dets = run_sam3_on_tile(sam3_proc, tile_crop, prompt_configs, tx, ty)
                     dets.extend(tile_dets)
 
-            # Dedup overlapping boxes from different prompts/tiles
-            # Uses IOS (Intersection over Smaller) instead of IoU for better
-            # handling of tile detections that partially overlap full-image ones
+            # Dedup overlapping boxes from different prompts/tiles (IoU > 0.5)
             if len(dets) > 1:
                 # Sort by score descending for NMS
                 dets.sort(key=lambda x: x['score'], reverse=True)
@@ -344,11 +341,8 @@ def run_pipeline():
                         inter = max(0, ix2-ix1) * max(0, iy2-iy1)
                         a1 = (bi[2]-bi[0]) * (bi[3]-bi[1])
                         a2 = (bj[2]-bj[0]) * (bj[3]-bj[1])
-                        # IOS: intersection over smaller area — prevents large
-                        # full-image boxes from suppressing small tile detections
-                        smaller = min(a1, a2) + 1e-6
-                        ios = inter / smaller
-                        if ios > 0.5:
+                        iou = inter / (a1 + a2 - inter + 1e-6)
+                        if iou > 0.5:
                             keep[j] = False
                 dets = [d for d, k in zip(dets, keep) if k]
 
