@@ -50,6 +50,11 @@ DEDUP_RADIUS_M = 15
 # Two-tier confidence: single-view detections need higher score
 SINGLE_VIEW_MIN_SCORE = 0.45
 
+# Exemplar-guided second pass: use best detection as positive geometric prompt
+# to help SAM3 find additional poles it missed with text-only prompting
+EXEMPLAR_ENABLED = True
+EXEMPLAR_MIN_SCORE = 0.70  # Only use high-confidence detections as exemplars
+
 # SAHI-style tiling: run SAM3 on overlapping crops to catch small/distant poles
 # Using large tiles (1400px) for 2-3 tiles/image — fast but helps edge/distant poles
 TILE_ENABLED = False
@@ -319,6 +324,38 @@ def run_pipeline():
                             'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
                             'score': score,
                         })
+
+            # Exemplar-guided second pass: re-run SAM3 with text + positive box
+            # from best detection. This tells SAM3 "find more things like THIS"
+            # and can recover poles missed by text-only prompting.
+            if EXEMPLAR_ENABLED and len(dets) > 0:
+                best = max(dets, key=lambda x: x['score'])
+                if best['score'] >= EXEMPLAR_MIN_SCORE:
+                    first_pass_dets = list(dets)
+                    # Reset and re-run with exemplar guidance
+                    sam3_proc.reset_all_prompts(state)
+                    state = sam3_proc.set_text_prompt(state=state, prompt=SAM3_PROMPT)
+                    # Add best detection as positive exemplar (normalized cxcywh)
+                    bx1, by1, bx2, by2 = best['bbox']
+                    norm_box = [
+                        (bx1 + bx2) / 2 / w,  # cx
+                        (by1 + by2) / 2 / h,   # cy
+                        (bx2 - bx1) / w,        # w
+                        (by2 - by1) / h,         # h
+                    ]
+                    state = sam3_proc.add_geometric_prompt(norm_box, True, state)
+                    exemplar_count = 0
+                    for i in range(len(state['boxes'])):
+                        box = state['boxes'][i].tolist()
+                        score = state['scores'][i].item()
+                        if score >= SAM3_THRESHOLD:
+                            dets.append({
+                                'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
+                                'score': score,
+                            })
+                            exemplar_count += 1
+                    if exemplar_count > 0:
+                        print(f"  DIAG exemplar pass: +{exemplar_count} detections (pre-NMS)", flush=True)
 
             # SAHI-style tiled detection to catch small/distant poles
             if TILE_ENABLED:
