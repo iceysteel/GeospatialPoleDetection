@@ -11,7 +11,8 @@ while true; do
     echo "$(date)"
     echo "========================================"
 
-    claude --dangerously-skip-permissions -p "You are an autonomous ML research agent. Your goal: improve F1@10m for pole detection.
+    ITER_START=$(date +%s)
+    timeout 7200 claude --dangerously-skip-permissions -p "You are an autonomous ML research agent. Your goal: improve F1@10m for pole detection.
 
 CURRENT BEST: F1@10m = 0.714 (P=81.1%, R=63.8%). Parameter tuning is EXHAUSTED.
 
@@ -54,6 +55,12 @@ THINK DEEPLY. The easy wins are gone. What would a research paper do differently
 
 GO."
 
-    echo "Iteration $ITERATION complete"
+    ITER_END=$(date +%s)
+    ITER_DURATION=$(( ITER_END - ITER_START ))
+    ITER_MINS=$(( ITER_DURATION / 60 ))
+    echo "Iteration $ITERATION complete (${ITER_MINS}m ${ITER_DURATION}s)"
+    if [ $ITER_DURATION -ge 7200 ]; then
+        echo "WARNING: Iteration hit 2-hour limit — was killed by timeout"
+    fi
     sleep 5
 done
