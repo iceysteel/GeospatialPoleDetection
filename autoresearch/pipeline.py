@@ -30,7 +30,7 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 # Detection
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
-SAM3_PROMPTS_EXTRA = [('wooden pole', 0.40), ('power pole', 0.65), ('concrete pole', 0.60)]  # (prompt, threshold)
+SAM3_PROMPTS_EXTRA = [('wooden pole', 0.40), ('power pole', 0.65)]  # (prompt, threshold)
 SAM3_THRESHOLD = 0.40
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
@@ -48,7 +48,7 @@ PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 DEDUP_RADIUS_M = 15
 
 # Two-tier confidence: single-view detections need higher score
-SINGLE_VIEW_MIN_SCORE = 0.40
+SINGLE_VIEW_MIN_SCORE = 0.45
 
 # ============================================================================
 # PIPELINE FUNCTIONS
@@ -228,24 +228,40 @@ def run_pipeline():
             w, h = oblique.size
 
             # SAM3 detection — multi-prompt with per-prompt thresholds
-            state = sam3_proc.set_image(oblique)
+            # Run on full image + left/right crops for better small-pole detection
             prompt_configs = [(SAM3_PROMPT, SAM3_THRESHOLD)] + SAM3_PROMPTS_EXTRA
             dets = []
-            for prompt_cfg in prompt_configs:
-                if isinstance(prompt_cfg, tuple):
-                    prompt, thresh = prompt_cfg
-                else:
-                    prompt, thresh = prompt_cfg, SAM3_THRESHOLD
-                state = sam3_proc.set_text_prompt(state=state, prompt=prompt)
-                for i in range(len(state['boxes'])):
-                    box = state['boxes'][i].tolist()
-                    score = state['scores'][i].item()
-                    if score >= thresh:
-                        dets.append({
-                            'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
-                            'score': score,
-                        })
-            # Dedup overlapping boxes from different prompts (IoU > 0.5)
+
+            # Crops: (crop_image, x_offset, y_offset)
+            overlap = int(w * 0.15)  # 15% overlap
+            mid = w // 2
+            crops = [
+                (oblique, 0, 0),  # full image
+                (oblique.crop((0, 0, mid + overlap, h)), 0, 0),  # left half
+                (oblique.crop((mid - overlap, 0, w, h)), mid - overlap, 0),  # right half
+            ]
+
+            for crop_img, x_off, y_off in crops:
+                state = sam3_proc.set_image(crop_img)
+                cw, ch = crop_img.size
+                for prompt_cfg in prompt_configs:
+                    if isinstance(prompt_cfg, tuple):
+                        prompt, thresh = prompt_cfg
+                    else:
+                        prompt, thresh = prompt_cfg, SAM3_THRESHOLD
+                    state = sam3_proc.set_text_prompt(state=state, prompt=prompt)
+                    for i in range(len(state['boxes'])):
+                        box = state['boxes'][i].tolist()
+                        score = state['scores'][i].item()
+                        if score >= thresh:
+                            # Map crop coords back to full image
+                            dets.append({
+                                'bbox': [int(box[0] + x_off), int(box[1] + y_off),
+                                         int(box[2] + x_off), int(box[3] + y_off)],
+                                'score': score,
+                            })
+
+            # Dedup overlapping boxes from different prompts/crops (IoU > 0.5)
             if len(dets) > 1:
                 keep = [True] * len(dets)
                 for i in range(len(dets)):
