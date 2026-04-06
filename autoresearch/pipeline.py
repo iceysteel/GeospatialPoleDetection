@@ -103,6 +103,7 @@ def run_sam3_on_tile(sam3_proc, tile_img, prompt_configs, offset_x, offset_y):
                         int(box[3] + offset_y),
                     ],
                     'score': score - TILE_SCORE_PENALTY,
+                    '_from_tile': True,
                 })
     return dets
 
@@ -251,7 +252,7 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
 
         uo = u_avg / (tw / ortho_w)
         vo = v_avg / (th / ortho_h)
-        results.append({'ortho_px': (int(round(uo)), int(round(vo))), 'score': det['score'], 'src_bbox': det['bbox']})
+        results.append({'ortho_px': (int(round(uo)), int(round(vo))), 'score': det['score'], 'src_bbox': det['bbox'], '_from_tile': det.get('_from_tile', False)})
 
     return results
 
@@ -361,9 +362,11 @@ def run_pipeline():
                     'score': proj['score'],
                     'src_img': img_path,
                     'src_bbox': proj.get('src_bbox', None),
+                    '_from_tile': proj.get('_from_tile', False),
                 })
 
-    # Dedup with two-tier confidence filtering
+    # Dedup with tile-aware three-tier confidence filtering
+    TILE_SINGLE_VIEW_MIN = 0.55  # tile-only single-view detections need higher score
     m = 111320 * math.cos(math.radians(41.249))
     used = [False] * len(all_points)
     deduped = []
@@ -380,11 +383,21 @@ def run_pipeline():
         best['lat'] = round(sum(c['lat'] for c in cluster) / len(cluster), 6)
         best['lon'] = round(sum(c['lon'] for c in cluster) / len(cluster), 6)
         best['_cluster_size'] = len(cluster)
-        # Two-tier: single-view detections need higher confidence
-        if len(cluster) >= 2 or best['score'] >= SINGLE_VIEW_MIN_SCORE:
+        # Three-tier filtering:
+        # 1. Multi-view (cluster >= 2): always keep
+        # 2. Single-view from full-image: keep if score >= SINGLE_VIEW_MIN_SCORE
+        # 3. Single-view from tile-only: keep if score >= TILE_SINGLE_VIEW_MIN
+        has_fullimg = any(not c.get('_from_tile') for c in cluster)
+        if len(cluster) >= 2:
             deduped.append(best)
+        elif has_fullimg and best['score'] >= SINGLE_VIEW_MIN_SCORE:
+            deduped.append(best)
+        elif not has_fullimg and best['score'] >= TILE_SINGLE_VIEW_MIN:
+            deduped.append(best)
+            print(f"  DIAG tile-only kept: score={best['score']:.3f} lat={best['lat']} lon={best['lon']}", flush=True)
         else:
-            print(f"  DIAG filtered single-view: score={best['score']:.3f} lat={best['lat']} lon={best['lon']}", flush=True)
+            src = "tile" if not has_fullimg else "full"
+            print(f"  DIAG filtered {src}: score={best['score']:.3f} lat={best['lat']} lon={best['lon']}", flush=True)
 
     # Dump diagnostic data
     diag = {'all_points': len(all_points), 'deduped': len(deduped),
