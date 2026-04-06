@@ -304,7 +304,7 @@ def run_pipeline():
     # VLM post-filter on OBLIQUE crops (not ortho!)
     # Previous VLM on ortho crops failed because poles look like dots from above.
     # Oblique crops clearly show what the object is — poles, trees, signs, etc.
-    VLM_OBLIQUE_FILTER = True
+    VLM_OBLIQUE_FILTER = False
     if not VLM_OBLIQUE_FILTER:
         return deduped
 

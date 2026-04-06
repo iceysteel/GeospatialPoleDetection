@@ -7,9 +7,9 @@ Returns a single metric to optimize. The agent modifies pipeline.py, not this fi
 """
 import sys, os, json, math, time, signal
 
-# Timeout: 20 minutes (VLM filtering enabled temporarily)
+# Timeout: 10 minutes (VLM filtering disabled — did not improve F1)
 # TODO: If VLM hasn't improved F1 by 2 hours from now, disable it and revert to 600s
-TIMEOUT_SECONDS = 1200
+TIMEOUT_SECONDS = 600
 
 PROJECT_ROOT = os.path.join(os.path.dirname(__file__), '..')
 sys.path.insert(0, os.path.join(PROJECT_ROOT, 'src'))
