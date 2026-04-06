@@ -57,6 +57,19 @@ ORTHO_DETECT_ENABLED = True
 ORTHO_DETECT_THRESHOLD = 0.55  # Higher threshold — nadir poles are ambiguous
 ORTHO_DETECT_PROMPTS = [('utility pole', 0.55), ('wooden pole', 0.55)]
 
+# High-resolution tiled ortho detection at zoom 23 (4× resolution of zoom 21).
+# At zoom 21, poles are ~2px wide — barely visible from above.
+# At zoom 23, poles are ~8-20px wide — much more detectable.
+# We tile the high-res ortho into overlapping patches so SAM3 sees poles
+# at a reasonable scale within each crop.
+ORTHO_HIRES_ENABLED = True
+ORTHO_HIRES_ZOOM = 23
+ORTHO_HIRES_RADIUS = 25       # meters — smaller area per cell, compensated by grid overlap
+ORTHO_HIRES_TILE_SIZE = 1024  # pixel patches for SAM3 inference
+ORTHO_HIRES_TILE_OVERLAP = 0.2
+ORTHO_HIRES_THRESHOLD = 0.50  # moderate threshold — higher res gives better scores
+ORTHO_HIRES_PROMPTS = [('utility pole', 0.50), ('wooden pole', 0.50), ('telephone pole', 0.50)]
+
 # Exemplar-guided second pass: use high-confidence detections as positive geometric
 # prompts to help SAM3 find additional poles it missed with text-only prompting.
 # Multi-exemplar: use up to N spatially diverse exemplars simultaneously for
@@ -474,6 +487,69 @@ def run_pipeline():
                         })
                         ortho_det_count += 1
         print(f"  DIAG ortho-direct detection: {ortho_det_count} candidates", flush=True)
+
+    # High-resolution tiled ortho detection at zoom 23
+    # At zoom 23, resolution is ~0.014 m/px — poles are 8-20px wide, easily detectable.
+    # We tile the high-res ortho and run SAM3 on each tile to detect poles at full scale.
+    if ORTHO_HIRES_ENABLED:
+        hires_det_count = 0
+        seen_cells_hr = set()
+        for ci, cell in enumerate(grid):
+            lat, lon = cell['lat'], cell['lon']
+            cell_key = f"{lat:.4f}_{lon:.4f}"
+            if cell_key in seen_cells_hr: continue
+            seen_cells_hr.add(cell_key)
+
+            # Stitch ortho at zoom 23 (higher resolution)
+            ortho_hr, ortho_hr_meta = stitch_ortho(lat, lon,
+                radius_m=ORTHO_HIRES_RADIUS, zoom=ORTHO_HIRES_ZOOM)
+            if ortho_hr_meta['tiles'] < 4: continue
+
+            ow, oh = ortho_hr.size
+            stride = int(ORTHO_HIRES_TILE_SIZE * (1 - ORTHO_HIRES_TILE_OVERLAP))
+
+            # Generate tiles covering the high-res ortho
+            tile_coords = []
+            for ty in range(0, oh, stride):
+                for tx in range(0, ow, stride):
+                    x2 = min(tx + ORTHO_HIRES_TILE_SIZE, ow)
+                    y2 = min(ty + ORTHO_HIRES_TILE_SIZE, oh)
+                    # Skip tiny edge tiles
+                    if x2 - tx < ORTHO_HIRES_TILE_SIZE // 3 or y2 - ty < ORTHO_HIRES_TILE_SIZE // 3:
+                        continue
+                    tile_coords.append((tx, ty, x2, y2))
+
+            # If ortho is small enough, also run SAM3 on the full image
+            if ow <= 2048 and oh <= 2048:
+                tile_coords.append((0, 0, ow, oh))
+
+            for tx, ty, x2, y2 in tile_coords:
+                tile_crop = ortho_hr.crop((tx, ty, x2, y2))
+                state = sam3_proc.set_image(tile_crop)
+                for prompt, thresh in ORTHO_HIRES_PROMPTS:
+                    state = sam3_proc.set_text_prompt(state=state, prompt=prompt)
+                    for i in range(len(state['boxes'])):
+                        box = state['boxes'][i].tolist()
+                        score = state['scores'][i].item()
+                        if score >= thresh:
+                            # Map tile pixel back to full ortho pixel
+                            cx = tx + (box[0] + box[2]) / 2
+                            cy = ty + (box[1] + box[3]) / 2
+                            det_lat, det_lon = ortho_pixel_to_gps(cx, cy, ortho_hr_meta)
+                            all_points.append({
+                                'lat': round(det_lat, 6),
+                                'lon': round(det_lon, 6),
+                                'score': score,
+                                'src_img': f'ortho_hr_{cell_key}',
+                                'src_bbox': [int(box[0] + tx), int(box[1] + ty),
+                                             int(box[2] + tx), int(box[3] + ty)],
+                                '_from_ortho': True,
+                            })
+                            hires_det_count += 1
+            if (ci + 1) % 12 == 0:
+                print(f"  DIAG hires ortho: processed {ci+1}/{len(grid)} cells, {hires_det_count} candidates so far", flush=True)
+
+        print(f"  DIAG hires ortho detection (zoom {ORTHO_HIRES_ZOOM}): {hires_det_count} candidates", flush=True)
 
     # Dedup with tile-aware three-tier confidence filtering
     TILE_SINGLE_VIEW_MIN = 0.55  # tile-only single-view detections need higher score
