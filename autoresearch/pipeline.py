@@ -48,7 +48,7 @@ PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 DEDUP_RADIUS_M = 15
 
 # Two-tier confidence: single-view detections need higher score
-SINGLE_VIEW_MIN_SCORE = 0.55
+SINGLE_VIEW_MIN_SCORE = 0.45
 
 # ============================================================================
 # PIPELINE FUNCTIONS
@@ -228,40 +228,24 @@ def run_pipeline():
             w, h = oblique.size
 
             # SAM3 detection — multi-prompt with per-prompt thresholds
-            # Run on full image + left/right crops for better small-pole detection
+            state = sam3_proc.set_image(oblique)
             prompt_configs = [(SAM3_PROMPT, SAM3_THRESHOLD)] + SAM3_PROMPTS_EXTRA
             dets = []
-
-            # Crops: (crop_image, x_offset, y_offset)
-            overlap = int(w * 0.15)  # 15% overlap
-            mid = w // 2
-            crops = [
-                (oblique, 0, 0),  # full image
-                (oblique.crop((0, 0, mid + overlap, h)), 0, 0),  # left half
-                (oblique.crop((mid - overlap, 0, w, h)), mid - overlap, 0),  # right half
-            ]
-
-            for crop_img, x_off, y_off in crops:
-                state = sam3_proc.set_image(crop_img)
-                cw, ch = crop_img.size
-                for prompt_cfg in prompt_configs:
-                    if isinstance(prompt_cfg, tuple):
-                        prompt, thresh = prompt_cfg
-                    else:
-                        prompt, thresh = prompt_cfg, SAM3_THRESHOLD
-                    state = sam3_proc.set_text_prompt(state=state, prompt=prompt)
-                    for i in range(len(state['boxes'])):
-                        box = state['boxes'][i].tolist()
-                        score = state['scores'][i].item()
-                        if score >= thresh:
-                            # Map crop coords back to full image
-                            dets.append({
-                                'bbox': [int(box[0] + x_off), int(box[1] + y_off),
-                                         int(box[2] + x_off), int(box[3] + y_off)],
-                                'score': score,
-                            })
-
-            # Dedup overlapping boxes from different prompts/crops (IoU > 0.5)
+            for prompt_cfg in prompt_configs:
+                if isinstance(prompt_cfg, tuple):
+                    prompt, thresh = prompt_cfg
+                else:
+                    prompt, thresh = prompt_cfg, SAM3_THRESHOLD
+                state = sam3_proc.set_text_prompt(state=state, prompt=prompt)
+                for i in range(len(state['boxes'])):
+                    box = state['boxes'][i].tolist()
+                    score = state['scores'][i].item()
+                    if score >= thresh:
+                        dets.append({
+                            'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
+                            'score': score,
+                        })
+            # Dedup overlapping boxes from different prompts (IoU > 0.5)
             if len(dets) > 1:
                 keep = [True] * len(dets)
                 for i in range(len(dets)):
@@ -294,6 +278,54 @@ def run_pipeline():
                     'lon': round(pt_lon, 6),
                     'score': proj['score'],
                 })
+
+    # VLM post-filter: verify detections using ortho (top-down) crops
+    # Previous VLM attempts used oblique crops — VLM couldn't distinguish poles from FPs.
+    # Ortho view shows poles as dots/shadows, which look different from buildings/fences.
+    VLM_FILTER = True
+    VLM_CROP_M = 15  # crop radius in meters around detection
+
+    if VLM_FILTER and all_points:
+        import requests
+        # Group points by their originating cell to reuse ortho crops
+        # For simplicity, just stitch a small ortho at each detection location
+        filtered_points = []
+        for pt in all_points:
+            # Crop ortho around detection
+            ortho_crop, crop_meta = stitch_ortho(pt['lat'], pt['lon'], radius_m=VLM_CROP_M, zoom=ORTHO_ZOOM)
+            if crop_meta['tiles'] < 1:
+                filtered_points.append(pt)
+                continue
+            # Save crop to temp file and send to VLM
+            import base64, io
+            buf = io.BytesIO()
+            ortho_crop.save(buf, format='PNG')
+            b64 = base64.b64encode(buf.getvalue()).decode()
+            try:
+                resp = requests.post('http://localhost:11434/api/chat', json={
+                    'model': 'qwen3.5:27b',
+                    'messages': [{
+                        'role': 'user',
+                        'content': (
+                            'This is a top-down aerial/satellite image. '
+                            'Is there a utility pole, telephone pole, or power pole visible '
+                            'in the center of this image? Look for a small circular cross-section '
+                            'or a thin shadow cast by a pole. '
+                            'Answer ONLY "yes" or "no".'
+                        ),
+                        'images': [b64],
+                    }],
+                    'stream': False,
+                    'options': {'temperature': 0},
+                    'think': False,
+                }, timeout=30)
+                answer = resp.json().get('message', {}).get('content', '').strip().lower()
+                if 'no' in answer and 'yes' not in answer:
+                    continue  # VLM says no pole — filter out
+            except:
+                pass  # On error, keep the detection
+            filtered_points.append(pt)
+        all_points = filtered_points
 
     # Dedup with two-tier confidence filtering
     m = 111320 * math.cos(math.radians(41.249))

@@ -58,7 +58,13 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 22 
 let poles = [], markers = [], currentIdx = -1, flagged = new Set();
 
 async function load() {
-  const resp = await fetch('data/ground_truth_testarea.json?t=' + Date.now());
+  // Select GT file via URL param: ?area=holdout or ?area=test (default)
+  const params = new URLSearchParams(window.location.search);
+  const area = params.get('area') || 'test';
+  const gtFile = area === 'holdout' ? 'data/ground_truth_holdout.json' : 'data/ground_truth_testarea.json';
+  document.querySelector('#info strong').textContent = `GT Verification — ${area === 'holdout' ? 'HOLDOUT' : 'TEST'} Area`;
+
+  const resp = await fetch(gtFile + '?t=' + Date.now());
   const gt = await resp.json();
   poles = gt.labels.filter(l => l.label === 'pole');
 
@@ -213,7 +219,8 @@ function saveAll() {
   const blob = new Blob([JSON.stringify(updated, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'ground_truth_testarea_verified.json';
+  const saveFile = area === 'holdout' ? 'ground_truth_holdout_verified.json' : 'ground_truth_testarea_verified.json';
+  a.download = saveFile;
   a.click();
   alert(`Saved! ${updated.labels.length} poles (removed ${flagged.size}, moved ${updated.moved})`);
 }
