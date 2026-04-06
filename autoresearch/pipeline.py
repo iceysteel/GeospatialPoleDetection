@@ -544,6 +544,7 @@ def run_pipeline():
                                 'src_bbox': [int(box[0] + tx), int(box[1] + ty),
                                              int(box[2] + tx), int(box[3] + ty)],
                                 '_from_ortho': True,
+                                '_from_tile': True,  # require higher score (0.55) for standalone
                             })
                             hires_det_count += 1
             if (ci + 1) % 12 == 0:
