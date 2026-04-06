@@ -50,9 +50,61 @@ DEDUP_RADIUS_M = 15
 # Two-tier confidence: single-view detections need higher score
 SINGLE_VIEW_MIN_SCORE = 0.45
 
+# SAHI-style tiling: run SAM3 on overlapping crops to catch small/distant poles
+TILE_ENABLED = True
+TILE_SIZE = 1024          # tile size in pixels
+TILE_OVERLAP = 0.25       # 25% overlap between tiles
+TILE_MIN_DIM = 800        # don't tile if image is smaller than this
+TILE_SCORE_PENALTY = 0.0  # no penalty — let two-tier handle filtering
+
 # ============================================================================
 # PIPELINE FUNCTIONS
 # ============================================================================
+
+def generate_tiles(img_w, img_h, tile_size=TILE_SIZE, overlap=TILE_OVERLAP):
+    """Generate overlapping tile coordinates for SAHI-style inference.
+    Returns list of (x_offset, y_offset, crop_w, crop_h) tuples."""
+    if img_w <= TILE_MIN_DIM and img_h <= TILE_MIN_DIM:
+        return []
+    stride = int(tile_size * (1 - overlap))
+    tiles = []
+    for y in range(0, img_h, stride):
+        for x in range(0, img_w, stride):
+            x2 = min(x + tile_size, img_w)
+            y2 = min(y + tile_size, img_h)
+            # Ensure minimum tile size
+            if x2 - x < tile_size // 2 or y2 - y < tile_size // 2:
+                continue
+            tiles.append((x, y, x2 - x, y2 - y))
+    return tiles
+
+
+def run_sam3_on_tile(sam3_proc, tile_img, prompt_configs, offset_x, offset_y):
+    """Run SAM3 detection on a single tile and map bboxes back to full-image coords."""
+    state = sam3_proc.set_image(tile_img)
+    dets = []
+    for prompt_cfg in prompt_configs:
+        if isinstance(prompt_cfg, tuple):
+            prompt, thresh = prompt_cfg
+        else:
+            prompt, thresh = prompt_cfg, SAM3_THRESHOLD
+        state = sam3_proc.set_text_prompt(state=state, prompt=prompt)
+        for i in range(len(state['boxes'])):
+            box = state['boxes'][i].tolist()
+            score = state['scores'][i].item()
+            if score >= thresh:
+                # Map bbox back to full-image coordinates
+                dets.append({
+                    'bbox': [
+                        int(box[0] + offset_x),
+                        int(box[1] + offset_y),
+                        int(box[2] + offset_x),
+                        int(box[3] + offset_y),
+                    ],
+                    'score': score - TILE_SCORE_PENALTY,
+                })
+    return dets
+
 
 def load_sam3(device='cuda'):
     """Load SAM3 detector."""
@@ -246,8 +298,10 @@ def run_pipeline():
             w, h = oblique.size
 
             # SAM3 detection — multi-prompt with per-prompt thresholds
-            state = sam3_proc.set_image(oblique)
             prompt_configs = [(SAM3_PROMPT, SAM3_THRESHOLD)] + SAM3_PROMPTS_EXTRA
+
+            # Full-image detection (original)
+            state = sam3_proc.set_image(oblique)
             dets = []
             for prompt_cfg in prompt_configs:
                 if isinstance(prompt_cfg, tuple):
@@ -263,8 +317,19 @@ def run_pipeline():
                             'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
                             'score': score,
                         })
-            # Dedup overlapping boxes from different prompts (IoU > 0.5)
+
+            # SAHI-style tiled detection to catch small/distant poles
+            if TILE_ENABLED:
+                tiles = generate_tiles(w, h)
+                for tx, ty, tw, th_ in tiles:
+                    tile_crop = oblique.crop((tx, ty, tx + tw, ty + th_))
+                    tile_dets = run_sam3_on_tile(sam3_proc, tile_crop, prompt_configs, tx, ty)
+                    dets.extend(tile_dets)
+
+            # Dedup overlapping boxes from different prompts/tiles (IoU > 0.5)
             if len(dets) > 1:
+                # Sort by score descending for NMS
+                dets.sort(key=lambda x: x['score'], reverse=True)
                 keep = [True] * len(dets)
                 for i in range(len(dets)):
                     if not keep[i]: continue
@@ -278,11 +343,7 @@ def run_pipeline():
                         a2 = (bj[2]-bj[0]) * (bj[3]-bj[1])
                         iou = inter / (a1 + a2 - inter + 1e-6)
                         if iou > 0.5:
-                            # Keep higher score
-                            if dets[i]['score'] >= dets[j]['score']:
-                                keep[j] = False
-                            else:
-                                keep[i] = False; break
+                            keep[j] = False
                 dets = [d for d, k in zip(dets, keep) if k]
 
             # MASt3R project to ortho
