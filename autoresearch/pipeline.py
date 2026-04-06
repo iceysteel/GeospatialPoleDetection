@@ -45,7 +45,7 @@ ORTHO_ZOOM = 21
 PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 
 # Dedup
-DEDUP_RADIUS_M = 12
+DEDUP_RADIUS_M = 15
 
 # Two-tier confidence: single-view detections need higher score
 SINGLE_VIEW_MIN_SCORE = 0.45
@@ -362,10 +362,13 @@ def run_pipeline():
                     'src_bbox': proj.get('src_bbox', None),
                 })
 
-    # Dedup with two-tier confidence filtering
+    # Dedup with two-tier confidence filtering + spatial rescue
+    SPATIAL_RESCUE_RADIUS = 60  # meters — neighborhood for rescue check
+    SPATIAL_RESCUE_MIN_NEIGHBORS = 2  # need this many confirmed poles nearby
     m = 111320 * math.cos(math.radians(41.249))
     used = [False] * len(all_points)
     deduped = []
+    filtered_sv = []  # single-view detections filtered by two-tier
     for i, p in enumerate(all_points):
         if used[i]: continue
         cluster = [p]; used[i] = True
@@ -383,7 +386,28 @@ def run_pipeline():
         if len(cluster) >= 2 or best['score'] >= SINGLE_VIEW_MIN_SCORE:
             deduped.append(best)
         else:
+            filtered_sv.append(best)
             print(f"  DIAG filtered single-view: score={best['score']:.3f} lat={best['lat']} lon={best['lon']}", flush=True)
+
+    # Spatial neighborhood rescue: filtered single-view detections get a
+    # second chance if they're in a pole-rich neighborhood. Real poles follow
+    # streets at regular intervals — isolated FPs won't have neighbors.
+    rescued = 0
+    for filt in filtered_sv:
+        neighbors = 0
+        for kept in deduped:
+            dist = math.sqrt(((filt['lat'] - kept['lat']) * 111320) ** 2 +
+                           ((filt['lon'] - kept['lon']) * m) ** 2)
+            if dist < SPATIAL_RESCUE_RADIUS:
+                neighbors += 1
+            if neighbors >= SPATIAL_RESCUE_MIN_NEIGHBORS:
+                break
+        if neighbors >= SPATIAL_RESCUE_MIN_NEIGHBORS:
+            deduped.append(filt)
+            rescued += 1
+            print(f"  DIAG rescued single-view: score={filt['score']:.3f} lat={filt['lat']} lon={filt['lon']} (neighbors={neighbors})", flush=True)
+    if rescued:
+        print(f"  Spatial rescue: {rescued} detections rescued from {len(filtered_sv)} filtered", flush=True)
 
     # Dump diagnostic data
     diag = {'all_points': len(all_points), 'deduped': len(deduped),
