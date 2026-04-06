@@ -51,7 +51,7 @@ DEDUP_RADIUS_M = 15
 SINGLE_VIEW_MIN_SCORE = 0.45
 
 # SAHI-style tiling: run SAM3 on overlapping crops to catch small/distant poles
-TILE_ENABLED = True
+TILE_ENABLED = False
 TILE_SIZE = 1024          # tile size in pixels
 TILE_OVERLAP = 0.25       # 25% overlap between tiles
 TILE_MIN_DIM = 800        # don't tile if image is smaller than this
@@ -243,13 +243,6 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
         nearest_idx = dists_3d.argmin().item()
         u_nn = nearest_idx % tw
         v_nn = nearest_idx // tw
-
-        # Projection consistency filter: discard if camera and 3D-NN disagree too much
-        proj_dist = math.sqrt((u_cam.item() - u_nn)**2 + (v_cam.item() - v_nn)**2)
-        # Scale threshold by ortho size — 20% of MASt3R tile dimension
-        max_proj_dist = max(tw, th) * 0.20
-        if proj_dist > max_proj_dist:
-            continue  # projections disagree → bad reconstruction at this point
 
         # Average camera reprojection and 3D-NN for more robust localization
         u_avg = (u_cam.item() + u_nn) / 2
