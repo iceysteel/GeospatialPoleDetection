@@ -50,10 +50,14 @@ DEDUP_RADIUS_M = 15
 # Two-tier confidence: single-view detections need higher score
 SINGLE_VIEW_MIN_SCORE = 0.45
 
-# Exemplar-guided second pass: use best detection as positive geometric prompt
-# to help SAM3 find additional poles it missed with text-only prompting
+# Exemplar-guided second pass: use high-confidence detections as positive geometric
+# prompts to help SAM3 find additional poles it missed with text-only prompting.
+# Multi-exemplar: use up to N spatially diverse exemplars simultaneously for
+# richer concept guidance (SAM3 paper: 3 exemplars >> 1 exemplar >> text-only).
 EXEMPLAR_ENABLED = True
 EXEMPLAR_MIN_SCORE = 0.70  # Only use high-confidence detections as exemplars
+EXEMPLAR_MAX_COUNT = 3     # Use up to 3 diverse exemplars simultaneously
+EXEMPLAR_PASS_THRESH = 0.35  # Lower threshold for exemplar pass (geometric guidance reduces ambiguity)
 
 # SAHI-style tiling: run SAM3 on overlapping crops to catch small/distant poles
 # Using large tiles (1400px) for 2-3 tiles/image — fast but helps edge/distant poles
@@ -325,37 +329,65 @@ def run_pipeline():
                             'score': score,
                         })
 
-            # Exemplar-guided second pass: re-run SAM3 with text + positive box
-            # from best detection. This tells SAM3 "find more things like THIS"
-            # and can recover poles missed by text-only prompting.
+            # Exemplar-guided second pass: re-run SAM3 with text + multiple
+            # positive box prompts from high-confidence detections. Using multiple
+            # spatially diverse exemplars gives SAM3 a richer "concept" of what
+            # poles look like in THIS specific image, recovering more missed poles.
             if EXEMPLAR_ENABLED and len(dets) > 0:
-                best = max(dets, key=lambda x: x['score'])
-                if best['score'] >= EXEMPLAR_MIN_SCORE:
+                # Collect all high-confidence candidates
+                candidates = [d for d in dets if d['score'] >= EXEMPLAR_MIN_SCORE]
+                if len(candidates) > 0:
+                    # Select spatially diverse exemplars using farthest-point sampling
+                    def bbox_center(d):
+                        b = d['bbox']
+                        return ((b[0] + b[2]) / 2, (b[1] + b[3]) / 2)
+
+                    # Start with highest-scoring detection
+                    candidates.sort(key=lambda x: x['score'], reverse=True)
+                    selected = [candidates[0]]
+                    remaining = candidates[1:]
+
+                    while len(selected) < EXEMPLAR_MAX_COUNT and remaining:
+                        # Pick the candidate farthest from all selected exemplars
+                        best_dist = -1
+                        best_idx = 0
+                        for ri, r in enumerate(remaining):
+                            rc = bbox_center(r)
+                            min_dist = min(
+                                math.sqrt((rc[0] - bbox_center(s)[0])**2 + (rc[1] - bbox_center(s)[1])**2)
+                                for s in selected
+                            )
+                            if min_dist > best_dist:
+                                best_dist = min_dist
+                                best_idx = ri
+                        selected.append(remaining.pop(best_idx))
+
                     first_pass_dets = list(dets)
-                    # Reset and re-run with exemplar guidance
+                    # Reset and re-run with multi-exemplar guidance
                     sam3_proc.reset_all_prompts(state)
                     state = sam3_proc.set_text_prompt(state=state, prompt=SAM3_PROMPT)
-                    # Add best detection as positive exemplar (normalized cxcywh)
-                    bx1, by1, bx2, by2 = best['bbox']
-                    norm_box = [
-                        (bx1 + bx2) / 2 / w,  # cx
-                        (by1 + by2) / 2 / h,   # cy
-                        (bx2 - bx1) / w,        # w
-                        (by2 - by1) / h,         # h
-                    ]
-                    state = sam3_proc.add_geometric_prompt(norm_box, True, state)
+                    # Add all selected exemplars as positive geometric prompts
+                    for exm in selected:
+                        bx1, by1, bx2, by2 = exm['bbox']
+                        norm_box = [
+                            (bx1 + bx2) / 2 / w,  # cx
+                            (by1 + by2) / 2 / h,   # cy
+                            (bx2 - bx1) / w,        # w
+                            (by2 - by1) / h,         # h
+                        ]
+                        state = sam3_proc.add_geometric_prompt(norm_box, True, state)
                     exemplar_count = 0
                     for i in range(len(state['boxes'])):
                         box = state['boxes'][i].tolist()
                         score = state['scores'][i].item()
-                        if score >= SAM3_THRESHOLD:
+                        if score >= EXEMPLAR_PASS_THRESH:
                             dets.append({
                                 'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
                                 'score': score,
                             })
                             exemplar_count += 1
                     if exemplar_count > 0:
-                        print(f"  DIAG exemplar pass: +{exemplar_count} detections (pre-NMS)", flush=True)
+                        print(f"  DIAG multi-exemplar pass ({len(selected)} exemplars): +{exemplar_count} dets (pre-NMS)", flush=True)
 
             # SAHI-style tiled detection to catch small/distant poles
             if TILE_ENABLED:
