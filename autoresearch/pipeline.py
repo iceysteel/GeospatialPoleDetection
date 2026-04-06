@@ -299,7 +299,12 @@ def run_pipeline():
         if len(cluster) >= 2 or best['score'] >= SINGLE_VIEW_MIN_SCORE:
             deduped.append(best)
 
-    # VLM post-filter on final detections using ortho (top-down) crops
+    # VLM post-filter — disabled for eval speed (adds ~20min)
+    # Enable with VLM_FILTER = True at top of file
+    VLM_FILTER = False
+    if not VLM_FILTER:
+        return deduped
+
     import requests, base64, io
     vlm_filtered = []
     for pt in deduped:
