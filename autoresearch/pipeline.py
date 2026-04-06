@@ -30,7 +30,7 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 # Detection
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
-SAM3_PROMPTS_EXTRA = [('wooden pole', 0.40), ('power pole', 0.65), ('concrete pole', 0.60)]  # (prompt, threshold)
+SAM3_PROMPTS_EXTRA = [('wooden pole', 0.40), ('power pole', 0.65)]  # (prompt, threshold)
 SAM3_THRESHOLD = 0.40
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
@@ -48,7 +48,7 @@ PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 DEDUP_RADIUS_M = 15
 
 # Two-tier confidence: single-view detections need higher score
-SINGLE_VIEW_MIN_SCORE = 0.40
+SINGLE_VIEW_MIN_SCORE = 0.45
 
 # ============================================================================
 # PIPELINE FUNCTIONS
@@ -166,8 +166,18 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
         sx, sy = wm / ow, hm / oh
         mx = min(max(int(round(px * sx)), 0), wm - 1)
         my = min(max(int(round(py * sy)), 0), hm - 1)
-        p3d = pv[my, mx]
-        if torch.isnan(p3d).any(): continue
+        # Neighborhood-averaged 3D point (3x3 patch, median of valid points)
+        patch_pts = []
+        for dy in range(-1, 2):
+            for dx in range(-1, 2):
+                ny, nx = my + dy, mx + dx
+                if 0 <= ny < hm and 0 <= nx < wm:
+                    pt = pv[ny, nx]
+                    if not torch.isnan(pt).any():
+                        patch_pts.append(pt)
+        if not patch_pts: continue
+        patch_stack = torch.stack(patch_pts, dim=0)
+        p3d = patch_stack.median(dim=0).values
 
         pi = torch.inverse(poses[1])
         pc = pi[:3, :3] @ p3d + pi[:3, 3]
@@ -293,8 +303,11 @@ def run_pipeline():
             if dist < DEDUP_RADIUS_M:
                 cluster.append(all_points[j]); used[j] = True
         best = max(cluster, key=lambda x: x['score'])
-        best['lat'] = round(sum(c['lat'] for c in cluster) / len(cluster), 6)
-        best['lon'] = round(sum(c['lon'] for c in cluster) / len(cluster), 6)
+        # Median GPS for robustness to outlier projections
+        lats = sorted(c['lat'] for c in cluster)
+        lons = sorted(c['lon'] for c in cluster)
+        best['lat'] = round(lats[len(lats) // 2], 6)
+        best['lon'] = round(lons[len(lons) // 2], 6)
         # Two-tier: single-view detections need higher confidence
         if len(cluster) >= 2 or best['score'] >= SINGLE_VIEW_MIN_SCORE:
             deduped.append(best)
