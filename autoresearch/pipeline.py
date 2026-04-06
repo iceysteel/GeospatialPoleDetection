@@ -315,16 +315,6 @@ def run_pipeline():
     torch.cuda.empty_cache()
     import gc; gc.collect()
 
-    # Warm up VLM (first call loads model into GPU, ~15s)
-    try:
-        requests.post('http://localhost:11434/api/chat', json={
-            'model': 'qwen3.5:27b',
-            'messages': [{'role': 'user', 'content': 'Hi', 'images': []}],
-            'stream': False, 'options': {'num_predict': 1}, 'think': False,
-        }, timeout=30)
-    except:
-        pass
-
     vlm_filtered = []
     vlm_removed = 0
     for pt in deduped:

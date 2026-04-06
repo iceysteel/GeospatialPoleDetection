@@ -49,7 +49,7 @@ def load_ground_truth(area_name='test'):
 
 def compute_f1(detections, gt_poles, match_radius_m=MATCH_RADIUS_M):
     """Compute F1 at given match radius. Returns (f1, precision, recall, tp, fp, fn, rmse)."""
-    m_per_deg_lon = 111320 * math.cos(math.radians(FOCUS_LAT))
+    m_per_deg_lon = 111320 * math.cos(math.radians(TEST_LAT))
     gt_matched = set()
     tp = fp = 0
     match_dists = []
