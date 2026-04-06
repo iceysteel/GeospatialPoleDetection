@@ -52,7 +52,7 @@ SINGLE_VIEW_MIN_SCORE = 0.45
 
 # SAHI-style tiling: run SAM3 on overlapping crops to catch small/distant poles
 # Using large tiles (1400px) for 2-3 tiles/image — fast but helps edge/distant poles
-TILE_ENABLED = True
+TILE_ENABLED = False
 TILE_SIZE = 1400          # large tiles = only 2-3 per image (fast!)
 TILE_OVERLAP = 0.25       # moderate overlap
 TILE_MIN_DIM = 1600       # only tile images wider/taller than this
@@ -246,13 +246,17 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
         u_nn = nearest_idx % tw
         v_nn = nearest_idx // tw
 
+        # Projection agreement: distance between camera reprojection and 3D-NN
+        # in feature-map pixels. Large disagreement = unreliable projection.
+        proj_agree_px = math.sqrt((u_cam.item() - u_nn) ** 2 + (v_cam.item() - v_nn) ** 2)
+
         # Average camera reprojection and 3D-NN for more robust localization
         u_avg = (u_cam.item() + u_nn) / 2
         v_avg = (v_cam.item() + v_nn) / 2
 
         uo = u_avg / (tw / ortho_w)
         vo = v_avg / (th / ortho_h)
-        results.append({'ortho_px': (int(round(uo)), int(round(vo))), 'score': det['score'], 'src_bbox': det['bbox'], '_from_tile': det.get('_from_tile', False)})
+        results.append({'ortho_px': (int(round(uo)), int(round(vo))), 'score': det['score'], 'src_bbox': det['bbox'], '_from_tile': det.get('_from_tile', False), '_proj_agree': proj_agree_px})
 
     return results
 
@@ -363,6 +367,7 @@ def run_pipeline():
                     'src_img': img_path,
                     'src_bbox': proj.get('src_bbox', None),
                     '_from_tile': proj.get('_from_tile', False),
+                    '_proj_agree': proj.get('_proj_agree', 0),
                 })
 
     # Dedup with tile-aware three-tier confidence filtering
@@ -380,29 +385,48 @@ def run_pipeline():
             if dist < DEDUP_RADIUS_M:
                 cluster.append(all_points[j]); used[j] = True
         best = max(cluster, key=lambda x: x['score'])
-        best['lat'] = round(sum(c['lat'] for c in cluster) / len(cluster), 6)
-        best['lon'] = round(sum(c['lon'] for c in cluster) / len(cluster), 6)
+        # Use projection-agreement-weighted centroid: more reliable projections
+        # get more weight in determining the final GPS position
+        agree_vals = [c.get('_proj_agree', 0) for c in cluster]
+        if max(agree_vals) > 0:
+            # Weight inversely proportional to projection disagreement
+            # Add 1 to avoid division by zero; lower agree = more reliable
+            weights = [1.0 / (a + 1.0) for a in agree_vals]
+            total_w = sum(weights)
+            best['lat'] = round(sum(c['lat'] * w for c, w in zip(cluster, weights)) / total_w, 6)
+            best['lon'] = round(sum(c['lon'] * w for c, w in zip(cluster, weights)) / total_w, 6)
+        else:
+            best['lat'] = round(sum(c['lat'] for c in cluster) / len(cluster), 6)
+            best['lon'] = round(sum(c['lon'] for c in cluster) / len(cluster), 6)
         best['_cluster_size'] = len(cluster)
-        # Three-tier filtering:
+        best['_avg_proj_agree'] = sum(agree_vals) / len(agree_vals) if agree_vals else 0
+        # Three-tier filtering with projection agreement:
         # 1. Multi-view (cluster >= 2): always keep
         # 2. Single-view from full-image: keep if score >= SINGLE_VIEW_MIN_SCORE
         # 3. Single-view from tile-only: keep if score >= TILE_SINGLE_VIEW_MIN
+        # 4. Projection agreement filter: remove single-view with very high disagreement
+        #    (>50px in feature map ≈ >15m uncertainty at 60m crop)
+        PROJ_AGREE_MAX = 50  # max allowed projection disagreement for single-view
         has_fullimg = any(not c.get('_from_tile') for c in cluster)
         if len(cluster) >= 2:
             deduped.append(best)
         elif has_fullimg and best['score'] >= SINGLE_VIEW_MIN_SCORE:
-            deduped.append(best)
+            if best['_avg_proj_agree'] <= PROJ_AGREE_MAX:
+                deduped.append(best)
+            else:
+                print(f"  DIAG proj-filtered: score={best['score']:.3f} agree={best['_avg_proj_agree']:.0f}px lat={best['lat']} lon={best['lon']}", flush=True)
         elif not has_fullimg and best['score'] >= TILE_SINGLE_VIEW_MIN:
             deduped.append(best)
             print(f"  DIAG tile-only kept: score={best['score']:.3f} lat={best['lat']} lon={best['lon']}", flush=True)
         else:
             src = "tile" if not has_fullimg else "full"
-            print(f"  DIAG filtered {src}: score={best['score']:.3f} lat={best['lat']} lon={best['lon']}", flush=True)
+            print(f"  DIAG filtered {src}: score={best['score']:.3f} agree={best.get('_avg_proj_agree', 0):.0f}px lat={best['lat']} lon={best['lon']}", flush=True)
 
     # Dump diagnostic data
     diag = {'all_points': len(all_points), 'deduped': len(deduped),
             'detections': [{'lat': d['lat'], 'lon': d['lon'], 'score': d['score'],
-                           'cluster_size': d.get('_cluster_size', 1)} for d in deduped]}
+                           'cluster_size': d.get('_cluster_size', 1),
+                           'proj_agree': round(d.get('_avg_proj_agree', 0), 1)} for d in deduped]}
     with open(os.path.join(os.path.dirname(__file__), 'diag_detections.json'), 'w') as f:
         json.dump(diag, f)
 
