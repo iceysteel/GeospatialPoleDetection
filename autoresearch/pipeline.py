@@ -59,6 +59,11 @@ EXEMPLAR_MIN_SCORE = 0.70  # Only use high-confidence detections as exemplars
 EXEMPLAR_MAX_COUNT = 3     # Use up to 3 diverse exemplars simultaneously
 EXEMPLAR_PASS_THRESH = 0.35  # Lower threshold for exemplar pass (geometric guidance reduces ambiguity)
 
+# Test-Time Augmentation: run SAM3 on horizontally flipped image too.
+# Poles near image edges or with directional occlusion patterns may be
+# detected in the flipped view but missed in the original. Merges via NMS.
+TTA_HFLIP = True
+
 # SAHI-style tiling: run SAM3 on overlapping crops to catch small/distant poles
 # Using large tiles (1400px) for 2-3 tiles/image — fast but helps edge/distant poles
 TILE_ENABLED = False
@@ -328,6 +333,31 @@ def run_pipeline():
                             'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
                             'score': score,
                         })
+
+            # TTA: horizontal flip — run SAM3 on flipped image, map bboxes back
+            if TTA_HFLIP:
+                from PIL import ImageOps
+                oblique_flip = ImageOps.mirror(oblique)
+                state_flip = sam3_proc.set_image(oblique_flip)
+                tta_count = 0
+                for prompt_cfg in prompt_configs:
+                    if isinstance(prompt_cfg, tuple):
+                        prompt, thresh = prompt_cfg
+                    else:
+                        prompt, thresh = prompt_cfg, SAM3_THRESHOLD
+                    state_flip = sam3_proc.set_text_prompt(state=state_flip, prompt=prompt)
+                    for i in range(len(state_flip['boxes'])):
+                        box = state_flip['boxes'][i].tolist()
+                        score = state_flip['scores'][i].item()
+                        if score >= thresh:
+                            # Mirror bbox back: x' = w - x
+                            dets.append({
+                                'bbox': [int(w - box[2]), int(box[1]), int(w - box[0]), int(box[3])],
+                                'score': score,
+                            })
+                            tta_count += 1
+                if tta_count > 0:
+                    print(f"  DIAG TTA hflip: +{tta_count} dets (pre-NMS)", flush=True)
 
             # Exemplar-guided second pass: re-run SAM3 with text + multiple
             # positive box prompts from high-confidence detections. Using multiple
