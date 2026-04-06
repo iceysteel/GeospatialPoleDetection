@@ -180,7 +180,7 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
 
         uo = u.item() / (tw / ortho_w)
         vo = v.item() / (th / ortho_h)
-        results.append({'ortho_px': (int(round(uo)), int(round(vo))), 'score': det['score']})
+        results.append({'ortho_px': (int(round(uo)), int(round(vo))), 'score': det['score'], 'src_bbox': det['bbox']})
 
     return results
 
@@ -277,6 +277,8 @@ def run_pipeline():
                     'lat': round(pt_lat, 6),
                     'lon': round(pt_lon, 6),
                     'score': proj['score'],
+                    'src_img': img_path,
+                    'src_bbox': proj.get('src_bbox', None),
                 })
 
     # Dedup with two-tier confidence filtering
@@ -299,45 +301,83 @@ def run_pipeline():
         if len(cluster) >= 2 or best['score'] >= SINGLE_VIEW_MIN_SCORE:
             deduped.append(best)
 
-    # VLM post-filter — disabled for eval speed (adds ~20min)
-    # Enable with VLM_FILTER = True at top of file
-    VLM_FILTER = False
-    if not VLM_FILTER:
+    # VLM post-filter on OBLIQUE crops (not ortho!)
+    # Previous VLM on ortho crops failed because poles look like dots from above.
+    # Oblique crops clearly show what the object is — poles, trees, signs, etc.
+    VLM_OBLIQUE_FILTER = True
+    if not VLM_OBLIQUE_FILTER:
         return deduped
 
     import requests, base64, io
+
+    # Free GPU memory from SAM3/MASt3R before VLM loads
+    del sam3_proc, mast3r
+    torch.cuda.empty_cache()
+    import gc; gc.collect()
+
+    # Warm up VLM (first call loads model into GPU, ~15s)
+    try:
+        requests.post('http://localhost:11434/api/chat', json={
+            'model': 'qwen3.5:27b',
+            'messages': [{'role': 'user', 'content': 'Hi', 'images': []}],
+            'stream': False, 'options': {'num_predict': 1}, 'think': False,
+        }, timeout=30)
+    except:
+        pass
+
     vlm_filtered = []
+    vlm_removed = 0
     for pt in deduped:
-        ortho_crop, crop_meta = stitch_ortho(pt['lat'], pt['lon'], radius_m=15, zoom=ORTHO_ZOOM)
-        if crop_meta['tiles'] < 1:
+        src_img = pt.get('src_img')
+        src_bbox = pt.get('src_bbox')
+        if not src_img or not src_bbox or not os.path.exists(src_img):
             vlm_filtered.append(pt)
             continue
-        buf = io.BytesIO()
-        ortho_crop.save(buf, format='PNG')
-        b64 = base64.b64encode(buf.getvalue()).decode()
+
+        # Crop oblique image around detection with 50% padding for context
         try:
+            oblique = Image.open(src_img).convert('RGB')
+            iw, ih = oblique.size
+            x1, y1, x2, y2 = src_bbox
+            bw, bh = x2 - x1, y2 - y1
+            pad_x, pad_y = max(int(bw * 0.5), 50), max(int(bh * 0.5), 50)
+            cx1 = max(0, x1 - pad_x)
+            cy1 = max(0, y1 - pad_y)
+            cx2 = min(iw, x2 + pad_x)
+            cy2 = min(ih, y2 + pad_y)
+            crop = oblique.crop((cx1, cy1, cx2, cy2))
+
+            buf = io.BytesIO()
+            crop.save(buf, format='PNG')
+            b64 = base64.b64encode(buf.getvalue()).decode()
+
             resp = requests.post('http://localhost:11434/api/chat', json={
                 'model': 'qwen3.5:27b',
                 'messages': [{
                     'role': 'user',
                     'content': (
-                        'This is a top-down aerial/satellite image. '
-                        'Is there a utility pole, telephone pole, or power pole visible '
-                        'near the center of this image? Look for a small dark dot or circle '
-                        '(the pole cross-section from above) or a thin straight shadow. '
-                        'Answer ONLY "yes" or "no".'
+                        'This is a crop from an aerial photograph taken at an oblique angle. '
+                        'Does this image show a utility pole, telephone pole, or power pole? '
+                        'Utility poles are tall vertical wooden or concrete posts, usually with '
+                        'crossarms, insulators, or electrical wires attached near the top. '
+                        'Answer NO if you see: a tree, bush, street light, traffic sign, '
+                        'building column, antenna, flagpole, or other non-pole object. '
+                        'Answer ONLY "YES" or "NO".'
                     ),
                     'images': [b64],
                 }],
                 'stream': False,
-                'options': {'temperature': 0},
+                'options': {'temperature': 0, 'num_predict': 10},
                 'think': False,
             }, timeout=30)
             answer = resp.json().get('message', {}).get('content', '').strip().lower()
             if 'no' in answer and 'yes' not in answer:
-                continue  # VLM says no pole — filter out
+                vlm_removed += 1
+                continue  # VLM says not a pole — filter out
         except:
             pass  # On error, keep detection
+
         vlm_filtered.append(pt)
 
+    print(f"  VLM oblique filter: {len(deduped)} → {len(vlm_filtered)} (removed {vlm_removed})", flush=True)
     return vlm_filtered

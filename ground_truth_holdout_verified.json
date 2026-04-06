@@ -1,0 +1,696 @@
+{
+  "labels": [
+    {
+      "lat": 41.246934,
+      "lon": -95.99509,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.246933,
+      "lon": -95.994669,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.246714,
+      "lon": -95.994107,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.246934,
+      "lon": -95.994422,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.247317,
+      "lon": -95.994685,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.246769,
+      "lon": -95.993851,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.246937,
+      "lon": -95.993235,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.246934,
+      "lon": -95.992875,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.246935,
+      "lon": -95.993777,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.246847,
+      "lon": -95.992316,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.24731,
+      "lon": -95.992454,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.246934,
+      "lon": -95.992279,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.246935,
+      "lon": -95.991974,
+      "label": "pole",
+      "source": "pipeline_detected"
+    },
+    {
+      "lat": 41.246937,
+      "lon": -95.991322,
+      "label": "pole",
+      "source": "pipeline_detected"
+    },
+    {
+      "lat": 41.246935,
+      "lon": -95.99173,
+      "label": "pole",
+      "source": "pipeline_detected"
+    },
+    {
+      "lat": 41.247118,
+      "lon": -95.990698,
+      "label": "pole",
+      "source": "pipeline_detected"
+    },
+    {
+      "lat": 41.246994,
+      "lon": -95.990697,
+      "label": "pole",
+      "source": "pipeline_detected"
+    },
+    {
+      "lat": 41.247631,
+      "lon": -95.994687,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.247324,
+      "lon": -95.994179,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.247638,
+      "lon": -95.993936,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.247641,
+      "lon": -95.994331,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.246571,
+      "lon": -95.993737,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.24715,
+      "lon": -95.994187,
+      "label": "pole",
+      "source": "pipeline_detected"
+    },
+    {
+      "lat": 41.247662,
+      "lon": -95.993037,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.247317,
+      "lon": -95.993157,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.247314,
+      "lon": -95.99356,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.247645,
+      "lon": -95.993562,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.24669,
+      "lon": -95.993678,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.247424,
+      "lon": -95.991113,
+      "label": "pole",
+      "source": "pipeline_detected"
+    },
+    {
+      "lat": 41.247418,
+      "lon": -95.991867,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.247415,
+      "lon": -95.990696,
+      "label": "pole",
+      "source": "pipeline_detected"
+    },
+    {
+      "lat": 41.247625,
+      "lon": -95.990686,
+      "label": "pole",
+      "source": "pipeline_detected"
+    },
+    {
+      "lat": 41.248129,
+      "lon": -95.995054,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.248105,
+      "lon": -95.995269,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.247904,
+      "lon": -95.994682,
+      "label": "pole",
+      "source": "pipeline_detected"
+    },
+    {
+      "lat": 41.247319,
+      "lon": -95.994537,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.24801,
+      "lon": -95.994689,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.248424,
+      "lon": -95.994501,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.248802,
+      "lon": -95.995424,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.248132,
+      "lon": -95.994504,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.248118,
+      "lon": -95.994083,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.24812,
+      "lon": -95.993293,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.248126,
+      "lon": -95.992856,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.250673,
+      "lon": -95.992575,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.248414,
+      "lon": -95.992861,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.248327,
+      "lon": -95.991873,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.248324,
+      "lon": -95.991088,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.248312,
+      "lon": -95.990731,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.249216,
+      "lon": -95.995223,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.249203,
+      "lon": -95.993543,
+      "label": "pole",
+      "source": "pipeline_detected"
+    },
+    {
+      "lat": 41.249201,
+      "lon": -95.993139,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.249201,
+      "lon": -95.99381,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.250818,
+      "lon": -95.993289,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.249022,
+      "lon": -95.991788,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.248835,
+      "lon": -95.991205,
+      "label": "pole",
+      "source": "pipeline_detected"
+    },
+    {
+      "lat": 41.248835,
+      "lon": -95.991787,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.249194,
+      "lon": -95.99181,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.251008,
+      "lon": -95.991454,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.24884,
+      "lon": -95.990706,
+      "label": "pole",
+      "source": "pipeline_detected"
+    },
+    {
+      "lat": 41.250017,
+      "lon": -95.99506,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.250174,
+      "lon": -95.995371,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.249203,
+      "lon": -95.99449,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.249568,
+      "lon": -95.993802,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.250067,
+      "lon": -95.993804,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.249812,
+      "lon": -95.99381,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.25002,
+      "lon": -95.994505,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.250022,
+      "lon": -95.994004,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.24978,
+      "lon": -95.994494,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.249486,
+      "lon": -95.994487,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.249955,
+      "lon": -95.9949,
+      "label": "pole",
+      "source": "pipeline_detected"
+    },
+    {
+      "lat": 41.250083,
+      "lon": -95.99334,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.249791,
+      "lon": -95.990721,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.250299,
+      "lon": -95.995362,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.250336,
+      "lon": -95.99449,
+      "label": "pole",
+      "source": "pipeline_detected",
+      "corrected": true
+    },
+    {
+      "lat": 41.250086,
+      "lon": -95.992708,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.250196,
+      "lon": -95.991831,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.249656,
+      "lon": -95.991817,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.249503,
+      "lon": -95.991825,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.248603,
+      "lon": -95.991873,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.248078,
+      "lon": -95.991868,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.247408,
+      "lon": -95.992294,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.246935,
+      "lon": -95.994152,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.248132,
+      "lon": -95.994684,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.247315,
+      "lon": -95.992724,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.247819,
+      "lon": -95.992325,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.247665,
+      "lon": -95.993233,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.248949,
+      "lon": -95.990711,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.249194,
+      "lon": -95.990722,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.249515,
+      "lon": -95.990728,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.250064,
+      "lon": -95.99072,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.250303,
+      "lon": -95.99072,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.248325,
+      "lon": -95.991482,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.249954,
+      "lon": -95.991823,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.249201,
+      "lon": -95.992685,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.248563,
+      "lon": -95.994489,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.248842,
+      "lon": -95.994495,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.248125,
+      "lon": -95.993683,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.247893,
+      "lon": -95.992863,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.248431,
+      "lon": -95.993475,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.248432,
+      "lon": -95.993775,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.24843,
+      "lon": -95.993094,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.250661,
+      "lon": -95.992237,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.248766,
+      "lon": -95.992735,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.248432,
+      "lon": -95.994154,
+      "label": "pole",
+      "source": "manual_added"
+    },
+    {
+      "lat": 41.248765,
+      "lon": -95.993275,
+      "label": "pole",
+      "source": "manual_added"
+    }
+  ],
+  "area": "holdout_east",
+  "saved_at": "2026-04-06T02:20:43.004Z"
+}

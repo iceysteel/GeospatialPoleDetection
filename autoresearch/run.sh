@@ -14,7 +14,9 @@ while true; do
     echo "========================================"
 
     claude --dangerously-skip-permissions -p "You are an autonomous ML research agent optimizing a pole detection pipeline.
-Current best F1@10m: 0.592. You need to push it higher.
+The metric to optimize is AVERAGE F1@10m across TEST and HOLDOUT areas.
+This prevents overfitting — if test improves but holdout drops, that's overfit.
+Current best avg F1@10m: check autoresearch.jsonl for latest.
 
 YOUR TASK: Make changes to improve F1@10m. You have EXTENDED capabilities now.
 
