@@ -50,6 +50,13 @@ DEDUP_RADIUS_M = 15
 # Two-tier confidence: single-view detections need higher score
 SINGLE_VIEW_MIN_SCORE = 0.45
 
+# Ortho-direct detection: run SAM3 on the orthophoto to detect poles from above.
+# This bypasses MASt3R projection entirely — detections map directly to GPS.
+# Poles appear as small dots/circles with shadows in nadir view.
+ORTHO_DETECT_ENABLED = True
+ORTHO_DETECT_THRESHOLD = 0.55  # Higher threshold — nadir poles are ambiguous
+ORTHO_DETECT_PROMPTS = [('utility pole', 0.55), ('wooden pole', 0.55)]
+
 # Exemplar-guided second pass: use high-confidence detections as positive geometric
 # prompts to help SAM3 find additional poles it missed with text-only prompting.
 # Multi-exemplar: use up to N spatially diverse exemplars simultaneously for
@@ -433,6 +440,40 @@ def run_pipeline():
                     'src_bbox': proj.get('src_bbox', None),
                     '_from_tile': proj.get('_from_tile', False),
                 })
+
+    # Ortho-direct detection: find poles directly in the orthophoto
+    # This is a separate detection channel that bypasses MASt3R projection
+    if ORTHO_DETECT_ENABLED:
+        ortho_det_count = 0
+        seen_cells = set()
+        for ci, cell in enumerate(grid):
+            lat, lon = cell['lat'], cell['lon']
+            cell_key = f"{lat:.4f}_{lon:.4f}"
+            if cell_key in seen_cells: continue
+            seen_cells.add(cell_key)
+            ortho, ortho_meta = stitch_ortho(lat, lon)
+            if ortho_meta['tiles'] < 4: continue
+            state = sam3_proc.set_image(ortho)
+            for prompt, thresh in ORTHO_DETECT_PROMPTS:
+                state = sam3_proc.set_text_prompt(state=state, prompt=prompt)
+                for i in range(len(state['boxes'])):
+                    box = state['boxes'][i].tolist()
+                    score = state['scores'][i].item()
+                    if score >= thresh:
+                        # Convert ortho pixel to GPS directly
+                        cx = (box[0] + box[2]) / 2
+                        cy = (box[1] + box[3]) / 2
+                        det_lat, det_lon = ortho_pixel_to_gps(cx, cy, ortho_meta)
+                        all_points.append({
+                            'lat': round(det_lat, 6),
+                            'lon': round(det_lon, 6),
+                            'score': score,
+                            'src_img': f'ortho_{cell_key}',
+                            'src_bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
+                            '_from_ortho': True,
+                        })
+                        ortho_det_count += 1
+        print(f"  DIAG ortho-direct detection: {ortho_det_count} candidates", flush=True)
 
     # Dedup with tile-aware three-tier confidence filtering
     TILE_SINGLE_VIEW_MIN = 0.55  # tile-only single-view detections need higher score
