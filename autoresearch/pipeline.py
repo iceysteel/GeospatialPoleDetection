@@ -244,9 +244,18 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
         u_nn = nearest_idx % tw
         v_nn = nearest_idx // tw
 
-        # Average camera reprojection and 3D-NN for more robust localization
-        u_avg = (u_cam.item() + u_nn) / 2
-        v_avg = (v_cam.item() + v_nn) / 2
+        # Projection consistency: if cam & 3D-NN agree, use average (more accurate)
+        # If they disagree significantly, use camera reprojection only (more reliable)
+        proj_dist = math.sqrt((u_cam.item() - u_nn)**2 + (v_cam.item() - v_nn)**2)
+        max_proj_dist = max(tw, th) * 0.15
+        if proj_dist <= max_proj_dist:
+            # Methods agree — average for better accuracy
+            u_avg = (u_cam.item() + u_nn) / 2
+            v_avg = (v_cam.item() + v_nn) / 2
+        else:
+            # Methods disagree — use camera reprojection only
+            u_avg = u_cam.item()
+            v_avg = v_cam.item()
 
         uo = u_avg / (tw / ortho_w)
         vo = v_avg / (th / ortho_h)
