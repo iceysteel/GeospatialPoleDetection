@@ -365,11 +365,17 @@ def run_pipeline():
                     '_from_tile': proj.get('_from_tile', False),
                 })
 
-    # Dedup with tile-aware three-tier confidence filtering
+    # Dedup with tile-aware three-tier confidence filtering + spatial road-line rescue
     TILE_SINGLE_VIEW_MIN = 0.55  # tile-only single-view detections need higher score
+    # Spatial rescue params: recover filtered detections that lie along road lines
+    # formed by confirmed multi-view detections (poles follow roads)
+    RESCUE_MIN_SCORE = 0.35       # minimum score for rescue eligibility
+    RESCUE_MAX_LINE_DIST_M = 20   # max perpendicular distance to road line
+    RESCUE_MAX_SEGMENT_M = 150    # max length of road segment between anchors
     m = 111320 * math.cos(math.radians(41.249))
     used = [False] * len(all_points)
     deduped = []
+    filtered_candidates = []  # candidates for spatial rescue
     for i, p in enumerate(all_points):
         if used[i]: continue
         cluster = [p]; used[i] = True
@@ -396,8 +402,64 @@ def run_pipeline():
             deduped.append(best)
             print(f"  DIAG tile-only kept: score={best['score']:.3f} lat={best['lat']} lon={best['lon']}", flush=True)
         else:
+            # Track for potential spatial rescue
+            if best['score'] >= RESCUE_MIN_SCORE:
+                filtered_candidates.append(best)
             src = "tile" if not has_fullimg else "full"
             print(f"  DIAG filtered {src}: score={best['score']:.3f} lat={best['lat']} lon={best['lon']}", flush=True)
+
+    # Spatial road-line rescue: recover filtered detections near road lines
+    # Poles follow roads — if a filtered detection lies along a line between
+    # two confirmed detections, it's likely a real pole, not a random FP.
+    confirmed = list(deduped)  # snapshot before rescue
+    rescued = 0
+    for cand in filtered_candidates:
+        cx = cand['lat'] * 111320
+        cy = cand['lon'] * m
+        on_road_line = False
+        for i in range(len(confirmed)):
+            if on_road_line:
+                break
+            ai = confirmed[i]
+            ax = ai['lat'] * 111320
+            ay = ai['lon'] * m
+            for j in range(i + 1, len(confirmed)):
+                aj = confirmed[j]
+                bx = aj['lat'] * 111320
+                by = aj['lon'] * m
+                # Segment length check
+                seg_len = math.sqrt((bx - ax) ** 2 + (by - ay) ** 2)
+                if seg_len < 1 or seg_len > RESCUE_MAX_SEGMENT_M:
+                    continue
+                # Perpendicular distance from candidate to line AB
+                # Using cross product formula: |AB x AC| / |AB|
+                abx, aby = bx - ax, by - ay
+                acx, acy = cx - ax, cy - ay
+                cross = abs(abx * acy - aby * acx)
+                perp_dist = cross / seg_len
+                if perp_dist > RESCUE_MAX_LINE_DIST_M:
+                    continue
+                # Check candidate projects onto the segment (not beyond endpoints)
+                dot = abx * acx + aby * acy
+                t = dot / (seg_len * seg_len)
+                if -0.1 <= t <= 1.1:  # small margin beyond endpoints
+                    on_road_line = True
+                    break
+        if on_road_line:
+            # Extra check: must not be too close to an existing detection (duplicate)
+            too_close = False
+            for d in deduped:
+                dist = math.sqrt(((cand['lat'] - d['lat']) * 111320) ** 2 +
+                               ((cand['lon'] - d['lon']) * m) ** 2)
+                if dist < DEDUP_RADIUS_M:
+                    too_close = True
+                    break
+            if not too_close:
+                deduped.append(cand)
+                rescued += 1
+                print(f"  DIAG rescued: score={cand['score']:.3f} lat={cand['lat']} lon={cand['lon']}", flush=True)
+
+    print(f"  DIAG spatial rescue: {rescued}/{len(filtered_candidates)} candidates rescued", flush=True)
 
     # Dump diagnostic data
     diag = {'all_points': len(all_points), 'deduped': len(deduped),
