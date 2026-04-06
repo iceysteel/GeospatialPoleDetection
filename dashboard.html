@@ -8,64 +8,76 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, sans-serif; background: #0a0a1a; color: #eee; }
-#header { padding: 12px 20px; background: #111; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
-#header h1 { font-size: 18px; }
-#metrics { display: flex; gap: 20px; }
+#header { padding: 10px 20px; background: #111; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+#header h1 { font-size: 16px; }
+#metrics { display: flex; gap: 16px; }
 .metric { text-align: center; }
-.metric .value { font-size: 28px; font-weight: bold; }
-.metric .label { font-size: 11px; color: #888; }
+.metric .value { font-size: 24px; font-weight: bold; }
+.metric .label { font-size: 10px; color: #888; }
 .metric.best .value { color: #00ff88; }
-.metric.holdout .value { color: #ffd60a; }
-#content { display: flex; height: calc(100vh - 60px); }
+.metric.hold .value { color: #ffd60a; }
+.metric.exp .value { color: #00aaff; }
+#content { display: flex; height: calc(100vh - 50px); }
 #map { flex: 1; }
-#sidebar { width: 380px; overflow-y: auto; background: #111; border-left: 1px solid #333; padding: 12px; }
-.section { margin-bottom: 16px; }
-.section h3 { font-size: 13px; color: #888; margin-bottom: 6px; border-bottom: 1px solid #222; padding-bottom: 4px; }
-.section table { width: 100%; font-size: 12px; border-collapse: collapse; }
-.section td, .section th { padding: 3px 6px; text-align: right; }
-.section th { color: #888; text-align: left; }
-.section tr.best { color: #00ff88; }
-.legend { margin-top: 12px; font-size: 11px; }
-.legend div { margin: 3px 0; display: flex; align-items: center; gap: 6px; }
-.legend .dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #fff; }
-.progress-bar { height: 20px; background: #222; border-radius: 4px; margin: 4px 0; overflow: hidden; }
-.progress-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding: 0 8px; font-size: 11px; font-weight: bold; }
+#sidebar { width: 400px; overflow-y: auto; background: #111; border-left: 1px solid #333; padding: 10px; font-size: 12px; }
+.section { margin-bottom: 12px; }
+.section h3 { font-size: 12px; color: #888; margin-bottom: 4px; border-bottom: 1px solid #222; padding-bottom: 2px; }
+table { width: 100%; border-collapse: collapse; }
+td, th { padding: 2px 4px; text-align: right; }
+th { color: #888; text-align: left; }
+.improvement { padding: 3px 6px; margin: 2px 0; background: #1a1a2e; border-radius: 3px; border-left: 3px solid #00ff88; font-size: 11px; }
+.improvement.reverted { border-left-color: #ff4444; opacity: 0.6; }
+.progress-bar { height: 18px; background: #222; border-radius: 3px; margin: 2px 0; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; display: flex; align-items: center; padding: 0 6px; font-size: 10px; font-weight: bold; }
+.git-log { font-family: monospace; font-size: 10px; color: #aaa; }
+.git-log .hash { color: #ffd60a; }
+.git-log .exp { color: #00ff88; }
+.legend { font-size: 11px; }
+.legend div { margin: 2px 0; display: flex; align-items: center; gap: 5px; }
+.legend .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #fff; }
+#refresh-time { font-size: 10px; color: #555; }
 </style>
 </head>
 <body>
 <div id="header">
-  <h1>Pole Detection Pipeline Dashboard</h1>
+  <h1>Pole Detection Dashboard</h1>
   <div id="metrics">
-    <div class="metric best"><div class="value" id="best-f1">—</div><div class="label">Best F1@10m (Test)</div></div>
-    <div class="metric holdout"><div class="value" id="holdout-f1">—</div><div class="label">F1@10m (Holdout)</div></div>
-    <div class="metric"><div class="value" id="total-exp">—</div><div class="label">Experiments</div></div>
+    <div class="metric best"><div class="value" id="best-f1">—</div><div class="label">Best F1@10m</div></div>
+    <div class="metric hold"><div class="value" id="hold-f1">—</div><div class="label">Holdout F1</div></div>
+    <div class="metric exp"><div class="value" id="total-exp">—</div><div class="label">Experiments</div></div>
+    <div class="metric"><div class="value" id="best-p">—</div><div class="label">Precision</div></div>
+    <div class="metric"><div class="value" id="best-r">—</div><div class="label">Recall</div></div>
   </div>
+  <div id="refresh-time">—</div>
 </div>
 <div id="content">
   <div id="map"></div>
   <div id="sidebar">
     <div class="section">
-      <h3>F1@10m Progress</h3>
+      <h3>F1@10m Progress (all improvements)</h3>
       <div id="progress-bars"></div>
     </div>
     <div class="section">
-      <h3>Test Area Results (Verified GT)</h3>
-      <table id="test-results"><tr><td>Loading...</td></tr></table>
+      <h3>Current Best Config</h3>
+      <div id="best-config" style="font-family:monospace;font-size:10px;color:#aaa;"></div>
     </div>
     <div class="section">
-      <h3>Holdout Area Results (No GT — visual check)</h3>
-      <table id="holdout-results"><tr><td>Loading...</td></tr></table>
+      <h3>Latest Experiments</h3>
+      <div id="latest-exp"></div>
     </div>
     <div class="section">
-      <h3>AutoResearch Improvements</h3>
-      <div id="improvements"></div>
+      <h3>Recent Git Commits</h3>
+      <div id="git-log" class="git-log"></div>
+    </div>
+    <div class="section">
+      <h3>Population (Top Configs)</h3>
+      <div id="population"></div>
     </div>
     <div class="section legend">
-      <h3>Legend</h3>
+      <h3>Map Legend</h3>
       <div><span class="dot" style="background:#00ff88;"></span> GT Pole (test area)</div>
       <div><span class="dot" style="background:#00aaff;"></span> Detection — Test Area</div>
       <div><span class="dot" style="background:#ffd60a;"></span> Detection — Holdout Area</div>
-      <div style="margin-top:4px; color:#666;">Green dashed = test area, Yellow dashed = holdout area</div>
     </div>
   </div>
 </div>
@@ -82,116 +94,136 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 22})
 
 const TEST = {lat: 41.248644, lon: -95.998878, rLat: 0.0018, rLon: 0.0024};
 const HOLD = {lat: 41.2486, lon: -95.9929, rLat: 0.0018, rLon: 0.0024};
+L.rectangle([[TEST.lat-TEST.rLat,TEST.lon-TEST.rLon],[TEST.lat+TEST.rLat,TEST.lon+TEST.rLon]],
+  {color:'#00ff88',weight:2,fill:false,dashArray:'8,4'}).addTo(map).bindTooltip('Test Area');
+L.rectangle([[HOLD.lat-HOLD.rLat,HOLD.lon-HOLD.rLon],[HOLD.lat+HOLD.rLat,HOLD.lon+HOLD.rLon]],
+  {color:'#ffd60a',weight:2,fill:false,dashArray:'8,4'}).addTo(map).bindTooltip('Holdout Area');
+map.fitBounds([[41.244,-96.004],[41.254,-95.988]]);
 
-// Draw areas
-L.rectangle([[TEST.lat-TEST.rLat, TEST.lon-TEST.rLon],[TEST.lat+TEST.rLat, TEST.lon+TEST.rLon]],
-  {color:'#00ff88', weight:2, fill:false, dashArray:'8,4'}).addTo(map).bindTooltip('Test Area');
-L.rectangle([[HOLD.lat-HOLD.rLat, HOLD.lon-HOLD.rLon],[HOLD.lat+HOLD.rLat, HOLD.lon+HOLD.rLon]],
-  {color:'#ffd60a', weight:2, fill:false, dashArray:'8,4'}).addTo(map).bindTooltip('Holdout Area');
+let detMarkers = [];
 
-map.fitBounds([[41.244, -96.004],[41.254, -95.990]]);
+async function refresh() {
+  // Clear old detection markers
+  detMarkers.forEach(m => map.removeLayer(m));
+  detMarkers = [];
 
-async function load() {
-  // Load test area GT + detections
-  const [gtResp, evalResp, holdResp, expResp] = await Promise.all([
-    fetch('data/ground_truth_testarea.json?t='+Date.now()),
-    fetch('data/eval_testarea/oblique_to_ortho_results.json?t='+Date.now()).catch(()=>null),
-    fetch('data/eval_testarea/holdout_results.json?t='+Date.now()).catch(()=>null),
-    fetch('autoresearch/autoresearch.jsonl?t='+Date.now()).catch(()=>null),
+  const ts = Date.now();
+  const [gtResp, testResp, holdResp, expResp, popResp] = await Promise.all([
+    fetch('data/ground_truth_testarea.json?t='+ts),
+    fetch('data/eval_testarea/oblique_to_ortho_results.json?t='+ts).catch(()=>null),
+    fetch('data/eval_testarea/holdout_results.json?t='+ts).catch(()=>null),
+    fetch('autoresearch/autoresearch.jsonl?t='+ts).catch(()=>null),
+    fetch('autoresearch/population.json?t='+ts).catch(()=>null),
   ]);
 
-  const gt = await gtResp.json();
-  const gtPoles = gt.labels.filter(l => l.label === 'pole');
+  // GT poles (only draw once — check if already drawn)
+  if (!window._gtDrawn) {
+    const gt = await gtResp.json();
+    gt.labels.filter(l=>l.label==='pole').forEach((p,i) => {
+      L.circleMarker([p.lat,p.lon],{radius:5,fillColor:'#00ff88',color:'#fff',weight:1,fillOpacity:0.7}).addTo(map);
+    });
+    // Holdout GT
+    try {
+      const hgt = await (await fetch('data/ground_truth_holdout.json?t='+ts)).json();
+      hgt.labels.filter(l=>l.label==='pole').forEach(p => {
+        L.circleMarker([p.lat,p.lon],{radius:5,fillColor:'#00ff88',color:'#ffd60a',weight:1,fillOpacity:0.5}).addTo(map);
+      });
+    } catch(e) {}
+    window._gtDrawn = true;
+  }
 
-  // Draw GT poles
-  gtPoles.forEach((p, i) => {
-    L.circleMarker([p.lat, p.lon], {
-      radius: 6, fillColor: '#00ff88', color: '#fff', weight: 1.5, fillOpacity: 0.8
-    }).addTo(map).bindTooltip(`GT #${i+1}`);
-  });
-
-  // Load test area detections
-  let testDets = [];
-  if (evalResp) {
-    const evalData = await evalResp.json();
-    testDets = evalData.poles || evalData.detections || [];
-    testDets.forEach((d, i) => {
-      const lat = d.lat || d.approx_lat;
-      const lon = d.lon || d.approx_lon;
-      if (!lat) return;
-      L.circleMarker([lat, lon], {
-        radius: 4, fillColor: '#00aaff', color: '#fff', weight: 1, fillOpacity: 0.7
-      }).addTo(map).bindTooltip(`Det #${i+1} score=${d.score||'?'}`);
+  // Test area detections
+  if (testResp) {
+    const td = await testResp.json();
+    (td.poles||td.detections||[]).forEach(d => {
+      const m = L.circleMarker([d.lat||d.approx_lat, d.lon||d.approx_lon],
+        {radius:4,fillColor:'#00aaff',color:'#fff',weight:1,fillOpacity:0.7}).addTo(map);
+      m.bindTooltip(`score=${d.score||'?'}`);
+      detMarkers.push(m);
     });
   }
 
-  // Load holdout detections
-  let holdDets = [];
+  // Holdout detections
   if (holdResp) {
-    const holdData = await holdResp.json();
-    holdDets = holdData.detections || [];
-    holdDets.forEach((d, i) => {
-      const lat = d.lat || d.approx_lat;
-      const lon = d.lon || d.approx_lon;
-      if (!lat) return;
-      L.circleMarker([lat, lon], {
-        radius: 4, fillColor: '#ffd60a', color: '#fff', weight: 1, fillOpacity: 0.7
-      }).addTo(map).bindTooltip(`Holdout #${i+1} score=${d.score||'?'}`);
+    const hd = await holdResp.json();
+    (hd.detections||[]).forEach(d => {
+      const m = L.circleMarker([d.lat, d.lon],
+        {radius:4,fillColor:'#ffd60a',color:'#fff',weight:1,fillOpacity:0.7}).addTo(map);
+      detMarkers.push(m);
     });
-    document.getElementById('holdout-results').innerHTML = `
-      <tr><th>Detections</th><td>${holdDets.length}</td></tr>
-      <tr><td colspan=2 style="color:#888;text-align:left;">No GT for holdout — visually verify poles on ortho</td></tr>`;
-    document.getElementById('holdout-f1').textContent = `${holdDets.length} dets`;
+    document.getElementById('hold-f1').textContent = `${hd.detections?.length || 0} dets`;
   }
 
-  // Load experiment history
+  // Experiment history
   if (expResp) {
     const text = await expResp.text();
-    const lines = text.trim().split('\n').map(l => JSON.parse(l));
-    let best = 0;
+    const lines = text.trim().split('\n').map(l => { try { return JSON.parse(l); } catch(e) { return null; } }).filter(Boolean);
+
+    let best = 0, bestExp = null;
     const improvements = [];
-    lines.forEach((d, i) => {
+    lines.forEach((d,i) => {
       if (d.f1 > best) {
         best = d.f1;
-        improvements.push({exp: i, f1: d.f1, p: d.precision, r: d.recall, change: d.change||''});
+        bestExp = d;
+        improvements.push({exp:i, f1:d.f1, p:d.precision, r:d.recall, change:d.change||''});
       }
     });
 
     document.getElementById('best-f1').textContent = best.toFixed(3);
     document.getElementById('total-exp').textContent = lines.length;
+    document.getElementById('best-p').textContent = bestExp ? (bestExp.precision*100).toFixed(0)+'%' : '—';
+    document.getElementById('best-r').textContent = bestExp ? (bestExp.recall*100).toFixed(0)+'%' : '—';
+
+    // Check for holdout F1
+    const lastHoldout = [...lines].reverse().find(d => d.f1_holdout !== undefined);
+    if (lastHoldout) {
+      document.getElementById('hold-f1').textContent = lastHoldout.f1_holdout.toFixed(3);
+    }
 
     // Progress bars
-    const barsHtml = improvements.map(imp =>
-      `<div class="progress-bar"><div class="progress-fill" style="width:${imp.f1*100}%;background:${imp.f1>0.6?'#00ff88':imp.f1>0.5?'#ffd60a':'#ff6b6b'};">
-        ${imp.f1.toFixed(3)} (exp ${imp.exp})
-      </div></div>`
-    ).join('');
-    document.getElementById('progress-bars').innerHTML = barsHtml;
+    document.getElementById('progress-bars').innerHTML = improvements.map(imp => {
+      const pct = Math.min(imp.f1 * 100 / 0.8, 100); // scale to 0.8 max
+      const color = imp.f1 > 0.7 ? '#00ff88' : imp.f1 > 0.5 ? '#ffd60a' : '#ff6b6b';
+      return `<div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${color};">
+        ${imp.f1.toFixed(3)} #${imp.exp}</div></div>`;
+    }).join('');
 
-    // Improvements list
-    document.getElementById('improvements').innerHTML = improvements.map(imp =>
-      `<div style="font-size:11px;margin:2px 0;padding:2px 4px;background:#1a1a2e;border-radius:3px;">
-        <strong>F1=${imp.f1.toFixed(3)}</strong> P=${(imp.p*100).toFixed(0)}% R=${(imp.r*100).toFixed(0)}%
-        <span style="color:#888;">${imp.change.substring(0,50)}</span>
-      </div>`
-    ).join('');
-
-    // Test results table
-    const latest = lines[lines.length-1];
-    document.getElementById('test-results').innerHTML = `
-      <tr class="best"><th>F1@10m</th><td>${best.toFixed(4)}</td></tr>
-      <tr><th>Precision</th><td>${(latest.precision*100).toFixed(1)}%</td></tr>
-      <tr><th>Recall</th><td>${(latest.recall*100).toFixed(1)}%</td></tr>
-      <tr><th>TP / FP / FN</th><td>${latest.tp} / ${latest.fp} / ${latest.fn}</td></tr>
-      <tr><th>RMSE</th><td>${latest.rmse}m</td></tr>
-      <tr><th>GT Poles</th><td>${gtPoles.length}</td></tr>
-      <tr><th>Experiments</th><td>${lines.length}</td></tr>`;
+    // Latest experiments (last 8)
+    const recent = lines.slice(-8).reverse();
+    document.getElementById('latest-exp').innerHTML = recent.map(d => {
+      const isImprove = d.f1 >= best - 0.001;
+      const cls = d.status === 'crash' ? 'reverted' : (d.change?.includes('REVERT') ? 'reverted' : '');
+      return `<div class="improvement ${cls}">
+        F1=${d.f1.toFixed(3)} P=${(d.precision*100).toFixed(0)}% R=${(d.recall*100).toFixed(0)}%
+        <span style="color:#666;">${(d.change||d.status||'').substring(0,50)}</span>
+        ${d.f1_holdout !== undefined ? `<br><span style="color:#ffd60a;">holdout=${d.f1_holdout.toFixed(3)}</span>` : ''}
+      </div>`;
+    }).join('');
   }
+
+  // Population
+  if (popResp) {
+    const pop = await popResp.json();
+    document.getElementById('population').innerHTML = pop.configs
+      .sort((a,b) => b.f1_10m - a.f1_10m)
+      .slice(0, 5)
+      .map(c => `<div style="font-size:10px;margin:2px 0;padding:2px 4px;background:#1a1a2e;border-radius:3px;">
+        <strong>F1=${c.f1_10m.toFixed(3)}</strong> ${c.description?.substring(0,50) || c.id}
+      </div>`).join('');
+
+    // Best config details
+    const bestCfg = pop.configs.sort((a,b) => b.f1_10m - a.f1_10m)[0];
+    if (bestCfg?.params) {
+      document.getElementById('best-config').innerHTML = Object.entries(bestCfg.params)
+        .map(([k,v]) => `${k}: <span style="color:#00ff88;">${v}</span>`).join('<br>');
+    }
+  }
+
+  document.getElementById('refresh-time').textContent = `Updated: ${new Date().toLocaleTimeString()}`;
 }
 
-load();
-// Auto-refresh every 60s
-setInterval(load, 60000);
+refresh();
+setInterval(refresh, 30000); // refresh every 30s
 </script>
 </body>
 </html>
