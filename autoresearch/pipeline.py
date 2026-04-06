@@ -45,7 +45,7 @@ ORTHO_ZOOM = 21
 PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 
 # Dedup
-DEDUP_RADIUS_M = 12
+DEDUP_RADIUS_M = 15
 
 # Two-tier confidence: single-view detections need higher score
 SINGLE_VIEW_MIN_SCORE = 0.45
@@ -56,6 +56,10 @@ TILE_SIZE = 1024          # tile size in pixels
 TILE_OVERLAP = 0.25       # 25% overlap between tiles
 TILE_MIN_DIM = 800        # don't tile if image is smaller than this
 TILE_SCORE_PENALTY = 0.0  # no penalty — let two-tier handle filtering
+
+# Test-Time Augmentation: horizontal flip with cross-validation filtering
+TTA_HFLIP = True
+TTA_NOVEL_MIN_SCORE = 0.55  # novel (flip-only) detections need higher confidence
 
 # ============================================================================
 # PIPELINE FUNCTIONS
@@ -317,6 +321,53 @@ def run_pipeline():
                             'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
                             'score': score,
                         })
+
+            # Cross-validated TTA: horizontal flip
+            # Key insight: naive TTA recovered 17 TPs but added 57 FPs.
+            # Cross-validation keeps flip detections only if they're novel
+            # (no IoU match in original) AND score >= TTA_NOVEL_MIN_SCORE.
+            if TTA_HFLIP:
+                from PIL import ImageOps
+                oblique_flip = ImageOps.mirror(oblique)
+                state_flip = sam3_proc.set_image(oblique_flip)
+                flip_dets = []
+                for prompt_cfg in prompt_configs:
+                    if isinstance(prompt_cfg, tuple):
+                        prompt, thresh = prompt_cfg
+                    else:
+                        prompt, thresh = prompt_cfg, SAM3_THRESHOLD
+                    state_flip = sam3_proc.set_text_prompt(state=state_flip, prompt=prompt)
+                    for i in range(len(state_flip['boxes'])):
+                        box = state_flip['boxes'][i].tolist()
+                        score = state_flip['scores'][i].item()
+                        if score >= thresh:
+                            # Flip bbox back: x' = w - x
+                            flip_dets.append({
+                                'bbox': [int(w - box[2]), int(box[1]), int(w - box[0]), int(box[3])],
+                                'score': score,
+                            })
+
+                # Cross-validate: match each flip detection against originals
+                novel_added = 0
+                for fd in flip_dets:
+                    matched = False
+                    for od in dets:
+                        bi, bj = od['bbox'], fd['bbox']
+                        ix1 = max(bi[0], bj[0]); iy1 = max(bi[1], bj[1])
+                        ix2 = min(bi[2], bj[2]); iy2 = min(bi[3], bj[3])
+                        inter = max(0, ix2-ix1) * max(0, iy2-iy1)
+                        a1 = (bi[2]-bi[0]) * (bi[3]-bi[1])
+                        a2 = (bj[2]-bj[0]) * (bj[3]-bj[1])
+                        iou = inter / (a1 + a2 - inter + 1e-6)
+                        if iou > 0.3:
+                            matched = True
+                            break
+                    if not matched and fd['score'] >= TTA_NOVEL_MIN_SCORE:
+                        fd['_tta'] = True
+                        dets.append(fd)
+                        novel_added += 1
+                if novel_added > 0:
+                    print(f"    TTA: {len(flip_dets)} flip dets, {novel_added} novel kept (>={TTA_NOVEL_MIN_SCORE})", flush=True)
 
             # SAHI-style tiled detection to catch small/distant poles
             if TILE_ENABLED:
