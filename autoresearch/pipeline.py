@@ -52,7 +52,7 @@ SINGLE_VIEW_MIN_SCORE = 0.45
 
 # SAHI-style tiling: run SAM3 on overlapping crops to catch small/distant poles
 # Using large tiles (1400px) for 2-3 tiles/image — fast but helps edge/distant poles
-TILE_ENABLED = False
+TILE_ENABLED = True
 TILE_SIZE = 1400          # large tiles = only 2-3 per image (fast!)
 TILE_OVERLAP = 0.25       # moderate overlap
 TILE_MIN_DIM = 1600       # only tile images wider/taller than this
@@ -237,10 +237,21 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
         v_cam = focals[1] * pc[1] / pc[2] + th / 2
         if not (0 <= u_cam.item() < tw and 0 <= v_cam.item() < th): continue
 
-        # Use camera reprojection directly (more geometrically principled)
-        # 3D-NN averaging was adding noise — camera reprojection alone is cleaner
-        uo = u_cam.item() / (tw / ortho_w)
-        vo = v_cam.item() / (th / ortho_h)
+        # 3D nearest-neighbor projection (find closest ortho 3D point)
+        dists_3d = torch.norm(ortho_flat - p3d.unsqueeze(0), dim=1)
+        # Mask NaN points
+        nan_mask = torch.isnan(dists_3d)
+        dists_3d[nan_mask] = float('inf')
+        nearest_idx = dists_3d.argmin().item()
+        u_nn = nearest_idx % tw
+        v_nn = nearest_idx // tw
+
+        # Average camera reprojection and 3D-NN for more robust localization
+        u_avg = (u_cam.item() + u_nn) / 2
+        v_avg = (v_cam.item() + v_nn) / 2
+
+        uo = u_avg / (tw / ortho_w)
+        vo = v_avg / (th / ortho_h)
         results.append({'ortho_px': (int(round(uo)), int(round(vo))), 'score': det['score'], 'src_bbox': det['bbox'], '_from_tile': det.get('_from_tile', False)})
 
     return results

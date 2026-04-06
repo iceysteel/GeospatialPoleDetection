@@ -102,35 +102,12 @@ Current best: **F1@10m = 0.714** (3-prompt SAM3 [telephone/wooden/power pole], p
 - GDino fallback for empty SAM3 images: GDino also finds nothing
 
 ## Promising Directions (DEEP CHANGES)
-
-### HIGH PRIORITY — TRY THESE FIRST
-
-7. **SAM3-LoRA v3 with CLEAN training data**: The v2 LoRA (iteration 12) failed
-   catastrophically, BUT it was trained on homography-projected bboxes (~10-15m error).
-   We have since rebuilt training data using MASt3R AerialMegaDepth projections (~2.6m
-   accuracy). Retrain the LoRA with this clean data — it should perform MUCH better.
-   - Training script: models/sam3_lora/train_sam3_lora_native.py
-   - Config: models/sam3_lora/configs/pole_lora_v2.yaml
-   - Clean training data: data/training/annotations.json (MASt3R-projected bboxes)
-   - Build training set: python src/build_training_set.py
-   - Fine-tune script: python src/finetune_sam3.py (or use sam3_lora repo)
-   - The v2 failure was a DATA QUALITY issue, not a model issue. This is worth retrying.
-
-8. **Seasonal/leaf-off imagery**: EagleView captures imagery at different times of year.
-   Winter/leaf-off images have NO foliage occluding poles, making them far more visible.
-   Explore whether we can pull leaf-off captures from the WMTS tile server (different
-   capture dates or layer IDs). Even if we can't get seasonal data, try:
-   - Checking if the WMTS server has a temporal dimension or alternate layers
-   - Looking at the EagleView API docs for capture date parameters
-   - Using image metadata to identify which existing tiles are leaf-off vs leaf-on
-   - Tree canopy is our #1 source of false negatives — removing it would be huge
-
-### Other directions
-
 1. **VLM post-filtering**: After SAM3+MASt3R, classify each detection crop with
    Qwen 3.5 27B. Remove streetlights/trees/fences. This boosted precision in
    our GDino pipeline. Use ollama API with think=False.
-2. **SAM3-LoRA v3**: (see #7 above — use clean data this time)
+2. **SAM3-LoRA v3**: Retrain with better data or different hyperparams.
+   Training script: models/sam3_lora/train_sam3_lora_native.py
+   Config: models/sam3_lora/configs/pole_lora_v2.yaml
 3. **Score-weighted dedup**: Instead of keeping max-score in cluster, weight
    GPS by score for more accurate positioning.
 4. **Adaptive ortho crop**: Different crop size based on image direction/GSD.
