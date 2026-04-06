@@ -434,13 +434,11 @@ def run_pipeline():
                     '_from_tile': proj.get('_from_tile', False),
                 })
 
-    # Dedup with spatial-proximity-aware confidence filtering
+    # Dedup with tile-aware three-tier confidence filtering
     TILE_SINGLE_VIEW_MIN = 0.55  # tile-only single-view detections need higher score
-    PROXIMITY_RESCUE_MIN = 0.38  # borderline dets rescued if near other poles
-    PROXIMITY_RESCUE_RADIUS = 80  # meters — max distance to nearest accepted detection
     m = 111320 * math.cos(math.radians(41.249))
     used = [False] * len(all_points)
-    clusters = []
+    deduped = []
     for i, p in enumerate(all_points):
         if used[i]: continue
         cluster = [p]; used[i] = True
@@ -454,43 +452,21 @@ def run_pipeline():
         best['lat'] = round(sum(c['lat'] for c in cluster) / len(cluster), 6)
         best['lon'] = round(sum(c['lon'] for c in cluster) / len(cluster), 6)
         best['_cluster_size'] = len(cluster)
+        # Three-tier filtering:
+        # 1. Multi-view (cluster >= 2): always keep
+        # 2. Single-view from full-image: keep if score >= SINGLE_VIEW_MIN_SCORE
+        # 3. Single-view from tile-only: keep if score >= TILE_SINGLE_VIEW_MIN
         has_fullimg = any(not c.get('_from_tile') for c in cluster)
-        clusters.append((best, cluster, has_fullimg))
-
-    # First pass: accept high-confidence detections
-    deduped = []
-    borderline = []  # candidates for proximity rescue
-    for best, cluster, has_fullimg in clusters:
         if len(cluster) >= 2:
             deduped.append(best)
         elif has_fullimg and best['score'] >= SINGLE_VIEW_MIN_SCORE:
             deduped.append(best)
         elif not has_fullimg and best['score'] >= TILE_SINGLE_VIEW_MIN:
             deduped.append(best)
-        elif has_fullimg and best['score'] >= PROXIMITY_RESCUE_MIN:
-            borderline.append(best)
+            print(f"  DIAG tile-only kept: score={best['score']:.3f} lat={best['lat']} lon={best['lon']}", flush=True)
         else:
             src = "tile" if not has_fullimg else "full"
             print(f"  DIAG filtered {src}: score={best['score']:.3f} lat={best['lat']} lon={best['lon']}", flush=True)
-
-    # Second pass: rescue borderline detections near accepted poles
-    rescued = 0
-    for b in borderline:
-        near_accepted = False
-        for d in deduped:
-            dist = math.sqrt(((b['lat'] - d['lat']) * 111320) ** 2 +
-                           ((b['lon'] - d['lon']) * m) ** 2)
-            if dist < PROXIMITY_RESCUE_RADIUS:
-                near_accepted = True
-                break
-        if near_accepted:
-            deduped.append(b)
-            rescued += 1
-            print(f"  DIAG proximity-rescued: score={b['score']:.3f} lat={b['lat']} lon={b['lon']}", flush=True)
-        else:
-            print(f"  DIAG filtered isolated: score={b['score']:.3f} lat={b['lat']} lon={b['lon']}", flush=True)
-    if rescued > 0:
-        print(f"  DIAG proximity rescue: {rescued} borderline dets rescued", flush=True)
 
     # Dump diagnostic data
     diag = {'all_points': len(all_points), 'deduped': len(deduped),
