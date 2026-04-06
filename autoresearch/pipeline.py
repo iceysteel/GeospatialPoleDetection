@@ -51,12 +51,14 @@ DEDUP_RADIUS_M = 15
 SINGLE_VIEW_MIN_SCORE = 0.45
 
 # SAHI-style tiling: run SAM3 on overlapping crops to catch small/distant poles
-# Using large tiles (1400px) for 2-3 tiles/image — fast but helps edge/distant poles
 TILE_ENABLED = True
 TILE_SIZE = 1400          # large tiles = only 2-3 per image (fast!)
 TILE_OVERLAP = 0.25       # moderate overlap
 TILE_MIN_DIM = 1600       # only tile images wider/taller than this
 TILE_SCORE_PENALTY = 0.0  # no penalty — let two-tier handle filtering
+# Tile aspect ratio filter: poles are tall vertical structures
+# Filter out tile FPs (trees, cars, signs) that are too square/wide
+TILE_MIN_ASPECT_RATIO = 1.8  # min height/width for tile detections
 
 # ============================================================================
 # PIPELINE FUNCTIONS
@@ -94,6 +96,12 @@ def run_sam3_on_tile(sam3_proc, tile_img, prompt_configs, offset_x, offset_y):
             box = state['boxes'][i].tolist()
             score = state['scores'][i].item()
             if score >= thresh:
+                # Aspect ratio filter: poles are tall/narrow in oblique views
+                bw = box[2] - box[0]
+                bh = box[3] - box[1]
+                aspect = bh / max(bw, 1)
+                if aspect < TILE_MIN_ASPECT_RATIO:
+                    continue  # too square/wide — likely not a pole
                 # Map bbox back to full-image coordinates
                 dets.append({
                     'bbox': [
