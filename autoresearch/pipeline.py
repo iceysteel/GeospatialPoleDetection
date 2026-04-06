@@ -52,7 +52,7 @@ SINGLE_VIEW_MIN_SCORE = 0.45
 
 # SAHI-style tiling: run SAM3 on overlapping crops to catch small/distant poles
 # Using large tiles (1400px) for 2-3 tiles/image — fast but helps edge/distant poles
-TILE_ENABLED = True
+TILE_ENABLED = False
 TILE_SIZE = 1400          # large tiles = only 2-3 per image (fast!)
 TILE_OVERLAP = 0.25       # moderate overlap
 TILE_MIN_DIM = 1600       # only tile images wider/taller than this
@@ -344,7 +344,7 @@ def run_pipeline():
                         a1 = (bi[2]-bi[0]) * (bi[3]-bi[1])
                         a2 = (bj[2]-bj[0]) * (bj[3]-bj[1])
                         iou = inter / (a1 + a2 - inter + 1e-6)
-                        if iou > 0.5:
+                        if iou > 0.65:  # relaxed from 0.5 to keep adjacent poles
                             keep[j] = False
                 dets = [d for d, k in zip(dets, keep) if k]
 
