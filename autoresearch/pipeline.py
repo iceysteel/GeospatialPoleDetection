@@ -45,16 +45,17 @@ ORTHO_ZOOM = 21
 PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 
 # Dedup
-DEDUP_RADIUS_M = 12
+DEDUP_RADIUS_M = 15
 
 # Two-tier confidence: single-view detections need higher score
 SINGLE_VIEW_MIN_SCORE = 0.45
 
 # SAHI-style tiling: run SAM3 on overlapping crops to catch small/distant poles
-TILE_ENABLED = False
-TILE_SIZE = 1024          # tile size in pixels
-TILE_OVERLAP = 0.25       # 25% overlap between tiles
-TILE_MIN_DIM = 800        # don't tile if image is smaller than this
+# Using large tiles (1400px) for 2-3 tiles/image — fast but helps edge/distant poles
+TILE_ENABLED = True
+TILE_SIZE = 1400          # large tiles = only 2-3 per image (fast!)
+TILE_OVERLAP = 0.25       # moderate overlap
+TILE_MIN_DIM = 1600       # only tile images wider/taller than this
 TILE_SCORE_PENALTY = 0.0  # no penalty — let two-tier handle filtering
 
 # ============================================================================
