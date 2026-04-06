@@ -30,8 +30,8 @@ WMTS_DIR = os.path.join(DATA_DIR, 'wmts')
 # Detection
 DETECTOR = 'sam3'  # 'sam3' or 'sam3_lora_v2'
 SAM3_PROMPT = 'telephone pole'
-SAM3_PROMPTS_EXTRA = [('wooden pole', 0.40), ('power pole', 0.65)]  # (prompt, threshold)
-SAM3_THRESHOLD = 0.40
+SAM3_PROMPTS_EXTRA = [('wooden pole', 0.35), ('power pole', 0.60)]  # (prompt, threshold)
+SAM3_THRESHOLD = 0.35
 SAM3_CKPT = os.path.join(os.path.expanduser("~"),
     ".cache/huggingface/hub/models--bodhicitta--sam3/snapshots/"
     "cba430d22f6fdc3f06ad3841274ec7bb55885f2f/sam3.pt")
@@ -48,7 +48,7 @@ PROJECT_POLE_BASE = True  # True=bottom of bbox, False=center
 DEDUP_RADIUS_M = 15
 
 # Two-tier confidence: single-view detections need higher score
-SINGLE_VIEW_MIN_SCORE = 0.55
+SINGLE_VIEW_MIN_SCORE = 0.45
 
 # ============================================================================
 # PIPELINE FUNCTIONS
@@ -228,40 +228,24 @@ def run_pipeline():
             w, h = oblique.size
 
             # SAM3 detection — multi-prompt with per-prompt thresholds
-            # Run on full image + left/right crops for better small-pole detection
+            state = sam3_proc.set_image(oblique)
             prompt_configs = [(SAM3_PROMPT, SAM3_THRESHOLD)] + SAM3_PROMPTS_EXTRA
             dets = []
-
-            # Crops: (crop_image, x_offset, y_offset)
-            overlap = int(w * 0.15)  # 15% overlap
-            mid = w // 2
-            crops = [
-                (oblique, 0, 0),  # full image
-                (oblique.crop((0, 0, mid + overlap, h)), 0, 0),  # left half
-                (oblique.crop((mid - overlap, 0, w, h)), mid - overlap, 0),  # right half
-            ]
-
-            for crop_img, x_off, y_off in crops:
-                state = sam3_proc.set_image(crop_img)
-                cw, ch = crop_img.size
-                for prompt_cfg in prompt_configs:
-                    if isinstance(prompt_cfg, tuple):
-                        prompt, thresh = prompt_cfg
-                    else:
-                        prompt, thresh = prompt_cfg, SAM3_THRESHOLD
-                    state = sam3_proc.set_text_prompt(state=state, prompt=prompt)
-                    for i in range(len(state['boxes'])):
-                        box = state['boxes'][i].tolist()
-                        score = state['scores'][i].item()
-                        if score >= thresh:
-                            # Map crop coords back to full image
-                            dets.append({
-                                'bbox': [int(box[0] + x_off), int(box[1] + y_off),
-                                         int(box[2] + x_off), int(box[3] + y_off)],
-                                'score': score,
-                            })
-
-            # Dedup overlapping boxes from different prompts/crops (IoU > 0.5)
+            for prompt_cfg in prompt_configs:
+                if isinstance(prompt_cfg, tuple):
+                    prompt, thresh = prompt_cfg
+                else:
+                    prompt, thresh = prompt_cfg, SAM3_THRESHOLD
+                state = sam3_proc.set_text_prompt(state=state, prompt=prompt)
+                for i in range(len(state['boxes'])):
+                    box = state['boxes'][i].tolist()
+                    score = state['scores'][i].item()
+                    if score >= thresh:
+                        dets.append({
+                            'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
+                            'score': score,
+                        })
+            # Dedup overlapping boxes from different prompts (IoU > 0.5)
             if len(dets) > 1:
                 keep = [True] * len(dets)
                 for i in range(len(dets)):
@@ -293,6 +277,7 @@ def run_pipeline():
                     'lat': round(pt_lat, 6),
                     'lon': round(pt_lon, 6),
                     'score': proj['score'],
+                    'direction': d,
                 })
 
     # Dedup with two-tier confidence filtering
@@ -311,8 +296,13 @@ def run_pipeline():
         best = max(cluster, key=lambda x: x['score'])
         best['lat'] = round(sum(c['lat'] for c in cluster) / len(cluster), 6)
         best['lon'] = round(sum(c['lon'] for c in cluster) / len(cluster), 6)
-        # Two-tier: single-view detections need higher confidence
-        if len(cluster) >= 2 or best['score'] >= SINGLE_VIEW_MIN_SCORE:
-            deduped.append(best)
+        # Direction-aware filtering: count unique viewing directions
+        unique_dirs = len(set(c.get('direction', '') for c in cluster))
+        if unique_dirs >= 2:
+            deduped.append(best)  # Cross-direction: strong evidence, always keep
+        elif len(cluster) >= 2 and best['score'] >= 0.45:
+            deduped.append(best)  # Same-direction multi-view needs decent score
+        elif len(cluster) == 1 and best['score'] >= SINGLE_VIEW_MIN_SCORE:
+            deduped.append(best)  # Single-view needs high confidence
 
     return deduped
