@@ -50,16 +50,13 @@ DEDUP_RADIUS_M = 15
 # Two-tier confidence: single-view detections need higher score
 SINGLE_VIEW_MIN_SCORE = 0.45
 
-# SAHI-style tiling: DISABLED — regressed F1 from 0.714 to 0.69
-TILE_ENABLED = False
-TILE_SIZE = 1400
-TILE_OVERLAP = 0.25
-TILE_MIN_DIM = 1600
-TILE_SCORE_PENALTY = 0.0
-
-# Direction-aware ortho: shift ortho center toward camera viewing direction
-# This improves MASt3R alignment by centering the ortho on what the oblique camera sees
-ORTHO_SHIFT_M = 25  # shift distance in meters toward camera direction
+# SAHI-style tiling: run SAM3 on overlapping crops to catch small/distant poles
+# Using large tiles (1400px) for 2-3 tiles/image — fast but helps edge/distant poles
+TILE_ENABLED = True
+TILE_SIZE = 1400          # large tiles = only 2-3 per image (fast!)
+TILE_OVERLAP = 0.25       # moderate overlap
+TILE_MIN_DIM = 1600       # only tile images wider/taller than this
+TILE_SCORE_PENALTY = 0.0  # no penalty — let two-tier handle filtering
 
 # ============================================================================
 # PIPELINE FUNCTIONS
@@ -291,23 +288,13 @@ def run_pipeline():
     for ci, cell in enumerate(grid):
         lat, lon = cell['lat'], cell['lon']
 
+        # Stitch ortho for this cell
+        ortho, ortho_meta = stitch_ortho(lat, lon)
+        if ortho_meta['tiles'] < 4: continue
+
         for d in DIRECTIONS:
             img_path = cell['images'].get(d)
             if not img_path or not os.path.exists(img_path): continue
-
-            # Direction-aware ortho: shift center toward camera viewing direction
-            dir_meta = cell.get(f'{d}_meta', {})
-            azimuth = dir_meta.get('azimuth', None)
-            if azimuth is not None and ORTHO_SHIFT_M > 0:
-                shift_lat = ORTHO_SHIFT_M * math.cos(math.radians(azimuth)) / 111320
-                shift_lon = ORTHO_SHIFT_M * math.sin(math.radians(azimuth)) / (111320 * math.cos(math.radians(lat)))
-                ortho_lat = lat + shift_lat
-                ortho_lon = lon + shift_lon
-            else:
-                ortho_lat, ortho_lon = lat, lon
-
-            ortho, ortho_meta = stitch_ortho(ortho_lat, ortho_lon)
-            if ortho_meta['tiles'] < 4: continue
 
             oblique = Image.open(img_path).convert('RGB')
             w, h = oblique.size
