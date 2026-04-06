@@ -244,6 +244,13 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
         u_nn = nearest_idx % tw
         v_nn = nearest_idx // tw
 
+        # Projection consistency filter: discard if camera and 3D-NN disagree too much
+        proj_dist = math.sqrt((u_cam.item() - u_nn)**2 + (v_cam.item() - v_nn)**2)
+        # Scale threshold by ortho size — 20% of MASt3R tile dimension
+        max_proj_dist = max(tw, th) * 0.20
+        if proj_dist > max_proj_dist:
+            continue  # projections disagree → bad reconstruction at this point
+
         # Average camera reprojection and 3D-NN for more robust localization
         u_avg = (u_cam.item() + u_nn) / 2
         v_avg = (v_cam.item() + v_nn) / 2
