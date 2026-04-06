@@ -1,6 +1,27 @@
 {
   "configs": [
     {
+      "id": "multi_exemplar_3prompt_pco100",
+      "f1_10m": 0.7251,
+      "params": {
+        "detector": "sam3",
+        "prompts": [["telephone pole", 0.40], ["wooden pole", 0.40], ["power pole", 0.65]],
+        "threshold": 0.40,
+        "single_view_min_score": 0.45,
+        "exemplar_enabled": true,
+        "exemplar_min_score": 0.70,
+        "exemplar_max_count": 3,
+        "exemplar_pass_thresh": 0.35,
+        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
+        "mast3r_iters": 100,
+        "mast3r_mode": "PointCloudOptimizer",
+        "ortho_radius": 60,
+        "project_base": true,
+        "dedup_radius": 15
+      },
+      "description": "Multi-exemplar (up to 3 diverse) + 3-prompt + two-tier + dedup 15m + PCO — NEW BEST F1 0.725"
+    },
+    {
       "id": "exemplar_guided_3prompt_pco100",
       "f1_10m": 0.7168,
       "params": {
@@ -17,7 +38,7 @@
         "project_base": true,
         "dedup_radius": 15
       },
-      "description": "Exemplar-guided 2nd pass + 3-prompt + two-tier + dedup 15m + PCO — NEW BEST F1 0.717"
+      "description": "Exemplar-guided 2nd pass + 3-prompt + two-tier + dedup 15m + PCO — F1 0.717"
     },
     {
       "id": "3prompt_powerpole065_pco100",
@@ -66,138 +87,10 @@
         "project_base": true,
         "dedup_radius": 14
       },
-      "description": "Multi-prompt + two-tier + dedup 14m — NEW BEST F1 0.6667, recall 61.7%"
-    },
-    {
-      "id": "twotier_040_sv045_dedup14",
-      "f1_10m": 0.6506,
-      "params": {
-        "detector": "sam3",
-        "prompt": "telephone pole",
-        "threshold": 0.40,
-        "single_view_min_score": 0.45,
-        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
-        "ortho_radius": 60,
-        "project_base": true,
-        "dedup_radius": 14
-      },
-      "description": "Two-tier: thresh 0.40, single-view needs 0.45+, dedup 14m — NEW BEST F1 0.6506"
-    },
-    {
-      "id": "twotier_040_sv045_dedup12",
-      "f1_10m": 0.6243,
-      "params": {
-        "detector": "sam3",
-        "prompt": "telephone pole",
-        "threshold": 0.40,
-        "single_view_min_score": 0.45,
-        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
-        "ortho_radius": 60,
-        "project_base": true,
-        "dedup_radius": 12
-      },
-      "description": "Two-tier: thresh 0.40, single-view needs 0.45+, dedup 12m — F1 0.6243"
-    },
-    {
-      "id": "dedup12_threshold045_ortho60",
-      "f1_10m": 0.6163,
-      "params": {
-        "detector": "sam3",
-        "prompt": "telephone pole",
-        "threshold": 0.45,
-        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
-        "ortho_radius": 60,
-        "project_base": true,
-        "dedup_radius": 12
-      },
-      "description": "SAM3 threshold 0.45, ortho 60m, dedup 12m — F1 0.6163, precision 68.0%"
-    },
-    {
-      "id": "threshold_045_ortho60",
-      "f1_10m": 0.5978,
-      "params": {
-        "detector": "sam3",
-        "prompt": "telephone pole",
-        "threshold": 0.45,
-        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
-        "ortho_radius": 60,
-        "project_base": true,
-        "dedup_radius": 10
-      },
-      "description": "SAM3 threshold 0.45, ortho 60m — F1 0.5978, precision 61.1%"
-    },
-    {
-      "id": "threshold_040_ortho60",
-      "f1_10m": 0.5918,
-      "params": {
-        "detector": "sam3",
-        "prompt": "telephone pole",
-        "threshold": 0.40,
-        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
-        "ortho_radius": 60,
-        "project_base": true,
-        "dedup_radius": 10
-      },
-      "description": "SAM3 threshold 0.40, ortho 60m — NEW BEST F1 0.5918, precision 56.9%"
-    },
-    {
-      "id": "ortho_radius_60",
-      "f1_10m": 0.5592,
-      "params": {
-        "detector": "sam3",
-        "prompt": "telephone pole",
-        "threshold": 0.35,
-        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
-        "ortho_radius": 60,
-        "project_base": true,
-        "dedup_radius": 10
-      },
-      "description": "Ortho radius 60m — F1 0.5592, RMSE 4.9m"
-    },
-    {
-      "id": "threshold_035",
-      "f1_10m": 0.5268,
-      "params": {
-        "detector": "sam3",
-        "prompt": "telephone pole",
-        "threshold": 0.35,
-        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
-        "ortho_radius": 80,
-        "project_base": true,
-        "dedup_radius": 10
-      },
-      "description": "SAM3 threshold 0.35 — precision 48.6%"
-    },
-    {
-      "id": "threshold_030",
-      "f1_10m": 0.5182,
-      "params": {
-        "detector": "sam3",
-        "prompt": "telephone pole",
-        "threshold": 0.30,
-        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
-        "ortho_radius": 80,
-        "project_base": true,
-        "dedup_radius": 10
-      },
-      "description": "SAM3 threshold 0.30 — precision 45.2%"
-    },
-    {
-      "id": "threshold_020",
-      "f1_10m": 0.4876,
-      "params": {
-        "detector": "sam3",
-        "prompt": "telephone pole",
-        "threshold": 0.20,
-        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
-        "ortho_radius": 80,
-        "project_base": true,
-        "dedup_radius": 10
-      },
-      "description": "SAM3 threshold 0.20 — big precision gain over 0.10"
+      "description": "Multi-prompt + two-tier + dedup 14m — F1 0.667"
     }
   ],
   "max_population": 5,
-  "generation": 16,
-  "total_experiments": 63
+  "generation": 17,
+  "total_experiments": 75
 }
