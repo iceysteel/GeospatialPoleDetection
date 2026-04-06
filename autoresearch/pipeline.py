@@ -216,9 +216,7 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
     for det in detections:
         x1, y1, x2, y2 = det['bbox']
         if PROJECT_POLE_BASE:
-            # Use 95% of bbox height (slightly above base to avoid ground/shadow)
-            px = (x1 + x2) // 2
-            py = int(y1 + (y2 - y1) * 0.95)
+            px, py = (x1 + x2) // 2, y2
         else:
             px, py = (x1 + x2) // 2, (y1 + y2) // 2
 
