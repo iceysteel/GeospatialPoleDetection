@@ -2,7 +2,7 @@
 
 ## Objective
 Maximize F1@10m for detecting utility poles in aerial imagery.
-Current best: **F1@10m = 0.725** (multi-exemplar diverse prompting [up to 3] + 3-prompt SAM3 [telephone/wooden/power pole], power@0.65, thresh=0.40, exemplar_pass_thresh=0.35, ortho=60m, dedup=15m, two-tier sv_min=0.45, MASt3R PCO 100 iters)
+Current best: **F1@10m = 0.727** (ortho-direct detection + multi-exemplar diverse prompting [up to 3] + 3-prompt SAM3 [telephone/wooden/power pole], power@0.65, thresh=0.40, exemplar_pass_thresh=0.35, ortho_detect=[utility/wooden pole]@0.55, ortho=60m, dedup=15m, two-tier sv_min=0.45, MASt3R PCO 100 iters)
 
 ## Progress So Far
 - Baseline: F1=0.335 (SAM3 thresh=0.10, ortho=80m)
@@ -59,6 +59,9 @@ Current best: **F1@10m = 0.725** (multi-exemplar diverse prompting [up to 3] + 3
 - Iteration 63-73: electric pole, sv_min 0.42, dedup 14m, linear schedule, utility pole@0.70, MASt3R 120 iters, 95% bbox height, quality-aware GPS, 448px, 3x3 median, GDino fallback — all ≤0.714
 - Iteration 74: SAM3 exemplar-guided 2nd pass (positive box prompt) → F1=0.717 ✅ NEW BEST! (+2 TP, +3 FP)
 - Iteration 75: Multi-exemplar diverse prompting (up to 3 spatially diverse exemplars + lower exemplar pass thresh 0.35) → F1=0.725 ✅ NEW BEST! (same TP=62, -2 FP)
+- Iteration 76: Ortho-direct detection (SAM3 on orthophoto with utility/wooden pole@0.55) → F1=0.727 ✅ NEW BEST! (+2 TP, +3 FP, RMSE 5.0→4.7m)
+  - Also tried: TTA horizontal flip → F1=0.700 ❌ (flipped dets too noisy, +1 TP but +8 FP)
+  - Also tried: Spatial proximity rescue (sv_min 0.38 near other poles) → F1=0.700 ❌ (all 8 rescued were FPs)
 
 ## Hard Constraints
 - MUST use SAM3 (or SAM3-LoRA) for detection in oblique views
@@ -102,6 +105,8 @@ Current best: **F1@10m = 0.725** (multi-exemplar diverse prompting [up to 3] + 3
 - MASt3R 448px or 120 iters: 512px and 100 iters are optimal
 - Quality-aware GPS (reproj error weighting): no improvement
 - GDino fallback for empty SAM3 images: GDino also finds nothing
+- TTA horizontal flip: flipped image detections are mostly FPs, +1 TP but +8 FP
+- Spatial proximity rescue (lower sv_min near other poles): low-score dets near poles are FPs (trees, signs along streets)
 
 ## Promising Directions (DEEP CHANGES)
 1. **VLM post-filtering**: After SAM3+MASt3R, classify each detection crop with

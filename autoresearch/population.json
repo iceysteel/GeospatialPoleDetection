@@ -1,6 +1,30 @@
 {
   "configs": [
     {
+      "id": "ortho_detect_multi_exemplar_pco100",
+      "f1_10m": 0.7273,
+      "params": {
+        "detector": "sam3",
+        "prompts": [["telephone pole", 0.40], ["wooden pole", 0.40], ["power pole", 0.65]],
+        "threshold": 0.40,
+        "single_view_min_score": 0.45,
+        "exemplar_enabled": true,
+        "exemplar_min_score": 0.70,
+        "exemplar_max_count": 3,
+        "exemplar_pass_thresh": 0.35,
+        "ortho_detect_enabled": true,
+        "ortho_detect_threshold": 0.55,
+        "ortho_detect_prompts": [["utility pole", 0.55], ["wooden pole", 0.55]],
+        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
+        "mast3r_iters": 100,
+        "mast3r_mode": "PointCloudOptimizer",
+        "ortho_radius": 60,
+        "project_base": true,
+        "dedup_radius": 15
+      },
+      "description": "Ortho-direct detection + multi-exemplar + 3-prompt + two-tier + dedup 15m + PCO — NEW BEST F1 0.727"
+    },
+    {
       "id": "multi_exemplar_3prompt_pco100",
       "f1_10m": 0.7251,
       "params": {
@@ -19,7 +43,7 @@
         "project_base": true,
         "dedup_radius": 15
       },
-      "description": "Multi-exemplar (up to 3 diverse) + 3-prompt + two-tier + dedup 15m + PCO — NEW BEST F1 0.725"
+      "description": "Multi-exemplar (up to 3 diverse) + 3-prompt + two-tier + dedup 15m + PCO — F1 0.725"
     },
     {
       "id": "exemplar_guided_3prompt_pco100",
@@ -73,24 +97,9 @@
         "dedup_radius": 15
       },
       "description": "Multi-prompt + two-tier + dedup 15m + PCO 100 iters — F1 0.707"
-    },
-    {
-      "id": "multiprompt_twotier_dedup14",
-      "f1_10m": 0.6667,
-      "params": {
-        "detector": "sam3",
-        "prompts": ["telephone pole", "wooden pole"],
-        "threshold": 0.40,
-        "single_view_min_score": 0.45,
-        "mast3r": "kvuong2711/checkpoint-aerial-mast3r",
-        "ortho_radius": 60,
-        "project_base": true,
-        "dedup_radius": 14
-      },
-      "description": "Multi-prompt + two-tier + dedup 14m — F1 0.667"
     }
   ],
   "max_population": 5,
-  "generation": 17,
-  "total_experiments": 75
+  "generation": 18,
+  "total_experiments": 76
 }
