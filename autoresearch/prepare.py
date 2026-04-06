@@ -9,7 +9,7 @@ import sys, os, json, math, time, signal
 
 # Timeout: 10 minutes (VLM filtering disabled — did not improve F1)
 # TODO: If VLM hasn't improved F1 by 2 hours from now, disable it and revert to 600s
-TIMEOUT_SECONDS = 600
+TIMEOUT_SECONDS = 1800
 
 PROJECT_ROOT = os.path.join(os.path.dirname(__file__), '..')
 sys.path.insert(0, os.path.join(PROJECT_ROOT, 'src'))

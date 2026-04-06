@@ -1,7 +1,5 @@
 #!/bin/bash
-# AutoResearch Loop Runner — Extended capabilities
-# Agent can now do deeper changes: fine-tuning, architectural modifications, etc.
-
+# AutoResearch Loop Runner — Deep exploration with web research
 cd "$(dirname "$0")/.."
 
 ITERATION=0
@@ -13,51 +11,48 @@ while true; do
     echo "$(date)"
     echo "========================================"
 
-    claude --dangerously-skip-permissions -p "You are an autonomous ML research agent optimizing a pole detection pipeline.
-The metric to optimize is AVERAGE F1@10m across TEST and HOLDOUT areas.
-This prevents overfitting — if test improves but holdout drops, that's overfit.
-Current best avg F1@10m: check autoresearch.jsonl for latest.
+    claude --dangerously-skip-permissions -p "You are an autonomous ML research agent. Your goal: improve F1@10m for pole detection.
 
-YOUR TASK: Make changes to improve F1@10m. You have EXTENDED capabilities now.
+CURRENT BEST: F1@10m = 0.714 (P=81.1%, R=63.8%). Parameter tuning is EXHAUSTED.
+
+YOU MUST TRY SOMETHING FUNDAMENTALLY DIFFERENT. Search the web for ideas.
+
+APPROACH:
+1. Read autoresearch/program.md and autoresearch/autoresearch.jsonl for history
+2. Read autoresearch/pipeline.py to understand the current pipeline
+3. SEARCH THE WEB for techniques to improve geospatial object detection:
+   - Better SAM3 prompting strategies (visual exemplars, few-shot)
+   - MASt3R tricks for better oblique→ortho projection
+   - Post-processing techniques for pole detection in aerial imagery
+   - Spatial reasoning (poles follow streets at regular intervals)
+   - Multi-scale detection approaches
+   - Novel deduplication or consensus strategies
+   - Any papers on utility pole detection from aerial/satellite imagery
+4. Based on your research, implement ONE change to autoresearch/pipeline.py
+5. git add -A && git commit -m 'experiment: <description>'
+6. Run: python autoresearch/prepare.py
+7. If F1 IMPROVED: keep, update population.json + program.md
+   If F1 WORSENED: git revert HEAD --no-edit, update program.md with what failed
+8. Log result to autoresearch/autoresearch.jsonl
+9. git add autoresearch/ && git commit -m 'autoresearch: log iteration'
 
 WHAT YOU CAN DO:
-- Modify autoresearch/pipeline.py (parameters, architecture, logic)
-- Run training scripts (fine-tune SAM3-LoRA, retrain models)
-- Modify detection prompts, thresholds, post-processing
-- Add VLM filtering steps (Qwen 3.5 27B via ollama)
-- Change MASt3R settings, ortho crop strategies
-- Ensemble multiple detectors
-- Add new post-processing (score calibration, spatial filtering)
-- Take up to 30 minutes per iteration if needed for training
-
-STEPS:
-1. Read autoresearch/program.md for context and history
-2. Read autoresearch/population.json and autoresearch/autoresearch.jsonl
-3. Read autoresearch/pipeline.py
-4. Decide on a change — can be quick (parameter tweak) or deep (fine-tune a model)
-5. Implement the change
-6. git add -A && git commit -m 'experiment: <description>'
-7. Run: python autoresearch/prepare.py
-8. If F1 IMPROVED: keep commit, update population.json and program.md
-   If F1 WORSENED: git revert HEAD --no-edit, update program.md with failure
-9. Log to autoresearch/autoresearch.jsonl
-10. git add autoresearch/ && git commit -m 'autoresearch: log iteration'
+- Modify autoresearch/pipeline.py (any changes)
+- Search the web for papers, techniques, code examples
+- Run training scripts if needed (up to 30 min per iteration)
+- Add new post-processing, spatial filtering, scoring adjustments
+- Change detection strategy, MASt3R settings, dedup logic
+- Install new packages if needed
 
 CONSTRAINTS:
 - Must use SAM3 for detection in oblique views
-- Must use MASt3R for oblique→ortho cross-view mapping
+- Must use MASt3R for oblique→ortho mapping
 - Do NOT modify prepare.py
-- Hardware: 2x NVIDIA 3090 (24GB each), 256GB RAM
-- Qwen 3.5 27B available via ollama on localhost:11434
+- 2x NVIDIA 3090 (24GB each), 256GB RAM available
 
-IMPORTANT: Parameter tuning has plateaued at F1=0.592. Think DEEPER:
-- Can you add VLM post-filtering to remove false positives?
-- Can you fine-tune SAM3-LoRA with better data/hyperparams?
-- Can you use multi-view information more cleverly?
-- Can you improve the MASt3R projection accuracy?
-- Can you combine multiple detection strategies?
+THINK DEEPLY. The easy wins are gone. What would a research paper do differently?
 
-Do NOT pause to ask. Just run the experiment. GO."
+GO."
 
     echo "Iteration $ITERATION complete"
     sleep 5
