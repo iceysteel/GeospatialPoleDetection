@@ -57,9 +57,6 @@ TILE_OVERLAP = 0.25       # 25% overlap between tiles
 TILE_MIN_DIM = 800        # don't tile if image is smaller than this
 TILE_SCORE_PENALTY = 0.0  # no penalty — let two-tier handle filtering
 
-# Test-Time Augmentation: run SAM3 on flipped images for better recall
-TTA_HFLIP = True          # horizontal flip augmentation
-
 # ============================================================================
 # PIPELINE FUNCTIONS
 # ============================================================================
@@ -320,27 +317,6 @@ def run_pipeline():
                             'bbox': [int(box[0]), int(box[1]), int(box[2]), int(box[3])],
                             'score': score,
                         })
-
-            # Test-Time Augmentation: horizontal flip
-            if TTA_HFLIP:
-                from PIL import ImageOps
-                oblique_flip = ImageOps.mirror(oblique)
-                state_flip = sam3_proc.set_image(oblique_flip)
-                for prompt_cfg in prompt_configs:
-                    if isinstance(prompt_cfg, tuple):
-                        prompt, thresh = prompt_cfg
-                    else:
-                        prompt, thresh = prompt_cfg, SAM3_THRESHOLD
-                    state_flip = sam3_proc.set_text_prompt(state=state_flip, prompt=prompt)
-                    for i in range(len(state_flip['boxes'])):
-                        box = state_flip['boxes'][i].tolist()
-                        score = state_flip['scores'][i].item()
-                        if score >= thresh:
-                            # Flip bbox back: x' = w - x
-                            dets.append({
-                                'bbox': [int(w - box[2]), int(box[1]), int(w - box[0]), int(box[3])],
-                                'score': score,
-                            })
 
             # SAHI-style tiled detection to catch small/distant poles
             if TILE_ENABLED:
