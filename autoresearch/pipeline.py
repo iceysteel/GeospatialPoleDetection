@@ -155,6 +155,11 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
     pv = pts3d[0]
     hm, wm = pv.shape[:2]
 
+    # Flatten ortho 3D pointmap for nearest-neighbor lookup
+    ortho_3d = pts3d[1]
+    th, tw = ortho_3d.shape[:2]
+    ortho_flat = ortho_3d.reshape(-1, 3)
+
     results = []
     for det in detections:
         x1, y1, x2, y2 = det['bbox']
@@ -169,17 +174,30 @@ def match_and_project(oblique_path, ortho_img, mast3r, device, detections, obliq
         p3d = pv[my, mx]
         if torch.isnan(p3d).any(): continue
 
+        # Camera reprojection (original method)
         pi = torch.inverse(poses[1])
         pc = pi[:3, :3] @ p3d + pi[:3, 3]
         if pc[2] <= 0: continue
 
-        th, tw = pts3d[1].shape[:2]
-        u = focals[1] * pc[0] / pc[2] + tw / 2
-        v = focals[1] * pc[1] / pc[2] + th / 2
-        if not (0 <= u.item() < tw and 0 <= v.item() < th): continue
+        u_cam = focals[1] * pc[0] / pc[2] + tw / 2
+        v_cam = focals[1] * pc[1] / pc[2] + th / 2
+        if not (0 <= u_cam.item() < tw and 0 <= v_cam.item() < th): continue
 
-        uo = u.item() / (tw / ortho_w)
-        vo = v.item() / (th / ortho_h)
+        # 3D nearest-neighbor projection (find closest ortho 3D point)
+        dists_3d = torch.norm(ortho_flat - p3d.unsqueeze(0), dim=1)
+        # Mask NaN points
+        nan_mask = torch.isnan(dists_3d)
+        dists_3d[nan_mask] = float('inf')
+        nearest_idx = dists_3d.argmin().item()
+        u_nn = nearest_idx % tw
+        v_nn = nearest_idx // tw
+
+        # Average camera reprojection and 3D-NN for more robust localization
+        u_avg = (u_cam.item() + u_nn) / 2
+        v_avg = (v_cam.item() + v_nn) / 2
+
+        uo = u_avg / (tw / ortho_w)
+        vo = v_avg / (th / ortho_h)
         results.append({'ortho_px': (int(round(uo)), int(round(vo))), 'score': det['score'], 'src_bbox': det['bbox']})
 
     return results
@@ -269,6 +287,8 @@ def run_pipeline():
 
             # MASt3R project to ortho
             projected = match_and_project(img_path, ortho, mast3r, device, dets, (h, w))
+            if dets:
+                print(f"  DIAG {os.path.basename(os.path.dirname(img_path))}/{d}: {len(dets)} SAM3 dets → {len(projected)} projected", flush=True)
 
             for proj in projected:
                 ox, oy = proj['ortho_px']
@@ -297,9 +317,19 @@ def run_pipeline():
         best = max(cluster, key=lambda x: x['score'])
         best['lat'] = round(sum(c['lat'] for c in cluster) / len(cluster), 6)
         best['lon'] = round(sum(c['lon'] for c in cluster) / len(cluster), 6)
+        best['_cluster_size'] = len(cluster)
         # Two-tier: single-view detections need higher confidence
         if len(cluster) >= 2 or best['score'] >= SINGLE_VIEW_MIN_SCORE:
             deduped.append(best)
+        else:
+            print(f"  DIAG filtered single-view: score={best['score']:.3f} lat={best['lat']} lon={best['lon']}", flush=True)
+
+    # Dump diagnostic data
+    diag = {'all_points': len(all_points), 'deduped': len(deduped),
+            'detections': [{'lat': d['lat'], 'lon': d['lon'], 'score': d['score'],
+                           'cluster_size': d.get('_cluster_size', 1)} for d in deduped]}
+    with open(os.path.join(os.path.dirname(__file__), 'diag_detections.json'), 'w') as f:
+        json.dump(diag, f)
 
     # VLM post-filter on OBLIQUE crops (not ortho!)
     # Previous VLM on ortho crops failed because poles look like dots from above.
