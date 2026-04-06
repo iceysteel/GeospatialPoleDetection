@@ -39,6 +39,7 @@ SAM3_CKPT = os.path.join(os.path.expanduser("~"),
 # MASt3R
 MAST3R_CHECKPOINT = 'kvuong2711/checkpoint-aerial-mast3r'
 ORTHO_CROP_RADIUS_M = 60
+ORTHO_CROP_RADII = [60, 80]  # Multi-scale: run MASt3R at both radii, merge results
 ORTHO_ZOOM = 21
 
 # Projection
@@ -52,7 +53,7 @@ SINGLE_VIEW_MIN_SCORE = 0.45
 
 # SAHI-style tiling: run SAM3 on overlapping crops to catch small/distant poles
 # Using large tiles (1400px) for 2-3 tiles/image — fast but helps edge/distant poles
-TILE_ENABLED = True
+TILE_ENABLED = False  # disabled: regressed F1 from 0.714 to 0.69
 TILE_SIZE = 1400          # large tiles = only 2-3 per image (fast!)
 TILE_OVERLAP = 0.25       # moderate overlap
 TILE_MIN_DIM = 1600       # only tile images wider/taller than this
@@ -288,9 +289,13 @@ def run_pipeline():
     for ci, cell in enumerate(grid):
         lat, lon = cell['lat'], cell['lon']
 
-        # Stitch ortho for this cell
-        ortho, ortho_meta = stitch_ortho(lat, lon)
-        if ortho_meta['tiles'] < 4: continue
+        # Pre-stitch ortho at all scales for this cell
+        ortho_scales = {}
+        for radius in ORTHO_CROP_RADII:
+            ortho_img, ortho_m = stitch_ortho(lat, lon, radius_m=radius)
+            if ortho_m['tiles'] >= 4:
+                ortho_scales[radius] = (ortho_img, ortho_m)
+        if not ortho_scales: continue
 
         for d in DIRECTIONS:
             img_path = cell['images'].get(d)
@@ -348,22 +353,28 @@ def run_pipeline():
                             keep[j] = False
                 dets = [d for d, k in zip(dets, keep) if k]
 
-            # MASt3R project to ortho
-            projected = match_and_project(img_path, ortho, mast3r, device, dets, (h, w))
-            if dets:
-                print(f"  DIAG {os.path.basename(os.path.dirname(img_path))}/{d}: {len(dets)} SAM3 dets → {len(projected)} projected", flush=True)
+            # Multi-scale MASt3R projection: run at each ortho scale, merge
+            # Different scales catch different poles — 60m has better resolution,
+            # 80m has more context for far-away poles
+            total_projected = 0
+            for radius, (ortho, ortho_meta) in ortho_scales.items():
+                projected = match_and_project(img_path, ortho, mast3r, device, dets, (h, w))
+                total_projected += len(projected)
 
-            for proj in projected:
-                ox, oy = proj['ortho_px']
-                pt_lat, pt_lon = ortho_pixel_to_gps(ox, oy, ortho_meta)
-                all_points.append({
-                    'lat': round(pt_lat, 6),
-                    'lon': round(pt_lon, 6),
-                    'score': proj['score'],
-                    'src_img': img_path,
-                    'src_bbox': proj.get('src_bbox', None),
-                    '_from_tile': proj.get('_from_tile', False),
-                })
+                for proj in projected:
+                    ox, oy = proj['ortho_px']
+                    pt_lat, pt_lon = ortho_pixel_to_gps(ox, oy, ortho_meta)
+                    all_points.append({
+                        'lat': round(pt_lat, 6),
+                        'lon': round(pt_lon, 6),
+                        'score': proj['score'],
+                        'src_img': img_path,
+                        'src_bbox': proj.get('src_bbox', None),
+                        '_from_tile': proj.get('_from_tile', False),
+                    })
+
+            if dets:
+                print(f"  DIAG {os.path.basename(os.path.dirname(img_path))}/{d}: {len(dets)} SAM3 dets → {total_projected} projected ({len(ortho_scales)} scales)", flush=True)
 
     # Dedup with tile-aware three-tier confidence filtering
     TILE_SINGLE_VIEW_MIN = 0.55  # tile-only single-view detections need higher score
