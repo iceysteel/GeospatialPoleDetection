@@ -111,8 +111,9 @@ async function load() {
     list.appendChild(div);
   });
 
-  // Draw test area boundary
-  const FOCUS_LAT = 41.248644, FOCUS_LON = -95.998878;
+  // Draw area boundary
+  const FOCUS_LAT = area === 'holdout' ? 41.2486 : 41.248644;
+  const FOCUS_LON = area === 'holdout' ? -95.9929 : -95.998878;
   const R_LAT = 0.0018, R_LON = 0.0024;
   L.rectangle([
     [FOCUS_LAT - R_LAT, FOCUS_LON - R_LON],

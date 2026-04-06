@@ -279,54 +279,6 @@ def run_pipeline():
                     'score': proj['score'],
                 })
 
-    # VLM post-filter: verify detections using ortho (top-down) crops
-    # Previous VLM attempts used oblique crops — VLM couldn't distinguish poles from FPs.
-    # Ortho view shows poles as dots/shadows, which look different from buildings/fences.
-    VLM_FILTER = True
-    VLM_CROP_M = 15  # crop radius in meters around detection
-
-    if VLM_FILTER and all_points:
-        import requests
-        # Group points by their originating cell to reuse ortho crops
-        # For simplicity, just stitch a small ortho at each detection location
-        filtered_points = []
-        for pt in all_points:
-            # Crop ortho around detection
-            ortho_crop, crop_meta = stitch_ortho(pt['lat'], pt['lon'], radius_m=VLM_CROP_M, zoom=ORTHO_ZOOM)
-            if crop_meta['tiles'] < 1:
-                filtered_points.append(pt)
-                continue
-            # Save crop to temp file and send to VLM
-            import base64, io
-            buf = io.BytesIO()
-            ortho_crop.save(buf, format='PNG')
-            b64 = base64.b64encode(buf.getvalue()).decode()
-            try:
-                resp = requests.post('http://localhost:11434/api/chat', json={
-                    'model': 'qwen3.5:27b',
-                    'messages': [{
-                        'role': 'user',
-                        'content': (
-                            'This is a top-down aerial/satellite image. '
-                            'Is there a utility pole, telephone pole, or power pole visible '
-                            'in the center of this image? Look for a small circular cross-section '
-                            'or a thin shadow cast by a pole. '
-                            'Answer ONLY "yes" or "no".'
-                        ),
-                        'images': [b64],
-                    }],
-                    'stream': False,
-                    'options': {'temperature': 0},
-                    'think': False,
-                }, timeout=30)
-                answer = resp.json().get('message', {}).get('content', '').strip().lower()
-                if 'no' in answer and 'yes' not in answer:
-                    continue  # VLM says no pole — filter out
-            except:
-                pass  # On error, keep the detection
-            filtered_points.append(pt)
-        all_points = filtered_points
-
     # Dedup with two-tier confidence filtering
     m = 111320 * math.cos(math.radians(41.249))
     used = [False] * len(all_points)
@@ -347,4 +299,40 @@ def run_pipeline():
         if len(cluster) >= 2 or best['score'] >= SINGLE_VIEW_MIN_SCORE:
             deduped.append(best)
 
-    return deduped
+    # VLM post-filter on final detections using ortho (top-down) crops
+    import requests, base64, io
+    vlm_filtered = []
+    for pt in deduped:
+        ortho_crop, crop_meta = stitch_ortho(pt['lat'], pt['lon'], radius_m=15, zoom=ORTHO_ZOOM)
+        if crop_meta['tiles'] < 1:
+            vlm_filtered.append(pt)
+            continue
+        buf = io.BytesIO()
+        ortho_crop.save(buf, format='PNG')
+        b64 = base64.b64encode(buf.getvalue()).decode()
+        try:
+            resp = requests.post('http://localhost:11434/api/chat', json={
+                'model': 'qwen3.5:27b',
+                'messages': [{
+                    'role': 'user',
+                    'content': (
+                        'This is a top-down aerial/satellite image. '
+                        'Is there a utility pole, telephone pole, or power pole visible '
+                        'near the center of this image? Look for a small dark dot or circle '
+                        '(the pole cross-section from above) or a thin straight shadow. '
+                        'Answer ONLY "yes" or "no".'
+                    ),
+                    'images': [b64],
+                }],
+                'stream': False,
+                'options': {'temperature': 0},
+                'think': False,
+            }, timeout=30)
+            answer = resp.json().get('message', {}).get('content', '').strip().lower()
+            if 'no' in answer and 'yes' not in answer:
+                continue  # VLM says no pole — filter out
+        except:
+            pass  # On error, keep detection
+        vlm_filtered.append(pt)
+
+    return vlm_filtered
